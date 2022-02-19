@@ -10,7 +10,7 @@
 
 ### Flask(Python) server on(background)
 - cd flask & conda activate Smoosly
-- nohup python -u flask_app.py &
+- nohup python -u app.py &
 - lsof i:5000, kill -9 PID
 
 ### Node Server on(background)
