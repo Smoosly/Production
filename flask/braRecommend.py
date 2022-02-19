@@ -348,11 +348,11 @@ def recommend():
         Data = json.loads(requestData)
         pkId = Data["PK_ID"]
         db = pymysql.connect(
-            host="localhost",
-            user="root",
-            db="Smoosly",
-            password="tmantmffl23!",
-            charset="utf8",
+            host=config["host"],
+            user=config["user"],
+            db=config["db"],
+            password=config["password"],
+            charset=config["charset"],
         )
         cur = db.cursor()
 

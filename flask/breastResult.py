@@ -46,11 +46,11 @@ def saveBreastResult():
         Data = json.loads(requestData)
         pkId = Data["PK_ID"]
         db = pymysql.connect(
-            host="localhost",
-            user="root",
-            db="Smoosly",
-            password="tmantmffl23!",
-            charset="utf8",
+            host=config["host"],
+            user=config["user"],
+            db=config["db"],
+            password=config["password"],
+            charset=config["charset"],
         )
         sql = "SELECT * FROM BREAST_TEST where PK_ID = %s"
         sql_bratabase = "SELECT * FROM 3RD_BRATABASE where NUM_BRATABASE = %s"
