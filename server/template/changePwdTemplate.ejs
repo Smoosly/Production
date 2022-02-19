@@ -1,0 +1,101 @@
+<html>
+  <body>
+    <style>
+      * {
+        border: 0;
+        margin: 0;
+        font-family : "맑은 고딕", "돋움", sans-serif;
+        text-align: center;
+        box-sizing: border-box;
+      }
+      .container {
+        color: black;
+        margin: 10px;
+        border-radius: 30px;
+        background-color: #fafafa;
+      }
+      .logo {
+        display: block;
+        width: 150px;
+        padding-left: 40px;
+        padding-top: 35px;
+        font-size: 25px;
+        color: #ff8243;
+      }
+      .divider {
+        height: 1px;
+        background-color: #ff8243;
+        border-radius: 1px;
+      }
+      .divider-top {
+        margin: 40px 30px 30px;
+      }
+      .guide_ment {
+        font-size: 15px;
+        padding-bottom: 20px;
+      }
+      .link {
+        width: 250px;
+        height: 50px;
+        text-decoration: none;
+        color: black;
+        cursor: pointer;
+      }
+      .button {
+        width: 250px;
+        height: 50px;
+        border-radius: 20px;
+        background-color: #ffd07f;
+      }
+      .button:hover {
+        cursor: pointer;
+      }
+      .divider-bottom {
+        margin: 30px;
+      }
+      .info {
+        padding-bottom: 20px;
+      }
+      .info-text {
+        font-size: 10px;
+        padding-bottom: 4px;
+      }
+      .footer * {
+        font-size: 10px;
+      }
+      .footer a {
+        color: black;
+        text-decoration: underline;
+      }
+    </style>
+    <div class="container">
+      <!-- <img class="logo" src="https://smoosly.com/server/assets/smoosly_eng_main_4x.png" alt="" /> -->
+      <div class="logo">Smoosly</div>
+      <div class="divider divider-top"></div>
+      <p class="guide_ment">비밀번호 변경 요청입니다.</p>
+      <p class="guide_ment">아래의 버튼을 클릭하여 비밀번호를 변경해주세요.</p>
+      <a class="link" href="<%= changePwdlink %>"><button class="button">비밀번호 변경하기</button></a>
+      <div class="divider divider-bottom"></div>
+      <!-- <div class="info">
+        <p class="info-text">스무슬리</p>
+        <p class="info-text">서울특별시 종로구 혜화동 창경궁로35길 38 킹고 스타트업 스페이스 3층</p>
+        <p class="info-text">문의 : smoosly23@gmail.com | 개인정보처리방침 | 이용약관</p>
+      </div> -->
+      <footer>
+        <div class="footer">
+          <p>
+            스무슬리 | 서울특별시 종로구 혜화동 창경궁로35길 38 킹고 스타트업 스페이스 3층
+            <br />
+            대표: 류승혜 | 사업자등록번호: 759-07-02074 | 고객센터: smoosly23@gmail.com
+          </p>
+          <p class="others">
+            <a href="https://discreet-puck-4be.notion.site/0d96757d00884e02987f1a021f532c87" target="_blank">이용약관</a> |
+            <a href="https://discreet-puck-4be.notion.site/4e2a2e6c1ae740c0b6da1e88d141c8c8" target="_blank">개인정보처리방침</a> |
+            <a href="http://pf.kakao.com/_idaxjb" target="_blank">카톡채널을 통해 문의하기 </a>
+          </p>
+          <br />
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>
