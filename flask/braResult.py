@@ -19,6 +19,7 @@ streamHandler.setFormatter(formatter)
 log.addHandler(fileHandler)
 log.addHandler(streamHandler)
 
+log.info("logtest4")
 blueprint = Blueprint("braResult", __name__, url_prefix="/")
 
 with open("config.json", "r") as f:
