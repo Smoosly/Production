@@ -64,7 +64,7 @@ try {
 
 // http
 app_http.all("*", (req, res) => {
-  winston.info("https://" + req.headers.host + req.originalUrl);
+  // winston.info("http://" + req.headers.host + req.originalUrl);
   return res.redirect("https://" + req.headers.host + req.originalUrl);
 });
 
