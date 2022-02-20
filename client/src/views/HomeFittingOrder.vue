@@ -13,29 +13,18 @@
         <br />
         추천이 완료되면 알림을 보내드려요.
       </p>
-
-      <div data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="1000" class="postcode-container">
-        <div class="input-group item">
-          <input class="form-input postcode" type="text" placeholder="우편번호" v-model="postcode" />
+      <div class="box">
+        <div data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="1000" class="postcode-container">
+          <div class="input-group item">
+            <input class="form-input postcode" type="text" placeholder="우편번호" v-model="postcode" />
+          </div>
+          <button type="button" class="btn-primary btn-40 item" @click="execDaumPostcode">주소검색</button>
         </div>
         <p class="code-valid" v-if="!isCodeValid">우편번호가 올바른지 확인해 주세요.</p>
-
-        <button type="button" class="btn-primary btn-40 item" @click="execDaumPostcode">주소검색</button>
       </div>
       <br />
-      <div
-        ref="searchWindow"
-        :style="searchWindow"
-        class="searchWindow-form"
-        style="border: 1px solid; width: 100%; height: 350px; margin: 5px 0; position: relative; margin-bottom: 16px"
-      >
-        <img
-          src="//t1.daumcdn.net/postcode/resource/images/close.png"
-          id="btnFoldWrap"
-          style="cursor: pointer; position: absolute; right: 0px; top: -1px; z-index: 1"
-          @click="searchWindow.display = 'none'"
-          alt="close"
-        />
+      <div ref="searchWindow" :style="searchWindow" class="searchWindow-form" style="border: 1px solid; width: 100%; height: 350px; margin: 5px 0; position: relative; margin-bottom: 16px">
+        <img src="//t1.daumcdn.net/postcode/resource/images/close.png" id="btnFoldWrap" style="cursor: pointer; position: absolute; right: 0px; top: -1px; z-index: 1" @click="searchWindow.display = 'none'" alt="close" />
       </div>
       <div data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="1000" class="input-group">
         <input class="form-input" type="text" v-model="address" placeholder="주소" />
@@ -54,20 +43,14 @@
         <input class="form-input" type="text" v-model="phone" @keyup="getPhoneMask(phone)" placeholder="받으실 분의 휴대폰 번호를 입력해주세요." />
       </div>
 
-      <button
-        v-bind:disabled="postcode === '' || address === '' || extraAddress === '' || phone === '' || username === '' || !isRecom"
-        type="submit"
-        class="btn-outlined btn-40 order-btn"
-      >
-        홈 피팅 서비스 신청하기
-      </button>
+      <button v-bind:disabled="postcode === '' || address === '' || extraAddress === '' || phone === '' || username === '' || !isRecom" type="submit" class="btn-outlined btn-40 order-btn">홈 피팅 서비스 신청하기</button>
     </form>
   </div>
 </template>
 
 <script>
 import axios from "axios";
-import { validatePostcode } from '@/utils/validation';
+import { validatePostcode } from "@/utils/validation";
 // import { fetchUserData } from '@/api/index'
 
 export default {
@@ -230,8 +213,8 @@ export default {
   },
   computed: {
     isCodeValid() {
-      return validatePostcode(this.postcode)
-    }
+      return validatePostcode(this.postcode);
+    },
   },
   created() {
     this.fetchInfo();
@@ -326,28 +309,32 @@ export default {
     }
   }
 
-  .postcode-container {
-    margin-top: 24px;
+  .box {
     display: flex;
-    /* flex-direction: row; */
-    /* justify-content: space-around; */
+    flex-direction: column;
+    .postcode-container {
+      margin-top: 24px;
+      display: flex;
+      /* flex-direction: row; */
+      /* justify-content: space-around; */
 
-    .code-valid {
-      color: $red;
-      font-size: 12px;
-      margin: 6px 4px 0px 4px;
-    }
+      .code-valid {
+        color: $red;
+        font-size: 12px;
+        margin: 6px 4px 0px 4px;
+      }
 
-    .item {
-      flex-grow: 1;
-    }
+      .item {
+        flex-grow: 1;
+      }
 
-    button {
-      /* flex-grow: 1; */
-      margin-left: 16px;
-      width: 100px;
-      @media screen and (max-width: 280px) {
-        margin-left: 4px;
+      button {
+        /* flex-grow: 1; */
+        margin-left: 16px;
+        width: 100px;
+        @media screen and (max-width: 280px) {
+          margin-left: 4px;
+        }
       }
     }
   }

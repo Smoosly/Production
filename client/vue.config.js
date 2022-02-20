@@ -40,12 +40,9 @@ module.exports = {
         ? [
             new TerserPlugin({
               terserOptions: {
-                compress: {
-                  drop_console: true,
-                },
-                output: {
-                  comments: false,
-                },
+                ecma: 6,
+                compress: { drop_console: true },
+                output: { comments: false, beautify: false },
               },
             }),
           ]

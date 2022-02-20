@@ -226,8 +226,8 @@ export default {
       
       isFocused: false,
       total: "",
-      minutes: "--",
-      seconds: "--",
+      minutes: "03",
+      seconds: "00",
       interval: 0,
       timerShown: false,
     };

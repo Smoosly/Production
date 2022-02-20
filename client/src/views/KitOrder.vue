@@ -11,29 +11,18 @@
         <br />
         상세주소까지 입력해주셔야 분실되지 않아요.
       </p>
-
-      <div data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="1000" class="postcode-container">
-        <div class="input-group item">
-          <input class="form-input postcode" type="text" placeholder="우편번호" v-model="postcode" />
+      <div class="box">
+        <div data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="1000" class="postcode-container">
+          <div class="input-group item">
+            <input class="form-input postcode" type="text" placeholder="우편번호" v-model="postcode" />
+          </div>
+          <button type="button" class="btn-primary btn-40 item" @click="execDaumPostcode">주소검색</button>
+          <p class="code-valid" v-if="!isCodeValid">우편번호가 올바른지 확인해 주세요.</p>
         </div>
-        <p class="code-valid" v-if="!isCodeValid">우편번호가 올바른지 확인해 주세요.</p>
-
-        <button type="button" class="btn-primary btn-40 item" @click="execDaumPostcode">주소검색</button>
       </div>
       <br />
-      <div
-        ref="searchWindow"
-        :style="searchWindow"
-        class="searchWindow-form"
-        style="border: 1px solid; width: 100%; height: 350px; margin: 5px 0; position: relative; margin-bottom: 16px"
-      >
-        <img
-          src="//t1.daumcdn.net/postcode/resource/images/close.png"
-          id="btnFoldWrap"
-          style="cursor: pointer; position: absolute; right: 0px; top: -1px; z-index: 1"
-          @click="searchWindow.display = 'none'"
-          alt="close"
-        />
+      <div ref="searchWindow" :style="searchWindow" class="searchWindow-form" style="border: 1px solid; width: 100%; height: 350px; margin: 5px 0; position: relative; margin-bottom: 16px">
+        <img src="//t1.daumcdn.net/postcode/resource/images/close.png" id="btnFoldWrap" style="cursor: pointer; position: absolute; right: 0px; top: -1px; z-index: 1" @click="searchWindow.display = 'none'" alt="close" />
       </div>
       <div data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="1000" class="input-group">
         <input class="form-input" type="text" v-model="address" placeholder="주소" />
@@ -65,7 +54,7 @@
 <script>
 import axios from "axios";
 import { deleteCookie } from "@/utils/cookies";
-import { validatePostcode } from '@/utils/validation';
+import { validatePostcode } from "@/utils/validation";
 // import { checkAuth } from '@/utils/loginAuth';
 // import { fetchUserData } from '@/api/index'
 
@@ -91,8 +80,8 @@ export default {
   },
   computed: {
     isCodeValid() {
-      return validatePostcode(this.postcode)
-    }
+      return validatePostcode(this.postcode);
+    },
   },
   methods: {
     execDaumPostcode() {
@@ -180,7 +169,7 @@ export default {
     },
 
     async submitForm() {
-      if (!this.recipient || !this.postcode || !this.address || !this.extraAddress || !this.phone ) {
+      if (!this.recipient || !this.postcode || !this.address || !this.extraAddress || !this.phone) {
         this.emitter.emit("showRedToast", "입력하지 않은 항목이 있습니다.");
         return;
       }
@@ -216,7 +205,7 @@ export default {
         this.address = result.data.userInfo.address;
         this.extraAddress = result.data.userInfo.extraAddress;
       } else {
-        if (Object.keys(result.data).includes('isAuth') && result.data.isAuth === false) {
+        if (Object.keys(result.data).includes("isAuth") && result.data.isAuth === false) {
           this.$store.commit("clearCode");
           this.$store.commit("clearToken");
           deleteCookie("auth");
@@ -351,28 +340,32 @@ export default {
     }
   }
 
-  .postcode-container {
-    margin-top: 24px;
+  .box {
     display: flex;
-    /* flex-direction: row; */
-    /* justify-content: space-around; */
+    flex-direction: column;
+    .postcode-container {
+      margin-top: 24px;
+      display: flex;
+      /* flex-direction: row; */
+      /* justify-content: space-around; */
 
-    .code-valid {
-      color: $red;
-      font-size: 12px;
-      margin: 6px 4px 0px 4px;
-    }
+      .code-valid {
+        color: $red;
+        font-size: 12px;
+        margin: 6px 4px 0px 4px;
+      }
 
-    .item {
-      flex-grow: 1;
-    }
+      .item {
+        flex-grow: 1;
+      }
 
-    button {
-      /* flex-grow: 1; */
-      margin-left: 16px;
-      width: 100px;
-      @media screen and (max-width: 280px) {
-        margin-left: 4px;
+      button {
+        /* flex-grow: 1; */
+        margin-left: 16px;
+        width: 100px;
+        @media screen and (max-width: 280px) {
+          margin-left: 4px;
+        }
       }
     }
   }
