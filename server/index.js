@@ -56,6 +56,7 @@ try {
   };
 
   HTTPS.createServer(option, app).listen(sslport, () => {
+    winston.info(process.env.NODE_ENV);
     winston.info(`*443* Example app listening at https://smoosly.com`);
   });
 } catch (error) {

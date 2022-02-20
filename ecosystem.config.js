@@ -5,6 +5,7 @@ module.exports = {
       name: "Smoosly",
       script: "./server/index.js",
       env: {
+        NODE_ENV: "production",
         PORT: "443", //443
       },
     },
