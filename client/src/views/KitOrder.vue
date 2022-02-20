@@ -17,8 +17,8 @@
             <input class="form-input postcode" type="text" placeholder="우편번호" v-model="postcode" />
           </div>
           <button type="button" class="btn-primary btn-40 item" @click="execDaumPostcode">주소검색</button>
-          <p class="code-valid" v-if="!isCodeValid">우편번호가 올바른지 확인해 주세요.</p>
         </div>
+        <p class="code-valid" v-if="!isCodeValid">우편번호가 올바른지 확인해 주세요.</p>
       </div>
       <br />
       <div ref="searchWindow" :style="searchWindow" class="searchWindow-form" style="border: 1px solid; width: 100%; height: 350px; margin: 5px 0; position: relative; margin-bottom: 16px">
@@ -325,6 +325,12 @@ export default {
         margin-left: 8px;
       }
     }
+
+    .code-valid {
+      color: $red;
+      font-size: 12px;
+      margin: 6px 4px 0px 4px;
+    }
   }
 
   .input-group {
@@ -349,12 +355,6 @@ export default {
       /* flex-direction: row; */
       /* justify-content: space-around; */
 
-      .code-valid {
-        color: $red;
-        font-size: 12px;
-        margin: 6px 4px 0px 4px;
-      }
-
       .item {
         flex-grow: 1;
       }
@@ -369,12 +369,6 @@ export default {
       }
     }
   }
-  /* 
-  .searchWindow-form {
-    @media screen and (max-width: 320px) {
-      width: 250px;
-    }
-  } */
 
   .order-btn {
     margin-top: 32px;

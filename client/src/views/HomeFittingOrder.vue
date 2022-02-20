@@ -222,7 +222,6 @@ export default {
   },
 };
 </script>
-
 <style lang="scss" scoped>
 *:not(i):not(button):not(input[type="password"]) {
   font-family: $font-main, sans-serif !important;
@@ -294,6 +293,12 @@ export default {
         margin-left: 8px;
       }
     }
+
+    .code-valid {
+      color: $red;
+      font-size: 12px;
+      margin: 6px 4px 0px 4px;
+    }
   }
 
   .input-group {
@@ -312,17 +317,12 @@ export default {
   .box {
     display: flex;
     flex-direction: column;
+
     .postcode-container {
       margin-top: 24px;
       display: flex;
       /* flex-direction: row; */
       /* justify-content: space-around; */
-
-      .code-valid {
-        color: $red;
-        font-size: 12px;
-        margin: 6px 4px 0px 4px;
-      }
 
       .item {
         flex-grow: 1;
