@@ -20,11 +20,22 @@
           </div>
           <button type="button" class="btn-primary btn-40 item" @click="execDaumPostcode">주소검색</button>
         </div>
-        <p class="code-valid" v-if="!isCodeValid">우편번호가 올바른지 확인해 주세요.</p>
+        <p data-aos="fade-up" class="code-valid" v-if="postcode  && !isCodeValid">우편번호가 올바른지 확인해 주세요.</p>
       </div>
       <br />
-      <div ref="searchWindow" :style="searchWindow" class="searchWindow-form" style="border: 1px solid; width: 100%; height: 350px; margin: 5px 0; position: relative; margin-bottom: 16px">
-        <img src="//t1.daumcdn.net/postcode/resource/images/close.png" id="btnFoldWrap" style="cursor: pointer; position: absolute; right: 0px; top: -1px; z-index: 1" @click="searchWindow.display = 'none'" alt="close" />
+      <div
+        ref="searchWindow"
+        :style="searchWindow"
+        class="searchWindow-form"
+        style="border: 1px solid; width: 100%; height: 350px; margin: 5px 0; position: relative; margin-bottom: 16px"
+      >
+        <img
+          src="//t1.daumcdn.net/postcode/resource/images/close.png"
+          id="btnFoldWrap"
+          style="cursor: pointer; position: absolute; right: 0px; top: -1px; z-index: 1"
+          @click="searchWindow.display = 'none'"
+          alt="close"
+        />
       </div>
       <div data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="1000" class="input-group">
         <input class="form-input" type="text" v-model="address" placeholder="주소" />
@@ -43,14 +54,20 @@
         <input class="form-input" type="text" v-model="phone" @keyup="getPhoneMask(phone)" placeholder="받으실 분의 휴대폰 번호를 입력해주세요." />
       </div>
 
-      <button v-bind:disabled="postcode === '' || address === '' || extraAddress === '' || phone === '' || username === '' || !isRecom" type="submit" class="btn-outlined btn-40 order-btn">홈 피팅 서비스 신청하기</button>
+      <button
+        v-bind:disabled="!isPhoneValid || postcode === '' || address === '' || extraAddress === '' || phone === '' || username === '' || !isRecom"
+        type="submit"
+        class="btn-outlined btn-40 order-btn"
+      >
+        홈 피팅 서비스 신청하기
+      </button>
     </form>
   </div>
 </template>
 
 <script>
 import axios from "axios";
-import { validatePostcode } from "@/utils/validation";
+import { validatePostcode } from '@/utils/validation';
 // import { fetchUserData } from '@/api/index'
 
 export default {
@@ -64,6 +81,7 @@ export default {
       address: "",
       extraAddress: "",
       phone: "",
+      isPhoneValid: false,
       message: "",
       username: "",
       isRecom: false,
@@ -153,6 +171,8 @@ export default {
         }
       }
 
+      this.validatePhone(this.phone)
+
       return res;
     },
 
@@ -187,6 +207,7 @@ export default {
         this.username = result.data.userInfo.username;
         this.email = result.data.userInfo.email;
         this.phone = result.data.userInfo.phone;
+        this.validatePhone(this.phone);
         this.postcode = result.data.userInfo.postcode;
         this.address = result.data.userInfo.address;
         this.extraAddress = result.data.userInfo.extraAddress;
@@ -210,11 +231,27 @@ export default {
         console.log(result.data.message);
       }
     },
+    validatePhone(phone) {
+      console.log(phone)
+      let num = phone.split("-").join("");
+      
+      //1. 모두 숫자인지 체크
+      const checkNum = Number.isInteger(Number(num));
+      
+      //2. 앞 세자리가 010으로 시작하는지 체크
+      const checkStartNum = num.slice(0, 3) === '010' || num.slice(0, 3) === '011' ? true : false
+      
+      //3. 010을 제외한 나머지 숫자가 7 혹은 8자리인지 체크
+      const checkLength = num.slice(3).length === 7 || num.slice(3).length === 8 ? true : false
+      
+      //4. 123 모두 true면 true를, 아니면 false를 반환
+      this.isPhoneValid = checkNum && checkStartNum && checkLength ? true : false
+    }
   },
   computed: {
     isCodeValid() {
-      return validatePostcode(this.postcode);
-    },
+      return validatePostcode(this.postcode)
+    }
   },
   created() {
     this.fetchInfo();
@@ -222,6 +259,7 @@ export default {
   },
 };
 </script>
+
 <style lang="scss" scoped>
 *:not(i):not(button):not(input[type="password"]) {
   font-family: $font-main, sans-serif !important;

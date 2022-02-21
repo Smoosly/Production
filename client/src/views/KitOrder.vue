@@ -18,11 +18,22 @@
           </div>
           <button type="button" class="btn-primary btn-40 item" @click="execDaumPostcode">주소검색</button>
         </div>
-        <p class="code-valid" v-if="!isCodeValid">우편번호가 올바른지 확인해 주세요.</p>
+        <p data-aos="fade-up" class="code-valid" v-if="postcode && !isCodeValid">우편번호가 올바른지 확인해 주세요.</p>
       </div>
       <br />
-      <div ref="searchWindow" :style="searchWindow" class="searchWindow-form" style="border: 1px solid; width: 100%; height: 350px; margin: 5px 0; position: relative; margin-bottom: 16px">
-        <img src="//t1.daumcdn.net/postcode/resource/images/close.png" id="btnFoldWrap" style="cursor: pointer; position: absolute; right: 0px; top: -1px; z-index: 1" @click="searchWindow.display = 'none'" alt="close" />
+      <div
+        ref="searchWindow"
+        :style="searchWindow"
+        class="searchWindow-form"
+        style="border: 1px solid; width: 100%; height: 350px; margin: 5px 0; position: relative; margin-bottom: 16px"
+      >
+        <img
+          src="//t1.daumcdn.net/postcode/resource/images/close.png"
+          id="btnFoldWrap"
+          style="cursor: pointer; position: absolute; right: 0px; top: -1px; z-index: 1"
+          @click="searchWindow.display = 'none'"
+          alt="close"
+        />
       </div>
       <div data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="1000" class="input-group">
         <input class="form-input" type="text" v-model="address" placeholder="주소" />
@@ -46,15 +57,15 @@
         <input class="form-input" type="text" placeholder="쿠폰 코드" v-model="couponCode" />
       </div> -->
 
-      <button v-bind:disabled="!isCodeValid || extraAddress === '' || phone === ''" type="submit" class="btn-outlined btn-40 order-btn">키트 신청하기</button>
+      <button v-bind:disabled="!isCodeValid || extraAddress === '' || phone === '' || !isPhoneValid" type="submit" class="btn-outlined btn-40 order-btn">키트 신청하기</button>
     </form>
   </div>
 </template>
 
 <script>
 import axios from "axios";
-import { deleteCookie } from "@/utils/cookies";
-import { validatePostcode } from "@/utils/validation";
+import { validatePostcode } from '@/utils/validation';
+import { deleteCookie }  from '@/utils/cookies'
 // import { checkAuth } from '@/utils/loginAuth';
 // import { fetchUserData } from '@/api/index'
 
@@ -69,6 +80,7 @@ export default {
       address: "",
       extraAddress: "",
       phone: "",
+      isPhoneValid: false,
 
       username: "",
       recipient: "",
@@ -77,11 +89,6 @@ export default {
   },
   mounted() {
     window.scrollTo(0, 0);
-  },
-  computed: {
-    isCodeValid() {
-      return validatePostcode(this.postcode);
-    },
   },
   methods: {
     execDaumPostcode() {
@@ -130,7 +137,6 @@ export default {
       //서버 전송 값에는 '-' 를 제외하고 숫자만 저장
       // this.model.contact = this.contact.replace(/[^0-9]/g, '')
     },
-
     getMask(phoneNumber) {
       if (!phoneNumber) return phoneNumber;
       phoneNumber = phoneNumber.replace(/[^0-9]/g, "");
@@ -165,11 +171,14 @@ export default {
           }
         }
       }
+
+      this.validatePhone(this.phone)
+
       return res;
     },
 
     async submitForm() {
-      if (!this.recipient || !this.postcode || !this.address || !this.extraAddress || !this.phone) {
+      if (!this.recipient || !this.postcode || !this.address || !this.extraAddress || !this.phone ) {
         this.emitter.emit("showRedToast", "입력하지 않은 항목이 있습니다.");
         return;
       }
@@ -205,7 +214,7 @@ export default {
         this.address = result.data.userInfo.address;
         this.extraAddress = result.data.userInfo.extraAddress;
       } else {
-        if (Object.keys(result.data).includes("isAuth") && result.data.isAuth === false) {
+        if (Object.keys(result.data).includes('isAuth') && result.data.isAuth === false) {
           this.$store.commit("clearCode");
           this.$store.commit("clearToken");
           deleteCookie("auth");
@@ -220,6 +229,27 @@ export default {
       }
       // checkAuth(result.data)
     },
+    validatePhone(phone) {
+      console.log(phone)
+      let num = phone.split("-").join("");
+      
+      //1. 모두 숫자인지 체크
+      const checkNum = Number.isInteger(Number(num));
+      
+      //2. 앞 세자리가 010으로 시작하는지 체크
+      const checkStartNum = num.slice(0, 3) === '010' || num.slice(0, 3) === '011' ? true : false
+      
+      //3. 010을 제외한 나머지 숫자가 7 혹은 8자리인지 체크
+      const checkLength = num.slice(3).length === 7 || num.slice(3).length === 8 ? true : false
+      
+      //4. 123 모두 true면 true를, 아니면 false를 반환
+      this.isPhoneValid = checkNum && checkStartNum && checkLength ? true : false
+    }
+  },
+  computed: {
+    isCodeValid() {
+      return validatePostcode(this.postcode)
+    }
   },
   created() {
     this.fetchInfo();

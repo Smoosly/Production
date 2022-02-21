@@ -56,8 +56,9 @@ try {
   };
 
   HTTPS.createServer(option, app).listen(sslport, () => {
-    winston.info(process.env.NODE_ENV);
     winston.info(`*443* Example app listening at https://smoosly.com`);
+    winston.info("*443* Check env_var: ", process.env.NODE_ENV, process.env.PORT);
+    winston.info("*443* sslport: ", sslport);
   });
 } catch (error) {
   winston.error(error);
@@ -65,7 +66,7 @@ try {
 
 // http
 app_http.all("*", (req, res) => {
-  // winston.info("http://" + req.headers.host + req.originalUrl);
+  winston.info("https://" + req.headers.host + req.originalUrl);
   return res.redirect("https://" + req.headers.host + req.originalUrl);
 });
 

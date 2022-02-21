@@ -226,8 +226,8 @@ export default {
       
       isFocused: false,
       total: "",
-      minutes: "03",
-      seconds: "00",
+      minutes: "--",
+      seconds: "--",
       interval: 0,
       timerShown: false,
     };
@@ -350,7 +350,7 @@ export default {
     },
     sendEmail() {
       this.showMessage = false;
-      this.timerShown = true;
+      clearInterval(this.interval);
       this.isMailSent = true;
       this.isMailCertified = false;
       this.certificateNum = "";
@@ -405,8 +405,8 @@ export default {
       this.total -= 1;
     },
     TimerSet() {
-      this.timerShown = true;
       this.total = 180;
+      this.timerShown = true;
       this.interval = setInterval(() => {
         this.tick();
       }, 1000);

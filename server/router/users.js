@@ -59,8 +59,8 @@ router.post("/login", async (req, res) => {
     const token = jwt.sign({ PK_ID: user.PK_ID, role: user.role }, secretKey, { expiresIn: "1d" });
     await user.update({ token: token });
 
-    res.cookie("user", user.PK_ID, { overwrite: true });
-    res.cookie("auth", token, { overwrite: true });
+    // res.cookie("user", user.PK_ID, { overwrite: true });
+    // res.cookie("auth", token, { overwrite: true });
     winston.info({ success: true, message: "로그인 되었습니다.", userData: { PK_ID: user.PK_ID, token: token } });
     return res.json({ success: true, message: "로그인 되었습니다.", userData: { PK_ID: user.PK_ID, token: token } });
   } catch (err) {
@@ -155,7 +155,7 @@ router.get("/getState", isAuth, async (req, res) => {
     if (!breastResult && (!breastTest || (breastTest && breastTest.STEP < 2))) {
       winston.debug("Main state -> 1");
       return res.json({ success: true, state: 1, step: 2, content: "키트 사용하기" });
-    } else if (!breastResult && (breastTest && breastTest.STEP < 100)) {
+    } else if (!breastResult && breastTest && breastTest.STEP < 100) {
       winston.debug("Main state -> 2");
       return res.json({ success: true, state: 2, step: 2, content: "가슴 테스트", page: breastTest.STEP === 15 ? breastTest.STEP : breastTest.STEP + 1 });
     }
@@ -163,6 +163,7 @@ router.get("/getState", isAuth, async (req, res) => {
     // 3. **키트 업로드& 설문 응답 모두 완료**
     // STEP 2 가슴 테스트 결과 확인 →  [가슴 결과 페이지]로 이동
     const braFix = await BRA_FIX.findOne({ where: { PK_ID: req.cookies.user }, attributes: ["NUM", "CHECK_ALL", "CHECK_ADMIN"] });
+    BREAST_TEST.update({ STEP: 100 }, { where: { PK_ID: req.cookies.user } });
     if (breastResult && (!braFix || braFix.CHECK_ADMIN !== 2)) {
       winston.debug("Main state -> 3");
       return res.json({ success: true, state: 3, step: 2, content: "가슴 테스트 결과 확인" });

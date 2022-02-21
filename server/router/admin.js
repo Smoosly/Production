@@ -50,7 +50,7 @@ router.get("/getData/:PK_ID", async (req, res) => {
       return res.json({ success: false, message: "추천브라 후보 없음" });
     }
     const breastTestValue = breastTest[0];
-    winston.debug(util.inspect(breastTestValue, false, null, true));
+    // winston.debug(util.inspect(breastTestValue, false, null, true));
     if (breastTestValue.mINNER_LEN_L) breastTestValue.mINNER_LEN_L = Number(breastTestValue.mINNER_LEN_L.toFixed(2));
     if (breastTestValue.mOUTER_LEN_L) breastTestValue.mOUTER_LEN_L = Number(breastTestValue.mOUTER_LEN_L.toFixed(2));
     if (breastTestValue.mLOWER_LEN_L) breastTestValue.mLOWER_LEN_L = Number(breastTestValue.mLOWER_LEN_L.toFixed(2));
@@ -318,10 +318,10 @@ router.get("/getData/:PK_ID", async (req, res) => {
           SELECTED_COLOR: braRecom.SELECTED_COLOR_7 !== null ? braRecom.SELECTED_COLOR_7 : "",
           BREAST_SCORE: braRecom.BREAST_SCORE_7,
           EFFECT_SCORE: braRecom.EFFECT_SCORE_7,
-          BRA_NAME: braDetails[5] ? braDetails[5].BRA_NAME : "",
-          TAGS: braDetails[5] ? braDetails[5].TAGS.slice(0, -1).split(",") : "",
-          LINK: braDetails[5] ? braDetails[5].LINK.slice(0, -1).split(",") : "",
-          COLOR: braDetails[5] ? braDetails[5].COLOR.slice(0, -1).split(",") : "",
+          BRA_NAME: braDetails[6] ? braDetails[6].BRA_NAME : "",
+          TAGS: braDetails[6] ? braDetails[6].TAGS.slice(0, -1).split(",") : "",
+          LINK: braDetails[6] ? braDetails[6].LINK.slice(0, -1).split(",") : "",
+          COLOR: braDetails[6] ? braDetails[6].COLOR.slice(0, -1).split(",") : "",
         },
         {
           PK_ITEM: braRecom.PK_ITEM_8,
@@ -361,7 +361,7 @@ router.get("/getData/:PK_ID", async (req, res) => {
         },
       ],
     };
-    winston.debug(util.inspect(braRecomResult.decision, false, null, true));
+    // winston.debug(util.inspect(braRecomResult.decision, false, null, true));
     return res.json({
       success: true,
       message: "설문 데이터 + 추천브라 데이터 + 수정할 데이터",
@@ -375,10 +375,10 @@ router.get("/getData/:PK_ID", async (req, res) => {
 });
 
 router.post("/saveTemp/:PK_ID", async (req, res) => {
-  winston.debug(util.inspect(req.body, false, null, true));
+  // winston.debug(util.inspect(req.body, false, null, true));
   try {
     const [updated] = await BRA_RECOM.update(req.body, { where: { PK_ID: req.params.PK_ID } });
-    winston.debug(updated);
+    // winston.debug(updated);
     if (updated) {
       return res.json({ success: true, message: "임시 저장 성공" });
     }
@@ -391,7 +391,7 @@ router.post("/saveTemp/:PK_ID", async (req, res) => {
 
 router.post("/saveComplete/:PK_ID", async (req, res) => {
   winston.debug("saveComplete");
-  winston.debug(util.inspect(req.body, false, null, true));
+  // winston.debug(util.inspect(req.body, false, null, true));
   try {
     const [updated] = await BRA_RECOM.update(req.body, { where: { PK_ID: req.params.PK_ID } });
     if (updated) {
@@ -408,7 +408,7 @@ router.post("/braStockManage", async (req, res) => {
   // 재고 관리
   try {
     const result = await axios.post("http://127.0.0.1:5000/braResult");
-    winston.debug(util.inspect(result.data, false, null, true));
+    // winston.debug(util.inspect(result.data, false, null, true));
     if (result.data.success === "yes") {
       return res.json({ success: true, message: "재고관리 코드 실행 성공" });
     } else {

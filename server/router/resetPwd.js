@@ -17,7 +17,7 @@ router.post("/sendEmail", async (req, res) => {
     await USER.update({ token: token }, { where: { email: req.body.email, provider: "smoosly" } });
 
     let emailTemplete;
-    const changePwdlink = `https://smoosly.com/resetpassword?token=${token}`;
+    const changePwdlink = `http://192.168.0.189:3000/resetpassword?token=${token}`;
 
     let path = __dirname;
     path = path.replace("/router", "/template/changePwdTemplate.ejs");
