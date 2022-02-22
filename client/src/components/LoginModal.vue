@@ -52,7 +52,7 @@
                     </svg>
                   </a>
                 </li>
-                <!-- <li class="sns-item">
+                <li class="sns-item">
                   <a href="https://smoosly.com/auth/naver">
                     <svg
                       version="1.1"
@@ -91,7 +91,7 @@
                       />
                     </svg>
                   </a>
-                </li> -->
+                </li>
                 <li class="sns-item">
                   <a href="https://smoosly.com/auth/google">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48px" height="48px">

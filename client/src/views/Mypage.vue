@@ -152,14 +152,14 @@
             </div>
             <div v-if="option == 2" class="deliver-to-us">
               <!-- 홈 피팅 신청 안해서 반송 신청 하면 안되는 경우 -->
-              <div v-if="!canReturn || !isOrderedHometry" class="howto-deliver">
+              <div v-if="!canReturn && !isOrderedHometry" class="howto-deliver">
                 <p>
                   <span>반송 신청을 할 수 없습니다.&nbsp;<i class="far fa-surprise"></i></span> <br />
                   반송 신청은 홈 피팅 브라 착용 및 리뷰 작성 후에 가능합니다.
                 </p>
               </div>
               <!-- 반송 신청 안한 경우 -->
-              <div v-if="canReturn && isOrderedHometry && !deliverTousreq" class="howto-deliver">
+              <div v-if="canReturn && !isOrderedHometry && !deliverTousreq" class="howto-deliver">
                 <p>
                   <span>혹시 반송 신청을 잊으셨나요?&nbsp;<i class="far fa-surprise"></i></span> <br />
                   홈 피팅 후 입어보신 브라는<br />스무슬리에 반송해 주세요!
@@ -181,15 +181,15 @@
                     <li :class="{ active: deliverTousStep >= 3 }">반송완료</li>
                   </ul>
                 </div>
+                <form action="http://info.sweettracker.co.kr/tracking/4" method="post" target="_blank">
+                  <input hidden type="text" class="form-control" id="t_key" name="t_key" placeholder="" :value="deliveryInfo.api_key" />
+                  <input hidden type="text" class="form-control" name="t_code" id="t_code" placeholder="" :value="deliveryInfo.code" />
+                  <input hidden type="text" class="form-control" name="t_invoice" id="t_invoice" placeholder="" :value="returnInvoice" />
+                  <div class="button-box">
+                    <button type="submit" class="btn-secondary btn-48 btn-second">반송 현황 조회</button>
+                  </div>
+                </form>
               </div>
-              <form action="http://info.sweettracker.co.kr/tracking/4" method="post" target="_blank">
-                <input hidden type="text" class="form-control" id="t_key" name="t_key" placeholder="" :value="deliveryInfo.api_key" />
-                <input hidden type="text" class="form-control" name="t_code" id="t_code" placeholder="" :value="deliveryInfo.code" />
-                <input hidden type="text" class="form-control" name="t_invoice" id="t_invoice" placeholder="" :value="returnInvoice" />
-                <div class="button-box">
-                  <button type="submit" class="btn-secondary btn-48 btn-second">반송 현황 조회</button>
-                </div>
-              </form>
             </div>
           </div>
         </div>

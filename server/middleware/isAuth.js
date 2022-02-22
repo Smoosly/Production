@@ -23,8 +23,8 @@ let isAuth = async (req, res, next) => {
           winston.error(err);
           return res.json({ success: false, message: "토큰 만료됨", isAuth: false });
         }
-        winston.debug("PK_ID: "+decoded.PK_ID+" role: "+decoded.role);
-        if (req.cookies.user !== user.PK_ID || decoded.PK_ID !== user.PK_ID) {
+        // winston.debug("PK_ID: "+decoded.PK_ID+" role: "+decoded.role);
+        if (decoded.PK_ID !== user.PK_ID) {
           winston.info({ success: false, message: "토큰 일치 유저 없음", isAuth: false });
           return res.json({ success: false, message: "토큰 일치 유저 없음", isAuth: false });
         }
