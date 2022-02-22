@@ -684,7 +684,7 @@ export default {
         // z-index: 2;
         // background-color: $blue;
         background-color: rgb(255, 119, 0);
-        opacity: 50%;
+        opacity: .5;
         @media screen and (max-width: $md-breakpoint) {
           width: 75px;
           // height: 10px;
