@@ -124,7 +124,7 @@
               <h3><span>3.</span>&nbsp;몇 번째 후크를 채우셨나요?</h3>
             </div>
             <div v-if="questionData[step].hookNum === null" class="sub-msg">
-              <p>* 다음 질문으로 이동해 주세요.</p>
+              <p><i class="fas fa-exclamation-circle"></i>&nbsp;다음 질문으로 이동해 주세요.</p>
             </div>
             <div v-if="questionData[step].hookNum !== null" class="question-image hook-image">
               <!-- 후크 개수에 따라 다른 이미지 -->
@@ -298,6 +298,9 @@
             <div class="question-title">
               <h3><span>7.</span>&nbsp;원하는 기능을 만족시켰나요?</h3>
             </div>
+            <div v-if="!yesFunc" class="sub-msg">
+              <p><i class="fas fa-exclamation-circle"></i>&nbsp;원하는 기능을 선택하지 않으셨습니다.</p>
+            </div>
             <div class="answerboxs">
               <div data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="1000" v-if="braFunc[0]" class="answer-box">
                 <h4>모아주기</h4>
@@ -466,6 +469,7 @@ export default {
 
       // 앞에서 부터 '모아주기-올려주기-받쳐주기-부유방-등살'
       braFunc: [false, false, false, false, false],
+      yesFunc: false,
 
       questionData: [
         {
@@ -645,6 +649,7 @@ export default {
           console.log(result.data);
           if (result.data.success) {
             this.braFunc = result.data.braFunc;
+            this.yesFunc = result.data.yesFunc;
             this.questionData = result.data.questionData;
             for (const idx in result.data.questionData) {
               this.answers[idx].PK_ITEM = result.data.questionData[Number(idx)].pkItem;
@@ -722,7 +727,9 @@ export default {
         answer.PK_SIZE === "" ||
         answer.PURCHASE === null ||
         answer.QUALITY === null ||
-        answer.TOTAL_SCORE === null
+        answer.TOTAL_SCORE === null ||
+        answer.PURCHASE === null ||
+        answer.PURCHASE_REASON === null
       ) {
         return this.emitter.emit("showRedToast", "입력하지 않은 항목이 있습니다.");
       }
@@ -835,6 +842,9 @@ export default {
       }
       .complete-review {
         color: $green;
+        span {
+          cursor: pointer;
+        }
 
         @media screen and (max-width: 280px) {
           display: flex;
@@ -1129,7 +1139,8 @@ export default {
           }
         }
 
-        .three {
+        .three,
+        .seven {
           .sub-msg {
             @include text-style(14, $red);
             margin: 16px;

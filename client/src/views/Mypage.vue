@@ -79,19 +79,8 @@
                 <td><input type="text" v-model="extraAddress" /></td>
               </tr>
             </table>
-            <div
-              class="postcode-search"
-              ref="searchWindow"
-              :style="searchWindow"
-              style="z-index: 100; border: 1px solid; width: 300px; height: 400px; margin-top: 64px; margin-bottom: 16px"
-            >
-              <img
-                src="//t1.daumcdn.net/postcode/resource/images/close.png"
-                id="btnFoldWrap"
-                style="cursor: pointer; position: absolute; right: 0px; top: -1px; z-index: 1"
-                @click="searchWindow.display = 'none'"
-                alt="close"
-              />
+            <div class="postcode-search" ref="searchWindow" :style="searchWindow" style="z-index: 100; border: 1px solid; width: 300px; height: 400px; margin-top: 64px; margin-bottom: 16px">
+              <img src="//t1.daumcdn.net/postcode/resource/images/close.png" id="btnFoldWrap" style="cursor: pointer; position: absolute; right: 0px; top: -1px; z-index: 1" @click="searchWindow.display = 'none'" alt="close" />
             </div>
             <div class="button-box">
               <button @click="editUserInfo" type="button" class="btn-secondary btn-40">회원정보 수정</button>
@@ -157,20 +146,20 @@
                 <input hidden type="text" class="form-control" name="t_code" id="t_code" placeholder="" :value="deliveryInfo.code" />
                 <input hidden type="text" class="form-control" name="t_invoice" id="t_invoice" placeholder="" :value="hometryInvoice" />
                 <div class="button-box">
-                  <button type="submit" class="btn-secondary btn-48">조회하기</button>
+                  <button v-if="isOrderedHometry" type="submit" class="btn-secondary btn-48">조회하기</button>
                 </div>
               </form>
             </div>
             <div v-if="option == 2" class="deliver-to-us">
               <!-- 홈 피팅 신청 안해서 반송 신청 하면 안되는 경우 -->
-              <div v-if="!isOrderedHometry" class="howto-deliver">
+              <div v-if="!canReturn || !isOrderedHometry" class="howto-deliver">
                 <p>
                   <span>반송 신청을 할 수 없습니다.&nbsp;<i class="far fa-surprise"></i></span> <br />
-                  반송 신청은 홈 피팅 신청 이후에 가능합니다.
+                  반송 신청은 홈 피팅 브라 착용 및 리뷰 작성 후에 가능합니다.
                 </p>
               </div>
               <!-- 반송 신청 안한 경우 -->
-              <div v-if="isOrderedHometry && !deliverTousreq" class="howto-deliver">
+              <div v-if="canReturn && isOrderedHometry && !deliverTousreq" class="howto-deliver">
                 <p>
                   <span>혹시 반송 신청을 잊으셨나요?&nbsp;<i class="far fa-surprise"></i></span> <br />
                   홈 피팅 후 입어보신 브라는<br />스무슬리에 반송해 주세요!
@@ -183,7 +172,7 @@
               <div v-if="isOrderedHometry && deliverTousreq" class="delivery-to-us-info">
                 <div class="box">
                   <div class="order-date">
-                    <p>요청일자: {{ deliverTousDate }}</p>
+                    <p>수거 예정일: {{ deliverTousDate }}</p>
                     <h3>홈 피팅용 브라</h3>
                   </div>
                   <ul class="progressbar">
@@ -192,10 +181,15 @@
                     <li :class="{ active: deliverTousStep >= 3 }">반송완료</li>
                   </ul>
                 </div>
-                <div class="button-box">
-                  <button type="button" class="btn-secondary btn-48 btn-second">반송 현황 조회</button>
-                </div>
               </div>
+              <form action="http://info.sweettracker.co.kr/tracking/4" method="post" target="_blank">
+                <input hidden type="text" class="form-control" id="t_key" name="t_key" placeholder="" :value="deliveryInfo.api_key" />
+                <input hidden type="text" class="form-control" name="t_code" id="t_code" placeholder="" :value="deliveryInfo.code" />
+                <input hidden type="text" class="form-control" name="t_invoice" id="t_invoice" placeholder="" :value="returnInvoice" />
+                <div class="button-box">
+                  <button type="submit" class="btn-secondary btn-48 btn-second">반송 현황 조회</button>
+                </div>
+              </form>
             </div>
           </div>
         </div>
@@ -239,11 +233,12 @@ export default {
       kitOrderStep: 0,
 
       isRecom: false,
-
+      canReturn: false,
       isOrderedHometry: false,
       hometryOrderDate: "",
       hometryOrderStep: 0,
       hometryInvoice: "",
+      returnInvoice: "",
       deliveryInfo: {
         api_key: "",
         code: "04",
@@ -466,8 +461,9 @@ export default {
             this.isOrderedHometry = true;
             this.hometryOrderDate = data.createdAt;
             this.hometryOrderStep = data.state;
-            this.hometryInvoice = data.invoice
-            this.deliveryInfo = homeFitting.data.deliveryInfo
+            this.hometryInvoice = data.invoice;
+            this.returnInvoice = data.returnInvoice;
+            this.deliveryInfo = homeFitting.data.deliveryInfo;
             if (data.return !== 0) {
               this.deliverTousreq = true;
               this.deliverTousDate = data.returnDate;
@@ -486,6 +482,7 @@ export default {
             }
             // checkAuth(homeFitting.data)
           }
+          this.fetchCanReturn();
         })
         .catch(console.log);
     },
@@ -513,6 +510,20 @@ export default {
           if (result.data.success) {
             if (result.data.isRecom) {
               this.isRecom = true;
+            }
+          }
+          console.log(result.data.message);
+        })
+        .catch(console.log);
+    },
+    fetchCanReturn() {
+      axios
+        .get("/homeFitting/getCanReturn")
+        .then((result) => {
+          console.log(result.data);
+          if (result.data.success) {
+            if (result.data.canReturn) {
+              this.canReturn = true;
             }
           }
           console.log(result.data.message);
@@ -811,13 +822,13 @@ export default {
               padding: 30px 8px;
             }
             /* position: relative; */
-            
+
             .form {
               width: 100%;
               display: flex;
               justify-content: center;
               flex-direction: column;
-              align-items: center;                
+              align-items: center;
               button {
                 position: absolute;
                 bottom: 23%;
@@ -826,15 +837,15 @@ export default {
                   bottom: 7%;
                 }
               }
-            }            
-            
+            }
+
             .button-box {
               width: 100%;
               display: flex;
               justify-content: center;
               flex-direction: column;
               align-items: center;
-              
+
               button {
                 position: absolute;
                 bottom: 23%;
@@ -889,6 +900,7 @@ export default {
             .delivery-to-us-info {
               margin-bottom: 244px;
               margin-top: 84px;
+              
               .box {
                 width: 60%;
                 position: absolute;

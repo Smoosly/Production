@@ -20,12 +20,8 @@
         <p class="joined-mail" v-if="showMessage">{{ message }}</p>
       </div>
       <div class="container-button">
-        <button v-if="!isMailSent" v-bind:disabled="!isEmailValid || !canSend" @click="sendEmail" type="submit" class="btn-primary btn-48">
-          비밀번호 변경하기
-        </button>
-        <button disabled v-if="isMailSent" @click="sendEmail" type="submit" class="btn-primary btn-48">
-          전송 완료
-        </button>
+        <button v-if="!isMailSent" v-bind:disabled="!isEmailValid || !canSend" @click="sendEmail" type="submit" class="btn-primary btn-48">비밀번호 변경하기</button>
+        <button disabled v-if="isMailSent" @click="sendEmail" type="submit" class="btn-primary btn-48">전송 완료</button>
       </div>
       <span class="close_button" @click="close">
         <i class="fas fa-times"></i>
@@ -50,8 +46,10 @@ export default {
   },
   watch: {
     email(newVal) {
+      this.isMailSent = false;
       if (this.isEmailValid) {
-        axios.post("/users/checkUser", { email: newVal })
+        axios
+          .post("/users/checkUser", { email: newVal })
           .then((result) => {
             console.log(result.data);
             if (result.data.success) {
@@ -89,7 +87,8 @@ export default {
       e.preventDefault();
       this.message = "이메일 전송 중입니다.";
       this.showMessage = true;
-      axios.post("/resetPwd/sendEmail", { email: this.email })
+      axios
+        .post("/resetPwd/sendEmail", { email: this.email })
         .then((result) => {
           console.log(result.data);
           if (result.data.success == true) {

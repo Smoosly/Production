@@ -279,6 +279,9 @@ export default {
   @media screen and (max-width: 375px) {
     height: 108vh;
   }
+  @media screen and (max-height: 800px) {
+    height: 111vh;
+  }
   // height: auto;
 
   img {

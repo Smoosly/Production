@@ -13,14 +13,14 @@
         <br />
         추천이 완료되면 알림을 보내드려요.
       </p>
-
-      <div data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="1000" class="postcode-container">
-        <div class="input-group item">
-          <input class="form-input postcode" type="text" placeholder="우편번호" v-model="postcode" />
+      <div class="box">
+        <div data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="1000" class="postcode-container">
+          <div class="input-group item">
+            <input class="form-input postcode" type="text" placeholder="우편번호" v-model="postcode" />
+          </div>
+          <button type="button" class="btn-primary btn-40 item" @click="execDaumPostcode">주소검색</button>
         </div>
-        <p class="code-valid" v-if="!isCodeValid">우편번호가 올바른지 확인해 주세요.</p>
-
-        <button type="button" class="btn-primary btn-40 item" @click="execDaumPostcode">주소검색</button>
+        <p data-aos="fade-up" class="code-valid" v-if="postcode  && !isCodeValid">우편번호가 올바른지 확인해 주세요.</p>
       </div>
       <br />
       <div
@@ -55,7 +55,7 @@
       </div>
 
       <button
-        v-bind:disabled="postcode === '' || address === '' || extraAddress === '' || phone === '' || username === '' || !isRecom"
+        v-bind:disabled="!isPhoneValid || postcode === '' || address === '' || extraAddress === '' || phone === '' || username === '' || !isRecom"
         type="submit"
         class="btn-outlined btn-40 order-btn"
       >
@@ -81,6 +81,7 @@ export default {
       address: "",
       extraAddress: "",
       phone: "",
+      isPhoneValid: false,
       message: "",
       username: "",
       isRecom: false,
@@ -170,6 +171,8 @@ export default {
         }
       }
 
+      this.validatePhone(this.phone)
+
       return res;
     },
 
@@ -204,6 +207,7 @@ export default {
         this.username = result.data.userInfo.username;
         this.email = result.data.userInfo.email;
         this.phone = result.data.userInfo.phone;
+        this.validatePhone(this.phone);
         this.postcode = result.data.userInfo.postcode;
         this.address = result.data.userInfo.address;
         this.extraAddress = result.data.userInfo.extraAddress;
@@ -227,6 +231,22 @@ export default {
         console.log(result.data.message);
       }
     },
+    validatePhone(phone) {
+      console.log(phone)
+      let num = phone.split("-").join("");
+      
+      //1. 모두 숫자인지 체크
+      const checkNum = Number.isInteger(Number(num));
+      
+      //2. 앞 세자리가 010으로 시작하는지 체크
+      const checkStartNum = num.slice(0, 3) === '010' || num.slice(0, 3) === '011' ? true : false
+      
+      //3. 010을 제외한 나머지 숫자가 7 혹은 8자리인지 체크
+      const checkLength = num.slice(3).length === 7 || num.slice(3).length === 8 ? true : false
+      
+      //4. 123 모두 true면 true를, 아니면 false를 반환
+      this.isPhoneValid = checkNum && checkStartNum && checkLength ? true : false
+    }
   },
   computed: {
     isCodeValid() {
@@ -311,6 +331,12 @@ export default {
         margin-left: 8px;
       }
     }
+
+    .code-valid {
+      color: $red;
+      font-size: 12px;
+      margin: 6px 4px 0px 4px;
+    }
   }
 
   .input-group {
@@ -326,28 +352,27 @@ export default {
     }
   }
 
-  .postcode-container {
-    margin-top: 24px;
+  .box {
     display: flex;
-    /* flex-direction: row; */
-    /* justify-content: space-around; */
+    flex-direction: column;
 
-    .code-valid {
-      color: $red;
-      font-size: 12px;
-      margin: 6px 4px 0px 4px;
-    }
+    .postcode-container {
+      margin-top: 24px;
+      display: flex;
+      /* flex-direction: row; */
+      /* justify-content: space-around; */
 
-    .item {
-      flex-grow: 1;
-    }
+      .item {
+        flex-grow: 1;
+      }
 
-    button {
-      /* flex-grow: 1; */
-      margin-left: 16px;
-      width: 100px;
-      @media screen and (max-width: 280px) {
-        margin-left: 4px;
+      button {
+        /* flex-grow: 1; */
+        margin-left: 16px;
+        width: 100px;
+        @media screen and (max-width: 280px) {
+          margin-left: 4px;
+        }
       }
     }
   }

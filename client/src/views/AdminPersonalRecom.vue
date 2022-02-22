@@ -123,8 +123,8 @@
         <VueGoodTable :columns="columnComp" :rows="adminBraRecom.decision" :sort-options="false" style="margin-bottom: 44px">
           <template #table-row="props">
             <span v-if="props.column.field == 'COMPLETE'">
-              <p v-if="props.row.COMPLETE == 2" style="color: green">최종확정&nbsp;<i class="far fa-check-circle"></i></p>
-              <p v-else-if="props.row.COMPLETE == 1" style="color: red">완료(미확정)</p>
+              <p v-if="props.row.COMPLETE == 1" style="color: green">완료&nbsp;<i class="far fa-check-circle"></i></p>
+              <!-- <p v-else-if="props.row.COMPLETE == 1" style="color: red">완료(미확정)</p> -->
               <p v-else style="color: red">미완료</p>
             </span>
             <span v-else-if="props.column.field == 'NUM'">

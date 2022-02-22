@@ -322,9 +322,11 @@ export default {
       }
       transition: background-color 200ms ease-in-out;
 
-      &:not(:disabled):hover {
-        background-color: $blue-dark;
-        color: $white;
+      @media screen and (min-width: 820px) {
+        &:not(:disabled):hover {
+          background-color: $blue-dark;
+          color: $white;
+        }
       }
 
       img {

@@ -49,8 +49,8 @@
         </template>
         <template #table-row="props">
           <span v-if="props.column.field == 'COMPLETE'">
-            <p v-if="props.row.COMPLETE === 2" style="color: green">추천완료&nbsp;<i class="far fa-check-circle"></i></p>
-            <p v-else-if="props.row.COMPLETE === 1" style="color: blue">완료</p>
+            <p v-if="props.row.COMPLETE === 1" style="color: green">완료&nbsp;<i class="far fa-check-circle"></i></p>
+            <!-- <p v-else-if="props.row.COMPLETE === 1" style="color: blue">완료</p> -->
             <p v-else style="color: red">미완료</p>
           </span>
           <!-- <span v-else-if="props.column.field == 'H_FITTING_APPLY'">
@@ -134,9 +134,9 @@
         :pagination-options="{
           enabled: true,
           mode: 'records',
-          perPage: 10,
+          perPage: 30,
           position: 'top',
-          perPageDropdown: [3, 7, 9],
+          perPageDropdown: [10, 20, 50],
           dropdownAllowAll: false,
           setCurrentPage: 1,
           nextLabel: '다음',

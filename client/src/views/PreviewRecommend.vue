@@ -34,7 +34,7 @@
         <div v-if="i == 2 && bra_preview[2]" class="image-box comp">
           <img src="/braRecommend/getImg/bra/3" alt="" />
         </div>
-        <div v-if="i == 3 && bra_preview[3]" class="image-box comp">
+        <div v-if="this.braNum = 4 && i == 3 && bra_preview[3]" class="image-box comp">
           <img src="/braRecommend/getImg/bra/4" alt="" />
         </div>
         <div class="details comp">

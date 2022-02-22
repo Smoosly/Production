@@ -803,7 +803,6 @@ export default {
             display: inline-flex;
             position: relative;
             flex-direction: column;
-            width: 224px;
             border: 2px dashed $blue-light;
             border-radius: 8px;
 
@@ -818,6 +817,9 @@ export default {
               background-color: $blue-light;
               color: $white;
 
+            }
+            img {
+              width: 224px;
             }
 
             .user-image-box {

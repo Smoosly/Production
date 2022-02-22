@@ -11,14 +11,14 @@
         <br />
         상세주소까지 입력해주셔야 분실되지 않아요.
       </p>
-
-      <div data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="1000" class="postcode-container">
-        <div class="input-group item">
-          <input class="form-input postcode" type="text" placeholder="우편번호" v-model="postcode" />
+      <div class="box">
+        <div data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="1000" class="postcode-container">
+          <div class="input-group item">
+            <input class="form-input postcode" type="text" placeholder="우편번호" v-model="postcode" />
+          </div>
+          <button type="button" class="btn-primary btn-40 item" @click="execDaumPostcode">주소검색</button>
         </div>
-        <p class="code-valid" v-if="!isCodeValid">우편번호가 올바른지 확인해 주세요.</p>
-
-        <button type="button" class="btn-primary btn-40 item" @click="execDaumPostcode">주소검색</button>
+        <p data-aos="fade-up" class="code-valid" v-if="postcode && !isCodeValid">우편번호가 올바른지 확인해 주세요.</p>
       </div>
       <br />
       <div
@@ -57,15 +57,15 @@
         <input class="form-input" type="text" placeholder="쿠폰 코드" v-model="couponCode" />
       </div> -->
 
-      <button v-bind:disabled="!isCodeValid || extraAddress === '' || phone === ''" type="submit" class="btn-outlined btn-40 order-btn">키트 신청하기</button>
+      <button v-bind:disabled="!isCodeValid || extraAddress === '' || phone === '' || !isPhoneValid" type="submit" class="btn-outlined btn-40 order-btn">키트 신청하기</button>
     </form>
   </div>
 </template>
 
 <script>
 import axios from "axios";
-import { deleteCookie } from "@/utils/cookies";
 import { validatePostcode } from '@/utils/validation';
+import { deleteCookie }  from '@/utils/cookies'
 // import { checkAuth } from '@/utils/loginAuth';
 // import { fetchUserData } from '@/api/index'
 
@@ -80,6 +80,7 @@ export default {
       address: "",
       extraAddress: "",
       phone: "",
+      isPhoneValid: false,
 
       username: "",
       recipient: "",
@@ -88,11 +89,6 @@ export default {
   },
   mounted() {
     window.scrollTo(0, 0);
-  },
-  computed: {
-    isCodeValid() {
-      return validatePostcode(this.postcode)
-    }
   },
   methods: {
     execDaumPostcode() {
@@ -141,7 +137,6 @@ export default {
       //서버 전송 값에는 '-' 를 제외하고 숫자만 저장
       // this.model.contact = this.contact.replace(/[^0-9]/g, '')
     },
-
     getMask(phoneNumber) {
       if (!phoneNumber) return phoneNumber;
       phoneNumber = phoneNumber.replace(/[^0-9]/g, "");
@@ -176,6 +171,9 @@ export default {
           }
         }
       }
+
+      this.validatePhone(this.phone)
+
       return res;
     },
 
@@ -231,6 +229,27 @@ export default {
       }
       // checkAuth(result.data)
     },
+    validatePhone(phone) {
+      console.log(phone)
+      let num = phone.split("-").join("");
+      
+      //1. 모두 숫자인지 체크
+      const checkNum = Number.isInteger(Number(num));
+      
+      //2. 앞 세자리가 010으로 시작하는지 체크
+      const checkStartNum = num.slice(0, 3) === '010' || num.slice(0, 3) === '011' ? true : false
+      
+      //3. 010을 제외한 나머지 숫자가 7 혹은 8자리인지 체크
+      const checkLength = num.slice(3).length === 7 || num.slice(3).length === 8 ? true : false
+      
+      //4. 123 모두 true면 true를, 아니면 false를 반환
+      this.isPhoneValid = checkNum && checkStartNum && checkLength ? true : false
+    }
+  },
+  computed: {
+    isCodeValid() {
+      return validatePostcode(this.postcode)
+    }
   },
   created() {
     this.fetchInfo();
@@ -336,6 +355,12 @@ export default {
         margin-left: 8px;
       }
     }
+
+    .code-valid {
+      color: $red;
+      font-size: 12px;
+      margin: 6px 4px 0px 4px;
+    }
   }
 
   .input-group {
@@ -351,37 +376,29 @@ export default {
     }
   }
 
-  .postcode-container {
-    margin-top: 24px;
+  .box {
     display: flex;
-    /* flex-direction: row; */
-    /* justify-content: space-around; */
+    flex-direction: column;
+    .postcode-container {
+      margin-top: 24px;
+      display: flex;
+      /* flex-direction: row; */
+      /* justify-content: space-around; */
 
-    .code-valid {
-      color: $red;
-      font-size: 12px;
-      margin: 6px 4px 0px 4px;
-    }
+      .item {
+        flex-grow: 1;
+      }
 
-    .item {
-      flex-grow: 1;
-    }
-
-    button {
-      /* flex-grow: 1; */
-      margin-left: 16px;
-      width: 100px;
-      @media screen and (max-width: 280px) {
-        margin-left: 4px;
+      button {
+        /* flex-grow: 1; */
+        margin-left: 16px;
+        width: 100px;
+        @media screen and (max-width: 280px) {
+          margin-left: 4px;
+        }
       }
     }
   }
-  /* 
-  .searchWindow-form {
-    @media screen and (max-width: 320px) {
-      width: 250px;
-    }
-  } */
 
   .order-btn {
     margin-top: 32px;

@@ -10,7 +10,7 @@
           <p>
             1. 아래 날짜 중에서 수거 가능한 날짜를 선택해 주세요. <br />
             2. 비닐의 여백이 최소화 될 수 있도록 브라를 겹겹이 넣어 재포장 해주세요. <br />
-            3. 해당 일자의 <span>오후 3시</span> 전까지 제품을 꼭 내놓아 주세요!
+            3. 신청 일자의 <span>오전 9시</span>까지 제품을 꼭 내놓아 주세요!
           </p>
         </div>
         <div class="datePick">
@@ -67,10 +67,12 @@ export default {
       axios.post("/homeFitting/returning", { PK_ID: this.$store.state.PK_ID, returnDate: this.date })
         .then((result) => {
           console.log(result.data);
-          if (!result.data.success) {
-            return this.emitter.emit("showRedToast", result.data.message);
+          if (result.data.success) {
+            this.emitter.emit("showToast", result.data.message);
+            this.emitter.emit("DeliveryModal", false);
+            return;
           }
-          this.emitter.emit("showToast", result.data.message);
+          this.emitter.emit("showRedToast", result.data.message);
         })
         .catch(console.log);
 
