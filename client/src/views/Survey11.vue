@@ -50,7 +50,7 @@ export default {
       survey: survey,
       page: survey.page11,
       percentage: 0,
-      value: null,
+      value: 0,
       marks: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
       formatter: (v) => `${v / 10}`,
     };
