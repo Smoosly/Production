@@ -227,6 +227,10 @@ export default {
         }
         console.log(result.data.message);
       }
+      
+      if (this.phone !== '') {
+        this.isPhoneValid = true
+      } 
       // checkAuth(result.data)
     },
     validatePhone(phone) {
@@ -253,7 +257,7 @@ export default {
   },
   created() {
     this.fetchInfo();
-  },
+  }
 };
 </script>
 
