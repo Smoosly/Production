@@ -28,142 +28,142 @@ with open("config.json", "r") as f:
         config = json.load(f)
 
 def get_defaultSize(mUnderBust, mUpperBust, wPressure, breastSizeGeneral, braSizeUb, braSizeCup):
-    unders = ['65', '70', '75', '80', '85', '90', '95', '100', '105', '110']
-    cups = ['AA', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J']
-    diffs = []
-    diff = mUpperBust - mUnderBust
-    for i in range(len(cups)):
-        diffs.append(7.5+2.5*i)
-    Size = []
-    small = breastSizeGeneral in ['65AA', '65A', '65B', '70AA', '70A', '70B', '75AA', '75A']
-    under = breastSizeGeneral[:2]
-    cup = breastSizeGeneral[2:]
-    braSize = unders[braSizeUb] + cups[braSizeCup]
-    if under == "65":
-        if (cup == 'A') | (cup == 'AA'):
-            defaultSize = '65A'
-            Size.append(defaultSize)
-            Size.append('70AA')
-            if wPressure <= 4:
-                Size.append('70A')
-            else:
-                Size.append('65B')
-        else:
-            defaultSize = breastSizeGeneral
-            Size.append(defaultSize)
-            Size.append('70A')
-            if wPressure <= 4:
-                if mUnderBust <= 63:
-                    Size.append('65A')
-                else:
-                    Size.append('70AA')
-            else:
-                Size.append('65A')
-    else:
-        if cup == 'AA':
-            if under == '70':
-                defaultSize = breastSizeGeneral
-                Size.append(defaultSize)
-                if wPressure <= 4:
-                    Size.append('75AA')
-                    Size.append('70A')
-                else:
-                    Size.append('65A')
-                    if mUnderBust <= 69:
-                        Size.append('65AA')
-                    else:
-                        Size.append('70A')
-            else:
-                defaultSize = breastSizeGeneral
-                Size.append(defaultSize)
-                if wPressure <= 4:
-                    Size.append('80AA')
-                    if mUnderBust <= 74:
-                        Size.append('75A')
-                    else:
-                        Size.append('80A')
-                    
-                else:
-                    Size.append('70A')
-                    if mUnderBust <= 74:
+        unders = ['65', '70', '75', '80', '85', '90', '95', '100', '105', '110']
+        cups = ['AA', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J']
+        diffs = []
+        diff = mUpperBust - mUnderBust
+        for i in range(len(cups)):
+                diffs.append(7.5+2.5*i)
+        Size = []
+        small = breastSizeGeneral in ['65AA', '65A', '65B', '70AA', '70A', '70B', '75AA', '75A']
+        under = breastSizeGeneral[:2]
+        cup = breastSizeGeneral[2:]
+        braSize = unders[braSizeUb] + cups[braSizeCup]
+        if under == "65":
+                if (cup == 'A') | (cup == 'AA'):
+                        defaultSize = '65A'
+                        Size.append(defaultSize)
                         Size.append('70AA')
-                    else:
-                        Size.append('75A')
+                        if wPressure <= 4:
+                                Size.append('70A')
+                        else:
+                                Size.append('65B')
+                else:
+                        defaultSize = breastSizeGeneral
+                        Size.append(defaultSize)
+                        Size.append(unders[unders.index(under)+1]+cups[cups.index(cup)-1])
+                        if wPressure <= 4:
+                                if mUnderBust <= 63:
+                                        Size.append(under+cups[cups.index(cup)-1])
+                                else:
+                                        Size.append(unders[unders.index(under)+1]+cups[cups.index(cup)-2])
+                        else:
+                                Size.append(under+cups[cups.index(cup)-1])
         else:
-            defaultSize = breastSizeGeneral
-            Size.append(defaultSize)
-            if wPressure <= 4:
-                if mUnderBust < int(defaultSize[:2]):
-                    if diff < diffs[cups.index(cup)]:
-                        Size.append(under+cups[cups.index(cup)-1])
-                        if braSize == Size[0]:
-                            Size.append(unders[unders.index(under)+1]+cups[cups.index(cup)-1])
-                        elif braSize == Size[1]:
-                            Size.append(unders[unders.index(under)+1]+cups[cups.index(cup)-1])
+                if cup == 'AA':
+                        if under == '70':
+                                defaultSize = breastSizeGeneral
+                                Size.append(defaultSize)
+                                if wPressure <= 4:
+                                        Size.append('75AA')
+                                        Size.append('70A')
+                                else:
+                                        Size.append('65A')
+                                        if mUnderBust <= 69:
+                                                Size.append('65AA')
+                                        else:
+                                                Size.append('70A')
                         else:
-                            Size.append(braSize)
-                    else:
-                        Size.append(under+cups[cups.index(cup)+1])
-                        if braSize == Size[0]:
-                            Size.append(unders[unders.index(under)+1]+cups[cups.index(cup)-1])
-                        elif braSize == Size[1]:
-                            Size.append(unders[unders.index(under)+1]+cup)
-                        else:
-                            Size.append(braSize)
+                                defaultSize = breastSizeGeneral
+                                Size.append(defaultSize)
+                                if wPressure <= 4:
+                                        Size.append(unders[unders.index(under)+1]+cup)
+                                        if mUnderBust <= 74:
+                                                Size.append(under+cups[cups.index(cup)+1])
+                                        else:
+                                                Size.append(unders[unders.index(under)+1]+cups[cups.index(cup)+1])
+                                        
+                                else:
+                                        Size.append(unders[unders.index(under)-1]+cups[cups.index(cup)+1])
+                                        if mUnderBust <= 74:
+                                                Size.append(unders[unders.index(under)-1]+cup)
+                                        else:
+                                                Size.append(under+cups[cups.index(cup)+1])
                 else:
-                    if diff < diffs[cups.index(cup)]:
-                        Size.append(unders[unders.index(under)+1]+cups[cups.index(cup)-1])
-                        if braSize == Size[0]:
-                            Size.append(under+cups[cups.index(cup)-1])
-                        elif braSize == Size[1]:
-                            Size.append(under+cups[cups.index(cup)-1])
+                        defaultSize = breastSizeGeneral
+                        Size.append(defaultSize)
+                        if wPressure <= 4:
+                                if mUnderBust < int(defaultSize[:2]):
+                                        if diff < diffs[cups.index(cup)]:
+                                                Size.append(under+cups[cups.index(cup)-1])
+                                                if braSize == Size[0]:
+                                                        Size.append(unders[unders.index(under)+1]+cups[cups.index(cup)-1])
+                                                elif braSize == Size[1]:
+                                                        Size.append(unders[unders.index(under)+1]+cups[cups.index(cup)-1])
+                                                else:
+                                                        Size.append(braSize)
+                                        else:
+                                                Size.append(under+cups[cups.index(cup)+1])
+                                                if braSize == Size[0]:
+                                                        Size.append(unders[unders.index(under)+1]+cups[cups.index(cup)-1])
+                                                elif braSize == Size[1]:
+                                                        Size.append(unders[unders.index(under)+1]+cup)
+                                                else:
+                                                        Size.append(braSize)
+                                else:
+                                        if diff < diffs[cups.index(cup)]:
+                                                Size.append(unders[unders.index(under)+1]+cups[cups.index(cup)-1])
+                                                if braSize == Size[0]:
+                                                        Size.append(under+cups[cups.index(cup)-1])
+                                                elif braSize == Size[1]:
+                                                        Size.append(under+cups[cups.index(cup)-1])
+                                                else:
+                                                        Size.append(braSize)
+                                        else:
+                                                Size.append(unders[unders.index(under)+1]+cups[cups.index(cup)-1])
+                                                if braSize == Size[0]:
+                                                        Size.append(under+cups[cups.index(cup)+1])
+                                                elif braSize == Size[1]:
+                                                        Size.append(under+cups[cups.index(cup)+1])
+                                                else:
+                                                        Size.append(braSize)
                         else:
-                            Size.append(braSize)
-                    else:
-                        Size.append(unders[unders.index(under)+1]+cups[cups.index(cup)-1])
-                        if braSize == Size[0]:
-                            Size.append(under+cups[cups.index(cup)+1])
-                        elif braSize == Size[1]:
-                            Size.append(under+cups[cups.index(cup)+1])
-                        else:
-                            Size.append(braSize)
-            else:
-                if mUnderBust < int(defaultSize[:2]):
-                    if diff < diffs[cups.index(cup)]:
-                        Size.append(unders[unders.index(under)-1]+cup)
-                        if braSize == Size[0]:
-                            Size.append(under+cups[cups.index(cup)-1])
-                        elif braSize == Size[1]:
-                            Size.append(unders[unders.index(under)-1]+cups[cups.index(cup)+1])
-                        else:
-                            Size.append(braSize)
-                    else:
-                        Size.append(unders[unders.index(under)-1]+cups[cups.index(cup)+1])
-                        if braSize == Size[0]:
-                            Size.append(under+cups[cups.index(cup)+1])
-                        elif braSize == Size[1]:
-                            Size.append(unders[unders.index(under)-1]+cups[cups.index(cup)+2])
-                        else:
-                            Size.append(braSize)
-                else:
-                    if diff < diffs[cups.index(cup)]:
-                        Size.append(under+cups[cups.index(cup)-1])
-                        if braSize == Size[0]:
-                            Size.append(unders[unders.index(under)-1]+cups[cups.index(cup)+1])
-                        elif braSize == Size[1]:
-                            Size.append(unders[unders.index(under)-1]+cups[cups.index(cup)+1])
-                        else:
-                            Size.append(braSize)
-                    else:
-                        Size.append(under+cups[cups.index(cup)+1])
-                        if braSize == Size[0]:
-                            Size.append(unders[unders.index(under)-1]+cups[cups.index(cup)+1])
-                        elif braSize == Size[1]:
-                            Size.append(unders[unders.index(under)-1]+cups[cups.index(cup)+2])
-                        else:
-                            Size.append(braSize)
-                
-    return defaultSize, Size
+                                if mUnderBust < int(defaultSize[:2]):
+                                        if diff < diffs[cups.index(cup)]:
+                                                Size.append(unders[unders.index(under)-1]+cup)
+                                                if braSize == Size[0]:
+                                                        Size.append(under+cups[cups.index(cup)-1])
+                                                elif braSize == Size[1]:
+                                                        Size.append(unders[unders.index(under)-1]+cups[cups.index(cup)+1])
+                                                else:
+                                                        Size.append(braSize)
+                                        else:
+                                                Size.append(unders[unders.index(under)-1]+cups[cups.index(cup)+1])
+                                                if braSize == Size[0]:
+                                                        Size.append(under+cups[cups.index(cup)+1])
+                                                elif braSize == Size[1]:
+                                                        Size.append(unders[unders.index(under)-1]+cups[cups.index(cup)+2])
+                                                else:
+                                                        Size.append(braSize)
+                                else:
+                                        if diff < diffs[cups.index(cup)]:
+                                                Size.append(under+cups[cups.index(cup)-1])
+                                                if braSize == Size[0]:
+                                                        Size.append(unders[unders.index(under)-1]+cups[cups.index(cup)+1])
+                                                elif braSize == Size[1]:
+                                                        Size.append(unders[unders.index(under)-1]+cups[cups.index(cup)+1])
+                                                else:
+                                                        Size.append(braSize)
+                                        else:
+                                                Size.append(under+cups[cups.index(cup)+1])
+                                                if braSize == Size[0]:
+                                                        Size.append(unders[unders.index(under)-1]+cups[cups.index(cup)+1])
+                                                elif braSize == Size[1]:
+                                                        Size.append(unders[unders.index(under)-1]+cups[cups.index(cup)+2])
+                                                else:
+                                                        Size.append(braSize)
+                                
+        return defaultSize, Size
 
 
 def score_breastFit(x):
