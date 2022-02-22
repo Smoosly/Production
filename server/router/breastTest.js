@@ -108,8 +108,8 @@ router.post("/complete", async (req, res) => {
       winston.info({ success: false, message: "이미 테스트 결과가 있습니다." });
       return res.json({ success: false, message: "이미 테스트 결과가 있습니다." });
     }
-    const result = await axios.post("http://localhost:5000/breastResult", { PK_ID: req.body.PK_ID });
-    const recommend = await axios.post("http://localhost:5000/braRecommend", { PK_ID: req.body.PK_ID });
+    const result = await axios.post("http://127.0.0.1:5000/breastResult", { PK_ID: req.body.PK_ID });
+    const recommend = await axios.post("http://127.0.0.1:5000/braRecommend", { PK_ID: req.body.PK_ID });
     winston.debug("result: ", result.data);
     winston.debug("recommend: ", recommend.data);
     if (result.data.success === "yes" && recommend.data.success === "yes") {
