@@ -393,10 +393,13 @@ export default {
   watch: {
     $route(to, from) {
       console.log(from);
-      if (to.name !== "PreviewRecommend" && this.isDetailView && !this.naviClicked) {
+      if (to.name !== "HomeFittingOrder" && to.name !== "PreviewRecommend" && this.isDetailView && !this.naviClicked) {
         console.log("hi");
         this.$router.push("/survey/result/preview");
         this.isDetailView = false;
+      } 
+      else if (to.name === "HomeFittingOrder") {
+        this.$router.push("/homefitting/order")
       }
     },
   },

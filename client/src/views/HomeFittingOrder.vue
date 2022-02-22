@@ -215,6 +215,10 @@ export default {
       } else {
         console.log(result.data.message);
       }
+      
+      if (this.phone !== '') {
+        this.isPhoneValid = true
+      } 
     },
 
     async checkRecom() {
