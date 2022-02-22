@@ -12,4 +12,6 @@ app.register_blueprint(braRecommend.blueprint)
 app.register_blueprint(braResult.blueprint)
 
 if __name__ == "__main__":
-        app.run(port=5000)
+#         print("START")
+#         app.debug = True
+          app.run(port=5000)

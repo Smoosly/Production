@@ -179,7 +179,7 @@ def measure(filename, type, dir = 0):
 
         data = sorted(rectangleContours, key=itemgetter("xMin")) # Box Sort by xMin
         if len(data) != 4: # Box Missing
-                return {"success": "no", "error": "0", "dir" : "{}".format(dir)}
+                return jsonify({"success": "no", "error": "0", "dir" : "{}".format(dir)})
         
         # Mediate Direction
         dirComRatios = [5.58, 0.167, 0.616, 1.93]
@@ -189,7 +189,7 @@ def measure(filename, type, dir = 0):
         mediation = dirTrue[dirArray.argmin()]
         
         if dirArray.argmin() == 3: # The direction of image is converted
-                return {"success" : "no", "error" : "1", "dir" : "{}".format(dir)}
+                return jsonify({"success" : "no", "error" : "1", "dir" : "{}".format(dir)})
                 
         for i in range(mediation[0]):
                 morph = cv2.rotate(morph, mediation[1])
@@ -241,7 +241,7 @@ def measure(filename, type, dir = 0):
         
                 boxRatio = (xMax - xMin) / (yMax - yMin)
                 if (boxRatio > ratioOffset[idx] + 1) | (boxRatio < ratioOffset[idx] - 1):
-                        return {"success" : "no", "error" : "{}".format(idx + 2), "dir" : "{}".format(dir)}
+                        return jsonify({"success" : "no", "error" : "{}".format(idx + 2), "dir" : "{}".format(dir)})
 
                 grayImg = morph.copy()[
                         int(yMin + imgDropOffset[1][idx]) : int(yMax - imgDropOffset[1][idx]),
@@ -319,7 +319,7 @@ def measure(filename, type, dir = 0):
                                 measures.append(dictLowercup)
 
                 else:
-                        return {"success": "no", "error": "{}".format(2 + idx), "dir" : "{}".format(dir)}
+                        return jsonify({"success": "no", "error": "{}".format(2 + idx), "dir" : "{}".format(dir)})
 
         return measures
 
