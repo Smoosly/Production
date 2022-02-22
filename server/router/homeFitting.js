@@ -87,7 +87,7 @@ router.get("/getCanReturn", async (req, res) => {
     const homeFitting = await HOME_FITTING.findOne({ where: { PK_ID: req.cookies.user }, attributes: ["state"] });
     const braReview = await BRA_REVIEW.findAll({ where: { PK_ID: req.cookies.user }, attributes: ["ID"] });
     const braFix = await BRA_FIX.findOne({ where: { PK_ID: req.cookies.user }, attributes: ["NUM"] });
-    if (homeFitting.state === 3 && braFix.NUM === braReview.length) {
+    if (homeFitting && homeFitting.state === 3 && braFix.NUM === braReview.length) {
       winston.info({ success: true, message: "반송 가능한지 여부 가져오기 성공", canReturn: true });
       return res.json({ success: true, message: "반송 가능한지 여부 가져오기 성공", canReturn: true });
     }

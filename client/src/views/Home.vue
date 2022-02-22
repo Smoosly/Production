@@ -280,6 +280,9 @@ export default {
     height: 108vh;
   }
   @media screen and (max-height: 800px) {
+    height: 103vh;
+  }
+  @media screen and (max-height: 750px) {
     height: 108vh;
   }
   // height: auto;
