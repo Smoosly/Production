@@ -56,7 +56,7 @@
           무료 배송/반송을 통해 추천된 브라가<br />
           나에게 맞는지 집에서 직접 입어본 후 구매할 수 있어요.
         </p>
-        <div @click="this.$router.push('/kitorder')" v-if="step == 1" class="button-container">가슴 측정 키트 신청&nbsp;<i class="fas fa-chevron-circle-right"></i></div>
+        <div @click="checkLogin" v-if="step == 1" class="button-container">가슴 측정 키트 신청&nbsp;<i class="fas fa-chevron-circle-right"></i></div>
       </div>
     </div>
     <!-- 브라 추천 상세 페이지 설명 -->
@@ -167,6 +167,16 @@ export default {
     };
   },
   methods: {
+    checkLogin() {
+      if (this.PK_ID === "") {
+        this.emitter.emit("loginModal", true);
+        this.emitter.emit("showRedToast", "로그인 후 이용해주세요.");
+        return;
+      }
+      else {
+        this.$router.push("/kitorder")
+      }
+    },
     checkState() {
       this.emitter.emit("closeToggle");
       if (this.PK_ID === "") {
