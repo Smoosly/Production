@@ -19,6 +19,7 @@ router.get("/isRecom", async (req, res) => {
       return res.json({ success: false, message: "1차 추천 브라 결과 없음", isRecom: false, userName: req.user.username });
     }
     const braFix = await BRA_FIX.findOne({ where: { PK_ID: req.cookies.user } });
+    // winston.debug(util.inspect(braFix, false, null, true));
     if (!braFix || braFix.CHECK_ADMIN !== 2) {
       winston.info({ success: false, message: "브라 추천이 확정되지 않았습니다.", isRecom: false, userName: req.user.username });
       return res.json({ success: false, message: "브라 추천이 확정되지 않았습니다.", isRecom: false, userName: req.user.username });
@@ -280,7 +281,7 @@ router.get("/getBraDetails", async (req, res) => {
     }
 
     const braDetails = bra4 ? [bra1, bra2, bra3, bra4] : [bra1, bra2, bra3];
-    winston.debug(util.inspect(braDetails, false, null, true));
+    // winston.debug(util.inspect(braDetails, false, null, true));
     return res.json({
       success: true,
       message: "브라 정보 가져오기 성공",
@@ -316,12 +317,13 @@ router.get("/getImg/:what/:ranking", async (req, res) => {
       if (!(ranking === 4 && braFix.NUM === 3)) {
         return res.sendFile(path.join(__dirname, `../../BraImages/${braFix[`OLD_KEY_${ranking}`]}.png`));
       }
+      return res.end();
     } else if (what === "braLowerShape") {
       winston.debug(`braLowerShape --> ranking: ${ranking}, ${braFix[`PK_SIZE_${ranking}`]}_${braFix[`OLD_KEY_${ranking}`]}.png`);
       winston.debug(path.join(__dirname, `../../BraLowerShapes/${braFix[`PK_SIZE_${ranking}`]}_${braFix[`OLD_KEY_${ranking}`]}.png`));
       if (!fs.existsSync(path.join(__dirname, `../../BraLowerShapes/${braFix[`PK_SIZE_${ranking}`]}_${braFix[`OLD_KEY_${ranking}`]}.png`))) {
-        const imgPath = await BR_DETAIL.findOne({ where: { PK_ITEM: braFix[`PK_ITEM_${ranking}`], OLD_KEY: braFix[`OLD_KEY_${ranking}`] }, attributes: ["IMG_PATH"] });
-        imgPath && res.sendFile(path.join(__dirname, `../../BraLowerShapes/${imgPath.IMG_PATH}`));
+        winston.debug("in if");
+          return res.sendFile(path.join(__dirname, `../../BraLowerShapes/${braFix[`PK_ITEM_${ranking}`]}_${braFix[`OLD_KEY_${ranking}`]}.png`));
       }
       return res.sendFile(path.join(__dirname, `../../BraLowerShapes/${braFix[`PK_SIZE_${ranking}`]}_${braFix[`OLD_KEY_${ranking}`]}.png`));
     }

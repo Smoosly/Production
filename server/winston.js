@@ -29,9 +29,15 @@ const level = () => {
   return isDevelopment ? 'debug' : 'http'
 }
 
+const timezoned = () => {
+  return new Date().toLocaleString('ko-KR', {
+      timeZone: "Asia/Seoul"
+  });
+}
+
 // Log Format
 const logFormat = combine(
-  timestamp({ format: 'YYYY-MM-DD HH:mm:ss:ms' }),
+  timestamp({ format: timezoned }),
   printf((info) => {
     if (info.stack) {
       return `${info.timestamp} ${info.level}: ${info.message} \n Error Stack: ${info.stack}`

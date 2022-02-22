@@ -1,7 +1,7 @@
 "use strict";
 const express = require("express");
 const router = express.Router();
-const { sequelize, HOME_FITTING, BRA_FIX } = require("../models");
+const { sequelize, HOME_FITTING, BRA_FIX, BRA_REVIEW } = require("../models");
 const winston = require("../winston");
 const deliveryInfo = require("../config/delivery");
 const jasx = require("json-as-xlsx");
@@ -56,7 +56,7 @@ router.get("/getMyInfo", async (req, res) => {
   try {
     const homeFitting = await HOME_FITTING.findOne({
       where: { PK_ID: req.cookies.user },
-      attributes: [[sequelize.fn("date_format", sequelize.col("createdAt"), "%Y-%m-%d"), "createdAt"], "invoice", "state", "return", "returnDate"],
+      attributes: [[sequelize.fn("date_format", sequelize.col("createdAt"), "%Y-%m-%d"), "createdAt"], "invoice", "state", "return", "returnDate", "returnInvoice"],
     });
     // const { data } = await axios.get(`https://apis.tracker.delivery/carriers/kr.cjlogistics/tracks/${homeFitting.invoice}`);
     // const tracker = await axios.get(`http://nplus.doortodoor.co.kr/web/detail.jsp?slipno=${homeFitting.invoice}`);
@@ -65,20 +65,37 @@ router.get("/getMyInfo", async (req, res) => {
       return res.json({ success: false, message: "홈 피팅 서비스 신청 내역이 없습니다." });
     }
     winston.debug(util.inspect(homeFitting.dataValues, false, null, true));
-    const sweettracker = await axios.get(
-      `https://info.sweettracker.co.kr/api/v1/trackingInfo?t_key=${deliveryInfo.api_key}&t_code=${deliveryInfo.code}&t_invoice=${homeFitting.invoice}`
-    );
+    const sweettracker = await axios.get(`https://info.sweettracker.co.kr/api/v1/trackingInfo?t_key=${deliveryInfo.api_key}&t_code=${deliveryInfo.code}&t_invoice=${homeFitting.invoice}`);
     if (!sweettracker) {
       winston.info({ success: false, message: "배송 조회할 수 없습니다." });
       return res.json({ success: false, message: "배송 조회할 수 없습니다." });
     }
     winston.debug(util.inspect(sweettracker.data, false, null, true));
-    await HOME_FITTING.update({ state: (sweettracker.data.complete ? 3 : 2) }, { where: { PK_ID: req.cookies.user } });
+    if (sweettracker.status === true) {
+      await HOME_FITTING.update({ state: sweettracker.data.complete ? 3 : 2 }, { where: { PK_ID: req.cookies.user } });
+    }
     winston.info({ success: true, message: "홈 피팅 서비스 배송 정보", homeFitting: homeFitting, deliveryInfo: deliveryInfo });
     return res.json({ success: true, message: "홈 피팅 서비스 배송 정보", homeFitting: homeFitting, deliveryInfo: deliveryInfo });
   } catch (err) {
     winston.error(err);
     return res.json({ success: false, message: "홈 피팅 서비스 정보를 가져오지 못했습니다.", err });
+  }
+});
+
+router.get("/getCanReturn", async (req, res) => {
+  try {
+    const homeFitting = await HOME_FITTING.findOne({ where: { PK_ID: req.cookies.user }, attributes: ["state"] });
+    const braReview = await BRA_REVIEW.findAll({ where: { PK_ID: req.cookies.user }, attributes: ["ID"] });
+    const braFix = await BRA_FIX.findOne({ where: { PK_ID: req.cookies.user }, attributes: ["NUM"] });
+    if (homeFitting.state === 3 && braFix.NUM === braReview.length) {
+      winston.info({ success: true, message: "반송 가능한지 여부 가져오기 성공", canReturn: true });
+      return res.json({ success: true, message: "반송 가능한지 여부 가져오기 성공", canReturn: true });
+    }
+    winston.info({ success: true, message: "반송 가능한지 여부 가져오기 성공", canReturn: false });
+    return res.json({ success: true, message: "반송 가능한지 여부 가져오기 성공", canReturn: false });
+  } catch (err) {
+    winston.error(err);
+    return res.json({ success: false, message: "반송 가능한지 여부 가져오기 성공", err });
   }
 });
 

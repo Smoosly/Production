@@ -5,7 +5,7 @@ module.exports = {
       name: "Smoosly",
       script: "./server/index.js",
       env: {
-        NODE_ENV: "production", // 배포환경시 적용될 설정 지정
+        NODE_ENV: "production",
         PORT: "443", //443
       },
     },
