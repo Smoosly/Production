@@ -43,6 +43,9 @@ app.use("/breastTest", require("./router/breastTest"));
 app.use("/braRecommend", require("./router/braRecommend"));
 app.use("/homeFitting", require("./router/homeFitting"));
 app.use("/review", require("./router/review"));
+app.use("*.html", function (req, res) {
+  res.sendFile(path.join(__dirname, "/public", "/home/smoosly/Smoosly/Production/server/public/naver8a611ac772294471e9f7104411d2030a.html"));
+});
 
 app.use("*", function (req, res) {
   res.sendFile(path.join(__dirname, "/public", "index.html"));
