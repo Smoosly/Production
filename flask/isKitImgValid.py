@@ -1,3 +1,4 @@
+from turtle import right
 from flask import request, jsonify, Blueprint
 from operator import itemgetter
 from scipy.interpolate import interp1d
@@ -11,6 +12,7 @@ import cv2
 import os
 import logging
 import logging.handlers
+from slack_sdk import WebClient
 
 log = logging.getLogger("isKitImgValid")
 log.setLevel(logging.DEBUG)
@@ -33,6 +35,9 @@ kitPath = "../KitUploads/"
 lsPath = "../LowerShapes/"
 
 matplotlib.use("Agg")
+
+myToken = "xoxb-2373155174243-3168997936240-3X35cyzmitJ90mwiAt8C8pXY"
+slackKit = WebClient(token = myToken)
 
 with open("config.json", "r") as f:
     config = json.load(f)
@@ -179,7 +184,7 @@ def measure(filename, type, dir = 0):
 
         data = sorted(rectangleContours, key=itemgetter("xMin")) # Box Sort by xMin
         if len(data) != 4: # Box Missing
-                return jsonify({"success": "no", "error": "0", "dir" : "{}".format(dir)})
+                return {"success": "no", "error": "0", "dir" : "{}".format(dir)}
         
         # Mediate Direction
         dirComRatios = [5.58, 0.167, 0.616, 1.93]
@@ -189,7 +194,7 @@ def measure(filename, type, dir = 0):
         mediation = dirTrue[dirArray.argmin()]
         
         if dirArray.argmin() == 3: # The direction of image is converted
-                return jsonify({"success" : "no", "error" : "1", "dir" : "{}".format(dir)})
+                return {"success" : "no", "error" : "1", "dir" : "{}".format(dir)}
                 
         for i in range(mediation[0]):
                 morph = cv2.rotate(morph, mediation[1])
@@ -241,7 +246,7 @@ def measure(filename, type, dir = 0):
         
                 boxRatio = (xMax - xMin) / (yMax - yMin)
                 if (boxRatio > ratioOffset[idx] + 1) | (boxRatio < ratioOffset[idx] - 1):
-                        return jsonify({"success" : "no", "error" : "{}".format(idx + 2), "dir" : "{}".format(dir)})
+                        return {"success" : "no", "error" : "{}".format(idx + 2), "dir" : "{}".format(dir)}
 
                 grayImg = morph.copy()[
                         int(yMin + imgDropOffset[1][idx]) : int(yMax - imgDropOffset[1][idx]),
@@ -253,12 +258,13 @@ def measure(filename, type, dir = 0):
                                 int(yMin + imgDropOffset[1][idx]) : int(yMax - imgDropOffset[1][idx]),
                                 int(xMin + imgDropOffset[0][idx]) : int(xMax - imgDropOffset[0][idx] * 2),
                         ]
-                        
+
+                cv2.imwrite("{}.jpg".format(idx), grayImg)     
                 contours, _ = cv2.findContours(
                         grayImg, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE
                 )
                 length = np.array([cv2.arcLength(x, closed=True) for x in contours])
-
+                
                 if len(length) != 0:
                         cont = contours[length.argmax()]
                         approx = np.squeeze(
@@ -319,7 +325,7 @@ def measure(filename, type, dir = 0):
                                 measures.append(dictLowercup)
 
                 else:
-                        return jsonify({"success": "no", "error": "{}".format(2 + idx), "dir" : "{}".format(dir)})
+                        return {"success": "no", "error": "{}".format(2 + idx), "dir" : "{}".format(dir)}
 
         return measures
 
@@ -337,6 +343,7 @@ def kitVision():
                 rightImgPath = Data["rightImgPath"]
                 log.info(f"---> {kitType}, {leftImgPath}, {rightImgPath}")
                 whereBt = -1
+                
         
 
                 if kitType == 0:  # Breast kit
@@ -465,6 +472,23 @@ def kitVision():
                                         mVolumeR,
                                         pkID))
                                 db.commit()
+                                current = open('now.txt', 'r')
+                                lines = current.readlines()
+                                kitUploads = list(map(int, lines[0].strip().split(' ')))
+                                breastTests = list(map(int, lines[1].strip().split(' ')))
+                                braRecommends = list(map(int, lines[2].strip().split(' ')))
+                                kitAll, kitNow = kitUploads
+                                kitNow += 1
+                                breastAll, breastNow = breastTests
+                                braAll, braNow = braRecommends
+                                slackKit.chat_postMessage(channel = "#3rd-진행상황", text = "{}님이 키트 업로드하였습니다.\n키트 업로드 진행한 사람 : {}/{}\n {}명 남았습니다".format(pkID, kitNow, kitAll, kitAll-kitNow))
+                                
+                                
+                                current.close()
+                                
+                                update = open('now.txt', 'w')
+                                update.write("{} {}\n{} {}\n{} {}".format(kitAll, kitNow, breastAll, breastNow, braAll, braNow))
+                                update.close()
                                 log.info(f"{pkID}'s breast update complete!")
                                 return jsonify({"success": "yes", "message": "Kit upload success",})
 
@@ -473,6 +497,7 @@ def kitVision():
                         return jsonify({"success": "yes", "error": "", "dir": ""})
                 
         except Exception as e:
+                slackKit.chat_postMessage(channel = "#3rd-진행상황", text = "{}님이 키트 업로드하는데 예기치 못한 오류가 발생하였습니다".format(pkID))
                 log.exception(f"{str(e)}, {type(e)}")
                 return jsonify({"success": "no", "error": str(e)})
         

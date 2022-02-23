@@ -3,6 +3,7 @@ import pymysql
 import json
 import logging
 import logging.handlers
+from slack_sdk import WebClient
 
 log = logging.getLogger("breastResult")
 log.setLevel(logging.DEBUG)
@@ -26,6 +27,9 @@ lsPath = "../LowerShapes/"
 
 with open("config.json", "r") as f:
     config = json.load(f)
+
+myToken = 'xoxb-2373155174243-3147919283668-Wybxp5gNVE8CnK1mEoDaAYS6'
+slackKit = WebClient(token = myToken)
 
 def generalSize(mUnderBust, mUpperBust):
         underArr = ["60", "65", "70", "75", "80", "85", "90", "95", "100", "105", "110"]
@@ -263,9 +267,27 @@ def saveBreastResult():
                                         flesh,
                                         ),
                                 )
+                                current = open('now.txt', 'r')
+                                lines = current.readlines()
+                                kitUploads = list(map(int, lines[0].strip().split(' ')))
+                                breastTests = list(map(int, lines[1].strip().split(' ')))
+                                braRecommends = list(map(int, lines[2].strip().split(' ')))
+                                kitAll, kitNow = kitUploads
+                                breastAll, breastNow = breastTests
+                                braAll, braNow = braRecommends
+                                breastNow += 1
+                                slackKit.chat_postMessage(channel = "#3rd-진행상황", text = "{}님의 가슴 결과 테스트가 완료되었습니다.\n가슴 결과 진행한 사람 : {}/{}\n {}명 남았습니다".format(pkId, breastNow, breastAll, breastAll-breastNow))
+                                
+                                
+                                current.close()
+                                
+                                update = open('now.txt', 'w')
+                                update.write("{} {}\n{} {}\n{} {}".format(kitAll, kitNow, breastAll, breastNow, braAll, braNow))
+                                update.close()
                                 db.commit()
                                 log.info(f"{pkId}'s BOTH breast result update complete!")
                                 return jsonify({"success": "yes", "message": "Save Result Success"})
         except Exception as e:
                 log.exception(f"{str(e)}, {type(e)}")
+                slackKit.chat_postMessage(channel = "#3rd-진행상황", text = "{}님의 가슴 결과 코드에서 오류가 발생하였습니다".format(pkId))
                 return jsonify({"success": "no", "error": str(e)})

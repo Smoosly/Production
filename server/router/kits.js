@@ -5,9 +5,14 @@ const axios = require("axios");
 const path = require("path");
 const fs = require("fs");
 const util = require("util");
+const dayjs = require("dayjs");
+const timezone = require("dayjs/plugin/timezone");
+const utc = require("dayjs/plugin/utc");
 const router = express.Router();
 const winston = require("../winston");
 const { sequelize, KIT, USER, BREAST_TEST } = require("../models");
+dayjs.extend(timezone);
+dayjs.extend(utc);
 
 const { isAuth } = require("../middleware/isAuth");
 router.use(isAuth);
@@ -38,14 +43,18 @@ const isValidImg = async (leftImg, rightImg) => {
     };
     //Flask server에 요청
     winston.debug(util.inspect(data, false, null, true));
-    const result = await axios.post("http://localhost:5000/isKitImgValid", data);
-    winston.debug(util.inspect(result, false, null, true));
+    const result = await axios.post("http://127.0.0.1:5000/isKitImgValid", data);
     if (!result) {
       resolve({ success: false, message: "재업로드해주세요" });
     }
+    winston.debug(util.inspect(result.data, false, null, true));
     if (result.data.success === "yes") {
       resolve({ success: true, message: "이미지 업로드 성공" });
     } else {
+      winston.debug("check here")
+      winston.debug(util.inspect(result.data, false, null, true))
+      winston.debug(result.data.error)
+      winston.debug(typeof result.data.error)
       const errCode = Number(result.data.error);
       winston.debug(errCode);
       let errMessage = "";
@@ -84,7 +93,7 @@ const isValidImg = async (leftImg, rightImg) => {
           errMessage = "이미지 경로가 존재하지 않습니다. 재시도해주세요.";
           break;
         default:
-          errMessage = "오류 원인 파악이 불가합니다. 재시도해주세요.";
+          errMessage = "키트 사진을 인식할 수 없어요! 다시 업로드 부탁드려요 :)";
           break;
       }
       resolve({ success: false, message: errMessage });
@@ -93,14 +102,18 @@ const isValidImg = async (leftImg, rightImg) => {
 };
 
 const formatDate = () => {
-  let now = new Date();
-  let month = now.getMonth() + 1 >= 10 ? `${now.getMonth() + 1}` : `0${now.getMonth() + 1}`;
-  let day = now.getDate() >= 10 ? `${now.getDate()}` : `0${now.getDate()}`;
-  let hour = now.getHours() >= 10 ? now.getHours() : "0" + now.getHours();
-  let minute = now.getMinutes() >= 10 ? now.getMinutes() : "0" + now.getMinutes();
-  let second = now.getSeconds() >= 10 ? now.getSeconds() : "0" + now.getSeconds();
-  let formatted_date = `${now.getFullYear()}${month}${day}${hour}${minute}${second}`;
-  return formatted_date;
+  // let now = new Date();
+  // let month = now.getMonth() + 1 >= 10 ? `${now.getMonth() + 1}` : `0${now.getMonth() + 1}`;
+  // let day = now.getDate() >= 10 ? `${now.getDate()}` : `0${now.getDate()}`;
+  // let hour = now.getHours() >= 10 ? now.getHours() : "0" + now.getHours();
+  // let minute = now.getMinutes() >= 10 ? now.getMinutes() : "0" + now.getMinutes();
+  // let second = now.getSeconds() >= 10 ? now.getSeconds() : "0" + now.getSeconds();
+  // let formatted_date = `${now.getFullYear()}${month}${day}${hour}${minute}${second}`;
+
+  const now2 = dayjs(new Date().toLocaleString("en-US", { timeZone: "Asia/Seoul" })).format("YYYYMMDDHHmmss");
+  console.log(now2);
+
+  return now2;
 };
 
 router.post("/img/upload", async (req, res) => {
@@ -116,12 +129,16 @@ router.post("/img/upload", async (req, res) => {
     }
 
     const PK_ID = JSON.parse(req.body.data).PK_ID;
+    const yesLeft = JSON.parse(req.body.data).yesLeft;
+    const yesRight = JSON.parse(req.body.data).yesRight;
+    console.log(yesLeft);
+    console.log(yesRight);
     const leftImg = req.files["left"] && req.files["left"][0];
     const rightImg = req.files["right"] && req.files["right"][0];
 
     try {
       //BREAST_TEST 생성하고 Progress 를 1단계 성공으로 설정하기
-      const test = await BREAST_TEST.findOrCreate({
+      const [test, created] = await BREAST_TEST.findOrCreate({
         where: { PK_ID: PK_ID },
         defaults: {
           PK_ID: PK_ID,
@@ -129,62 +146,38 @@ router.post("/img/upload", async (req, res) => {
           STEP: 0,
         },
       });
-      const data = test[0];
-      const created = test[1];
-      winston.debug(util.inspect(data.dataValues, false, null, true));
+      winston.debug(util.inspect(test.dataValues, false, null, true));
       winston.debug(created, "true->새로만들어짐, false->update");
 
       //왼쪽 이미지
       if (leftImg && !rightImg) {
-        const test = await BREAST_TEST.findOne({ where: { PK_ID: PK_ID } });
         let leftImgPath = path.join(__dirname, `../../KitUploads/${leftImg.filename}`);
 
         // Flask 서버에 요청하기
         const flask = await isValidImg(leftImg.filename, "");
         winston.debug("left flask : ", flask);
         if (!flask.success) {
-          fs.unlinkSync(leftImgPath);
-          await BREAST_TEST.destroy({ where: { PK_ID: PK_ID } });
+          leftImgPath && fs.unlinkSync(leftImgPath);
+          // await BREAST_TEST.destroy({ where: { PK_ID: PK_ID } });
           winston.info({ success: false, message: flask.message, leftImgValid: false });
           return res.json({ success: false, message: flask.message, leftImgValid: false });
-        }
-        //옛날 이미지 지우기
-        const oldLeftImgPath = test && test.LEFT_IMG_PATH && path.join(__dirname, `../../KitUploads/${test.LEFT_IMG_PATH}`);
-        const oldLeftLowerImgPath = test && test.LEFT_IMG_PATH && path.join(__dirname, `../../LowerShapes/${test.LEFT_IMG_PATH}`);
-        try {
-          oldLeftImgPath && fs.unlinkSync(oldLeftImgPath);
-          oldLeftLowerImgPath && fs.unlinkSync(oldLeftLowerImgPath);
-        } catch (err) {
-          winston.error(err);
         }
       }
       //오른쪽 이미지
       if (!leftImg && rightImg) {
-        const test = await BREAST_TEST.findOne({ where: { PK_ID: PK_ID } });
         let rightImgPath = path.join(__dirname, `../../KitUploads/${rightImg.path}`);
 
         //Flask 서버에 요청하기
         const flask = await isValidImg("", rightImg.filename);
         winston.debug("right flask : ", flask);
         if (!flask.success) {
-          fs.unlinkSync(rightImgPath);
-          await BREAST_TEST.destroy({ where: { PK_ID: PK_ID } });
+          rightImgPath && fs.unlinkSync(rightImgPath);
+          // await BREAST_TEST.destroy({ where: { PK_ID: PK_ID } });
           winston.info({ success: false, message: flask.message, rightImgValid: false });
           return res.json({ success: false, message: flask.message, rightImgValid: false });
         }
-
-        //옛날 이미지 지우기
-        const oldRightImgPath = test && test.RIGHT_IMG_PATH && path.join(__dirname, `../../KitUploads/${test.RIGHT_IMG_PATH}`);
-        const oldRightLowerImgPath = test && test.RIGHT_IMG_PATH && path.join(__dirname, `../../LowerShapes/${test.RIGHT_IMG_PATH}`);
-        try {
-          oldRightImgPath && fs.unlinkSync(oldRightImgPath);
-          oldRightLowerImgPath && fs.unlinkSync(oldRightLowerImgPath);
-        } catch (err) {
-          winston.error(err);
-        }
       }
       if (leftImg && rightImg) {
-        const test = await BREAST_TEST.findOne({ where: { PK_ID: PK_ID } });
         const leftImgPath = path.join(__dirname, `../../KitUploads/${leftImg.filename}`);
         const rightImgPath = path.join(__dirname, `../../KitUploads/${rightImg.filename}`);
 
@@ -192,26 +185,51 @@ router.post("/img/upload", async (req, res) => {
         const flask = await isValidImg(leftImg.filename, rightImg.filename);
         winston.debug("flask : ", flask);
         if (!flask.success) {
-          fs.unlinkSync(leftImgPath);
-          fs.unlinkSync(rightImgPath);
-          await BREAST_TEST.destroy({ where: { PK_ID: PK_ID } });
+          leftImgPath && fs.unlinkSync(leftImgPath);
+          rightImgPath && fs.unlinkSync(rightImgPath);
+          // await BREAST_TEST.destroy({ where: { PK_ID: PK_ID } });
           winston.info({ success: false, message: flask.message, leftImgValid: false, rightImgValid: false });
           return res.json({ success: false, message: flask.message, leftImgValid: false, rightImgValid: false });
         }
+      }
 
-        //옛날 이미지 지우기
-        const oldLeftImgPath = test && test.LEFT_IMG_PATH && path.join(__dirname, `../../KitUploads/${test.LEFT_IMG_PATH}`);
-        const oldLeftLowerImgPath = test && test.LEFT_IMG_PATH && path.join(__dirname, `../../LowerShapes/${test.LEFT_IMG_PATH}`);
-        const oldRightImgPath = test && test.RIGHT_IMG_PATH && path.join(__dirname, `../../KitUploads/${test.RIGHT_IMG_PATH}`);
-        const oldRightLowerImgPath = test && test.RIGHT_IMG_PATH && path.join(__dirname, `../../LowerShapes/${test.RIGHT_IMG_PATH}`);
-        try {
-          oldLeftImgPath && fs.unlinkSync(oldLeftImgPath);
-          oldLeftLowerImgPath && fs.unlinkSync(oldLeftLowerImgPath);
-          oldRightImgPath && fs.unlinkSync(oldRightImgPath);
-          oldRightLowerImgPath && fs.unlinkSync(oldRightLowerImgPath);
-        } catch (err) {
-          winston.error(err);
-        }
+      //옛날 이미지 지우기
+      console.log("delete");
+
+      const oldLeftImgPath = test && test.LEFT_IMG_PATH && path.join(__dirname, `../../KitUploads/${test.LEFT_IMG_PATH}`);
+      console.log("oldLeftImgPath");
+      console.log(oldLeftImgPath);
+      !yesLeft && oldLeftImgPath && fs.unlinkSync(oldLeftImgPath);
+
+      if (!yesLeft && oldLeftImgPath) {
+        let index = test.LEFT_IMG_PATH.indexOf(".");
+        let leftPath = test.LEFT_IMG_PATH.slice(0, index);
+        leftPath = leftPath.concat(".png");
+        console.log("leftPath");
+        console.log(leftPath);
+        const oldLeftLowerImgPath = test && test.LEFT_IMG_PATH && path.join(__dirname, `../../LowerShapes/${leftPath}`);
+        console.log("oldLeftLowerImgPath");
+        console.log(oldLeftLowerImgPath);
+        oldLeftLowerImgPath && fs.unlinkSync(oldLeftLowerImgPath);
+        oldLeftLowerImgPath && test.update({ LEFT_IMG_PATH: null });
+      }
+
+      const oldRightImgPath = test && test.RIGHT_IMG_PATH && path.join(__dirname, `../../KitUploads/${test.RIGHT_IMG_PATH}`);
+      console.log("oldRightImgPath");
+      console.log(oldRightImgPath);
+      !yesRight && oldRightImgPath && fs.unlinkSync(oldRightImgPath);
+
+      if (!yesRight && oldRightImgPath) {
+        let index = test.RIGHT_IMG_PATH.indexOf(".");
+        let rightPath = test.RIGHT_IMG_PATH.slice(0, index);
+        rightPath = rightPath.concat(".png");
+        console.log("rightPath");
+        console.log(rightPath);
+        const oldRightLowerImgPath = test && test.RIGHT_IMG_PATH && path.join(__dirname, `../../LowerShapes/${rightPath}`);
+        console.log("oldRightLowerImgPath");
+        console.log(oldRightLowerImgPath);
+        oldRightLowerImgPath && fs.unlinkSync(oldRightLowerImgPath);
+        oldRightLowerImgPath && test.update({ RIGHT_IMG_PATH: null });
       }
 
       winston.debug("업로드 성공");
@@ -279,10 +297,7 @@ router.post("/request", async (req, res) => {
     winston.info({ success: false, message: "이미 키트 신청 내역이 있는지 확인하세요." });
     return res.json({ success: false, message: "이미 키트 신청 내역이 있는지 확인하세요." });
   } else {
-    await USER.update(
-      { phone: req.body.phone, postcode: req.body.postcode, address: req.body.address, extraAddress: req.body.extraAddress },
-      { where: { PK_ID: req.body.PK_ID } }
-    );
+    await USER.update({ phone: req.body.phone, postcode: req.body.postcode, address: req.body.address, extraAddress: req.body.extraAddress }, { where: { PK_ID: req.body.PK_ID } });
     // const coupon = await COUPON.findOne({ where: { CODE: req.body.couponCode } });
     // if (!coupon) {
     //   return res.json({ success: false, message: "존재하지 않는 쿠폰번호입니다." });

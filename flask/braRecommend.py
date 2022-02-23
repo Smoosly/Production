@@ -1,3 +1,4 @@
+from email.policy import default
 from flask import request, Blueprint, jsonify
 import numpy as np
 import pandas as pd
@@ -6,6 +7,7 @@ import math
 import json
 import logging
 import logging.handlers
+from slack_sdk import WebClient
 
 log = logging.getLogger("braRecommend")
 log.setLevel(logging.DEBUG)
@@ -24,6 +26,9 @@ log.addHandler(streamHandler)
 log.info("logtest3")
 blueprint = Blueprint("braRecommend", __name__, url_prefix="/")
 
+myToken = 'xoxb-2373155174243-3142698051189-XlqjsEmXLlcbLX61Fjy1TCFM'
+slackKit = WebClient(token = myToken)
+
 with open("config.json", "r") as f:
         config = json.load(f)
 
@@ -39,8 +44,8 @@ def get_defaultSize(mUnderBust, mUpperBust, wPressure, breastSizeGeneral, braSiz
         under = breastSizeGeneral[:2]
         cup = breastSizeGeneral[2:]
         braSize = unders[braSizeUb] + cups[braSizeCup]
-        if under == "65":
-                if (cup == 'A') | (cup == 'AA'):
+        if under == "65": # only 65
+                if (cup == 'A') | (cup == 'AA'): # 65, A/AA
                         defaultSize = '65A'
                         Size.append(defaultSize)
                         Size.append('70AA')
@@ -48,7 +53,7 @@ def get_defaultSize(mUnderBust, mUpperBust, wPressure, breastSizeGeneral, braSiz
                                 Size.append('70A')
                         else:
                                 Size.append('65B')
-                else:
+                else: # 65, B~
                         defaultSize = breastSizeGeneral
                         Size.append(defaultSize)
                         Size.append(unders[unders.index(under)+1]+cups[cups.index(cup)-1])
@@ -59,9 +64,9 @@ def get_defaultSize(mUnderBust, mUpperBust, wPressure, breastSizeGeneral, braSiz
                                         Size.append(unders[unders.index(under)+1]+cups[cups.index(cup)-2])
                         else:
                                 Size.append(under+cups[cups.index(cup)-1])
-        else:
-                if cup == 'AA':
-                        if under == '70':
+        else: # 70~
+                if cup == 'AA': # 70~ , AA
+                        if under == '70': # 70, AA
                                 defaultSize = breastSizeGeneral
                                 Size.append(defaultSize)
                                 if wPressure <= 4:
@@ -73,7 +78,7 @@ def get_defaultSize(mUnderBust, mUpperBust, wPressure, breastSizeGeneral, braSiz
                                                 Size.append('65AA')
                                         else:
                                                 Size.append('70A')
-                        else:
+                        else: # 75~, AA
                                 defaultSize = breastSizeGeneral
                                 Size.append(defaultSize)
                                 if wPressure <= 4:
@@ -89,79 +94,111 @@ def get_defaultSize(mUnderBust, mUpperBust, wPressure, breastSizeGeneral, braSiz
                                                 Size.append(unders[unders.index(under)-1]+cup)
                                         else:
                                                 Size.append(under+cups[cups.index(cup)+1])
-                else:
-                        defaultSize = breastSizeGeneral
-                        Size.append(defaultSize)
-                        if wPressure <= 4:
-                                if mUnderBust < int(defaultSize[:2]):
+                else: # 70~, A~
+                        if (under == '70') & (cup == 'A'): # 70, A
+                                defaultSize = breastSizeGeneral
+                                Size.append(defaultSize)
+                                if wPressure <= 4:
                                         if diff < diffs[cups.index(cup)]:
-                                                Size.append(under+cups[cups.index(cup)-1])
-                                                if braSize == Size[0]:
-                                                        Size.append(unders[unders.index(under)+1]+cups[cups.index(cup)-1])
-                                                elif braSize == Size[1]:
-                                                        Size.append(unders[unders.index(under)+1]+cups[cups.index(cup)-1])
+                                                Size.append('75A')
+                                                if braSize in Size:
+                                                        Size.append('75AA')
                                                 else:
                                                         Size.append(braSize)
                                         else:
-                                                Size.append(under+cups[cups.index(cup)+1])
-                                                if braSize == Size[0]:
-                                                        Size.append(unders[unders.index(under)+1]+cups[cups.index(cup)-1])
-                                                elif braSize == Size[1]:
-                                                        Size.append(unders[unders.index(under)+1]+cup)
+                                                Size.append('70B')
+                                                if braSize in Size:
+                                                        Size.append('75A')
                                                 else:
                                                         Size.append(braSize)
                                 else:
                                         if diff < diffs[cups.index(cup)]:
-                                                Size.append(unders[unders.index(under)+1]+cups[cups.index(cup)-1])
-                                                if braSize == Size[0]:
-                                                        Size.append(under+cups[cups.index(cup)-1])
-                                                elif braSize == Size[1]:
-                                                        Size.append(under+cups[cups.index(cup)-1])
+                                                Size.append('70B')
+                                                if braSize in Size:
+                                                        Size.append('75AA')
                                                 else:
                                                         Size.append(braSize)
                                         else:
-                                                Size.append(unders[unders.index(under)+1]+cups[cups.index(cup)-1])
-                                                if braSize == Size[0]:
-                                                        Size.append(under+cups[cups.index(cup)+1])
-                                                elif braSize == Size[1]:
-                                                        Size.append(under+cups[cups.index(cup)+1])
+                                                Size.append9('70B')
+                                                if braSize in Size:
+                                                        Size.append('75A')
                                                 else:
                                                         Size.append(braSize)
-                        else:
-                                if mUnderBust < int(defaultSize[:2]):
-                                        if diff < diffs[cups.index(cup)]:
-                                                Size.append(unders[unders.index(under)-1]+cup)
-                                                if braSize == Size[0]:
+                                        
+
+                        else: # 70~, A~ , not 70A
+                                defaultSize = breastSizeGeneral
+                                Size.append(defaultSize)
+                                if wPressure <= 4:
+                                        if mUnderBust < int(defaultSize[:2]):
+                                                if diff < diffs[cups.index(cup)]:
                                                         Size.append(under+cups[cups.index(cup)-1])
-                                                elif braSize == Size[1]:
-                                                        Size.append(unders[unders.index(under)-1]+cups[cups.index(cup)+1])
+                                                        if braSize == Size[0]:
+                                                                Size.append(unders[unders.index(under)+1]+cups[cups.index(cup)-1])
+                                                        elif braSize == Size[1]:
+                                                                Size.append(unders[unders.index(under)+1]+cups[cups.index(cup)-1])
+                                                        else:
+                                                                Size.append(braSize)
                                                 else:
-                                                        Size.append(braSize)
-                                        else:
-                                                Size.append(unders[unders.index(under)-1]+cups[cups.index(cup)+1])
-                                                if braSize == Size[0]:
                                                         Size.append(under+cups[cups.index(cup)+1])
-                                                elif braSize == Size[1]:
-                                                        Size.append(unders[unders.index(under)-1]+cups[cups.index(cup)+2])
+                                                        if braSize == Size[0]:
+                                                                Size.append(unders[unders.index(under)+1]+cups[cups.index(cup)-1])
+                                                        elif braSize == Size[1]:
+                                                                Size.append(unders[unders.index(under)+1]+cup)
+                                                        else:
+                                                                Size.append(braSize)
+                                        else:
+                                                if diff < diffs[cups.index(cup)]:
+                                                        Size.append(unders[unders.index(under)+1]+cups[cups.index(cup)-1])
+                                                        if braSize == Size[0]:
+                                                                Size.append(under+cups[cups.index(cup)-1])
+                                                        elif braSize == Size[1]:
+                                                                Size.append(under+cups[cups.index(cup)-1])
+                                                        else:
+                                                                Size.append(braSize)
                                                 else:
-                                                        Size.append(braSize)
+                                                        Size.append(unders[unders.index(under)+1]+cups[cups.index(cup)-1])
+                                                        if braSize == Size[0]:
+                                                                Size.append(under+cups[cups.index(cup)+1])
+                                                        elif braSize == Size[1]:
+                                                                Size.append(under+cups[cups.index(cup)+1])
+                                                        else:
+                                                                Size.append(braSize)
                                 else:
-                                        if diff < diffs[cups.index(cup)]:
-                                                Size.append(under+cups[cups.index(cup)-1])
-                                                if braSize == Size[0]:
-                                                        Size.append(unders[unders.index(under)-1]+cups[cups.index(cup)+1])
-                                                elif braSize == Size[1]:
-                                                        Size.append(unders[unders.index(under)-1]+cups[cups.index(cup)+1])
+                                        if mUnderBust < int(defaultSize[:2]):
+                                                if diff < diffs[cups.index(cup)]:
+                                                        Size.append(unders[unders.index(under)-1]+cup)
+                                                        if braSize == Size[0]:
+                                                                Size.append(under+cups[cups.index(cup)-1])
+                                                        elif braSize == Size[1]:
+                                                                Size.append(unders[unders.index(under)-1]+cups[cups.index(cup)+1])
+                                                        else:
+                                                                Size.append(braSize)
                                                 else:
-                                                        Size.append(braSize)
+                                                        Size.append(unders[unders.index(under)-1]+cups[cups.index(cup)+1])
+                                                        if braSize == Size[0]:
+                                                                Size.append(under+cups[cups.index(cup)+1])
+                                                        elif braSize == Size[1]:
+                                                                Size.append(unders[unders.index(under)-1]+cups[cups.index(cup)+2])
+                                                        else:
+                                                                Size.append(braSize)
                                         else:
-                                                Size.append(under+cups[cups.index(cup)+1])
-                                                if braSize == Size[0]:
-                                                        Size.append(unders[unders.index(under)-1]+cups[cups.index(cup)+1])
-                                                elif braSize == Size[1]:
-                                                        Size.append(unders[unders.index(under)-1]+cups[cups.index(cup)+2])
+                                                if diff < diffs[cups.index(cup)]:
+                                                        Size.append(under+cups[cups.index(cup)-1])
+                                                        if braSize == Size[0]:
+                                                                Size.append(unders[unders.index(under)-1]+cups[cups.index(cup)+1])
+                                                        elif braSize == Size[1]:
+                                                                Size.append(unders[unders.index(under)-1]+cups[cups.index(cup)+1])
+                                                        else:
+                                                                Size.append(braSize)
                                                 else:
-                                                        Size.append(braSize)
+                                                        Size.append(under+cups[cups.index(cup)+1])
+                                                        if braSize == Size[0]:
+                                                                Size.append(unders[unders.index(under)-1]+cups[cups.index(cup)+1])
+                                                        elif braSize == Size[1]:
+                                                                Size.append(unders[unders.index(under)-1]+cups[cups.index(cup)+2])
+                                                        else:
+                                                                Size.append(braSize)
                                 
         return defaultSize, Size
 
@@ -219,27 +256,27 @@ def score_breastFit(x):
 def score_effectFit(x):
         score = x.EFFECT_FIT_SCORE
         if 1 in brEffect:
-                biggerArray = [15,10,5]
+                biggerArray = [80,50,20]
                 if x.BIGGER_SCORE != 0:
                         score += biggerArray[x.BIGGER_DEGREE]
         elif 10 in brEffect:
-                biggerArray = [5,10,15]
+                biggerArray = [20,50,80]
                 if x.BIGGER_SCORE != 0:
                         score += biggerArray[x.BIGGER_DEGREE] 
         if 2 in brEffect:
-                gatherArray = [15,10,5]
+                gatherArray = [80,50,20]
                 if x.GATHER_SCORE != 0:
                         score += gatherArray[x.GATHER_DEGREE]
         elif 20 in brEffect:
-                gatherArray = [5,10,15]
+                gatherArray = [20,50,80]
                 if x.GATHER_SCORE != 0:
                         score += gatherArray[x.GATHER_DEGREE]
         if 3 in brEffect:
-                pushupArray = [15,10,5]
+                pushupArray = [80,50,20]
                 if x.PUSHUP_SCORE != 0:
                         score += pushupArray[x.PUSHUP_DEGREE]
         elif 30 in brEffect:
-                pushupArray = [5,10,15]
+                pushupArray = [20,50,80]
                 if x.PUSHUP_SCORE != 0:
                         score += pushupArray[x.PUSHUP_DEGREE]
         if 4 in brEffect:
@@ -251,27 +288,27 @@ def score_effectFit(x):
                 
         if wBrEffectMost != 0:
                 if wBrEffectMost == 1:
-                        biggerArray = [15,10,5]
+                        biggerArray = [80,50,20]
                         if x.BIGGER_SCORE != 0:
                                 score += biggerArray[x.BIGGER_DEGREE]
                 elif wBrEffectMost == 10:
-                        biggerArray = [5,10,15]
+                        biggerArray = [20,50,80]
                         if x.BIGGER_SCORE != 0:
                                 score += biggerArray[x.BIGGER_DEGREE] 
                 elif wBrEffectMost == 2:
-                        gatherArray = [15,10,5]
+                        gatherArray = [80,50,20]
                         if x.GATHER_SCORE != 0:
                                 score += gatherArray[x.GATHER_DEGREE]
                 elif wBrEffectMost == 20:
-                        gatherArray = [5,10,15]
+                        gatherArray = [20,50,80]
                         if x.GATHER_SCORE != 0:
                                 score += gatherArray[x.GATHER_DEGREE]
                 elif wBrEffectMost == 3:
-                        pushupArray = [15,10,5]
+                        pushupArray = [80,50,20]
                         if x.PUSHUP_SCORE != 0:
                                 score += pushupArray[x.PUSHUP_DEGREE]
                 elif wBrEffectMost == 30:
-                        pushupArray = [5,10,15]
+                        pushupArray = [20,50,80]
                         if x.PUSHUP_SCORE != 0:
                                 score += pushupArray[x.PUSHUP_DEGREE]
                 elif wBrEffectMost == 4:
@@ -284,16 +321,35 @@ def score_effectFit(x):
         return score
 
 def filter_size(x):
-        sizes = x.split(',')
+        sizeonlys = x.SIZE_ONLY.split(',')
+        sizes = x.SIZE.split(',')
         score = 0
         realSizes = ""
-        for size in sizes:
-                for idx, pSize in enumerate(Size):
-                        if (pSize[:2] in size) & (pSize[2:] in size) & (size not in realSizes):
-                                score += 10**(2-idx)
-                                realSizes += (size+',')
-        
-        if score > 100:
+        sizeFine = 0
+
+        for size in sizeonlys:
+                if (len(size) < 4) | (size[2:] == 'AA'):
+                        if Size[0] == size:
+                                sizeFine = 1
+                                break
+                else:
+                        if (Size[:2] in size) & (Size[2:] in size):
+                                sizeFine = 1
+                                break
+                        
+        if sizeFine == 1:
+                for size in sizes:
+                        for idx, pSize in enumerate(Size):
+                                if (len(size) < 4) | (size[2:] == 'AA'):
+                                        if (pSize in size) & (size not in realSizes):
+                                                score += 10**(2-idx)
+                                                realSizes += (size+',')
+                                else:
+                                        if (pSize[:2] in size) & (pSize[2:] in size) & (size not in realSizes):
+                                                score += 10**(2-idx)
+                                                realSizes += (size+',')
+                
+        if (sizeFine == 1) & (score > 100):
                 return 1
         else:
                 return 0
@@ -387,9 +443,10 @@ def recommend():
                 global defaultSize # One Default Size
                 global Size # List
                 defaultSize, Size = get_defaultSize(mUnderBust, mUpperBust, wPressure, breastSizeGeneral, braSizeUb, braSizeCup)
+                log.debug(Size[0])
 
                 # Size Fitering
-                df_brAll['SIZE_FILTER'] = df_brAll.SIZE.apply(filter_size)
+                df_brAll['SIZE_FILTER'] = df_brAll.apply(filter_size, axis = 1)
                 df_brAll = df_brAll[df_brAll.SIZE_FILTER == 1]
                 # Get BR_CH 
                 df_brCh = pd.read_sql(sql_brCh, db)
@@ -408,12 +465,14 @@ def recommend():
                 df = pd.merge(left = df, right = df_brDetail, how = 'left', on = ['PK_ITEM', 'OLD_KEY'])
                 df['BREAST_FIT_SCORE'] = 0
                 df['EFFECT_FIT_SCORE'] = 0
+
+               
                 
                 # log.debug(len(df_brAll))
                 if len(df.OLD_KEY.unique()) > 0:
                         
                 
-                        if len(df.OLD_KEY.unique()) < 6:
+                        if len(df.OLD_KEY.unique()) > 6:
                         # Filtering
                         
                                 if (flesh == 1) & (defaultSize not in ['65AA', '65A', '65B', '70AA', '70A', '70B', '75AA', '75A']):
@@ -444,6 +503,7 @@ def recommend():
                                                 if len(df.OLD_KEY.unique()) < 6:
                                                         df = dfTemp.copy()
                                                         df['EFFECT_FIT_SCORE'] = df.apply(lambda x:x.EFFECT_FIT_SCORE+200 if x.PP_SCORE == -1 else x.EFFECT_FIT_SCORE, axis = 1)
+        
                                         elif wPP == 1:
                                                 if not ((10 in brEffect) | (20 in brEffect) | (30 in brEffect)):
                                                         df = df[(df.PP_SCORE == 0) | (df.PP_SCORE == 1) | (df.PP_SCORE == -1)]
@@ -488,9 +548,9 @@ def recommend():
                                                         df['BREAST_FIT_SCORE'] = df.apply(lambda x:x.BREAST_FIT_SCORE+50 if x.PRICE <= wPriceMax else x.BREAST_FIT_SCORE, axis = 1)
                         
 
-                        effectWeight = 1.5
+                        effectWeight = 1
                         if wImportant == 1:
-                                effectWeight = 2                
+                                effectWeight = 1.5             
 
                         if len(df.OLD_KEY.unique()) > 0:
                                 # Score
@@ -594,8 +654,28 @@ def recommend():
                         globals()['pkItem9'], globals()['oldKey9'], globals()['size9'], None, globals()['breastScore9'], globals()['effectScore9'], 
                         globals()['pkItem10'], globals()['oldKey10'], globals()['size10'], None, globals()['breastScore10'], globals()['effectScore10']))
                 db.commit()
+                current = open('now.txt', 'r')
+                lines = current.readlines()
+                kitUploads = list(map(int, lines[0].strip().split(' ')))
+                breastTests = list(map(int, lines[1].strip().split(' ')))
+                braRecommends = list(map(int, lines[2].strip().split(' ')))
+                
+                kitAll, kitNow = kitUploads
+                breastAll, breastNow = breastTests
+                braAll, braNow = braRecommends
+                braNow += 1
+                slackKit.chat_postMessage(channel = "#3rd-진행상황", text = "{}님의 브라 추천이 완료되었습니다.\n브라 추천된 사람 : {}/{}\n {}명 남았습니다".format(pkId, braNow, braAll, braAll-braNow))
+                
+                
+                current.close()
+                
+                update = open('now.txt', 'w')
+                update.write("{} {}\n{} {}\n{} {}".format(kitAll, kitNow, breastAll, breastNow, braAll, braNow))
+                update.close()
+        
                 return jsonify({"success": "yes", "error": ""})
         
         except Exception as e:
                 log.exception(f"{str(e)}, {type(e)}")
+                slackKit.chat_postMessage(channel = "#3rd-진행상황", text = "{}님의 브라 추천 코드에서 오류가 발생하였습니다".format(pkId))
                 return jsonify({"success": "no", "error": str(e)})
