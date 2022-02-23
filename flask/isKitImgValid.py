@@ -259,7 +259,7 @@ def measure(filename, type, dir = 0):
                                 int(xMin + imgDropOffset[0][idx]) : int(xMax - imgDropOffset[0][idx] * 2),
                         ]
 
-                cv2.imwrite("{}.jpg".format(idx), grayImg)     
+                # cv2.imwrite("{}.jpg".format(idx), grayImg)     
                 contours, _ = cv2.findContours(
                         grayImg, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE
                 )
