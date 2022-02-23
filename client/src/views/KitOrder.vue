@@ -14,7 +14,7 @@
       <div class="box">
         <div data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="1000" class="postcode-container">
           <div class="input-group item">
-            <input :disabled="address === ''? '' : disabled" class="form-input postcode" type="text" placeholder="우편번호" v-model="postcode" />
+            <input class="form-input postcode" type="text" placeholder="우편번호" v-model="postcode" />
           </div>
           <button type="button" class="btn-primary btn-40 item" @click="execDaumPostcode">주소검색</button>
         </div>
@@ -36,11 +36,11 @@
         />
       </div>
       <div data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="1000" class="input-group">
-        <input :disabled="postcode === ''? disabled : ''" class="form-input" type="text" v-model="address" placeholder="주소" />
+        <input class="form-input" type="text" v-model="address" placeholder="주소" />
       </div>
       <br />
       <div data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="1000" class="input-group">
-        <input :disabled="postcode === ''? disabled : ''" class="form-input" type="text" style="cursor: pointer" v-model="extraAddress" ref="extraAddress" placeholder="상세주소(입력 필수)" />
+        <input class="form-input" type="text" style="cursor: pointer" v-model="extraAddress" ref="extraAddress" placeholder="상세주소(입력 필수)" />
       </div>
       <!-- <div data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="1000" class="input-group">
         <input class="form-input" type="text" style="margin-top: 28px" v-model="message" placeholder="배송 요청사항" />
