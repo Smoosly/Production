@@ -299,6 +299,7 @@ export default {
     align-items: center;
     /* width: 100%; */
     color: $white;
+    cursor: pointer;
 
     .image-btn {
       @include text-style(16, $blue-dark);
