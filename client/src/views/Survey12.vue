@@ -7,7 +7,7 @@
       <h3>{{ page[0].flow_txt }}</h3>
     </div>
     <div class="question-container">
-      <div data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="700" class="single-select">
+      <div data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="700" id="q0" class="single-select">
         <div class="title">Q. {{ page[0].question_txt }}</div>
         <div class="img-guide">
           <p><i class="far fa-lightbulb"></i> 와이어 브라는 기본 선택되어, 1개 이상 추천됩니다!</p>
@@ -80,6 +80,7 @@ export default {
     goNext() {
       this.setAnswer(this.answer_1);
       if (this.answer === "") {
+        document.getElementById("q0").scrollIntoView(false);
         return this.emitter.emit("showRedToast", "답변을 입력해주세요");
       }
       const answers = {
