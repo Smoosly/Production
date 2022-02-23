@@ -219,17 +219,29 @@ def score_breastFit(x):
 def score_effectFit(x):
         score = x.EFFECT_FIT_SCORE
         if 1 in brEffect:
-                score += x.BIGGER_SCORE / 15 * 10
+                biggerArray = [15,10,5]
+                if x.BIGGER_SCORE != 0:
+                        score += biggerArray[x.BIGGER_DEGREE]
         elif 10 in brEffect:
-                score += x.BIGGER_SCORE 
+                biggerArray = [5,10,15]
+                if x.BIGGER_SCORE != 0:
+                        score += biggerArray[x.BIGGER_DEGREE] 
         if 2 in brEffect:
-                score += x.GATHER_SCORE / 22 * 15
+                gatherArray = [15,10,5]
+                if x.GATHER_SCORE != 0:
+                        score += gatherArray[x.GATHER_DEGREE]
         elif 20 in brEffect:
-                score += x.GATHER_SCORE
+                gatherArray = [5,10,15]
+                if x.GATHER_SCORE != 0:
+                        score += gatherArray[x.GATHER_DEGREE]
         if 3 in brEffect:
-                score += x.PUSHUP_SCORE / 15 * 9
+                pushupArray = [15,10,5]
+                if x.PUSHUP_SCORE != 0:
+                        score += pushupArray[x.PUSHUP_DEGREE]
         elif 30 in brEffect:
-                score += x.PUSHUP_SCORE
+                pushupArray = [5,10,15]
+                if x.PUSHUP_SCORE != 0:
+                        score += pushupArray[x.PUSHUP_DEGREE]
         if 4 in brEffect:
                 score += x.SUPPORT_SCORE
         if 6 in brEffect:
@@ -239,17 +251,29 @@ def score_effectFit(x):
                 
         if wBrEffectMost != 0:
                 if wBrEffectMost == 1:
-                        score += x.BIGGER_SCORE / 15 * 10
+                        biggerArray = [15,10,5]
+                        if x.BIGGER_SCORE != 0:
+                                score += biggerArray[x.BIGGER_DEGREE]
                 elif wBrEffectMost == 10:
-                        score += x.BIGGER_SCORE 
+                        biggerArray = [5,10,15]
+                        if x.BIGGER_SCORE != 0:
+                                score += biggerArray[x.BIGGER_DEGREE] 
                 elif wBrEffectMost == 2:
-                        score += x.GATHER_SCORE / 22 * 15
+                        gatherArray = [15,10,5]
+                        if x.GATHER_SCORE != 0:
+                                score += gatherArray[x.GATHER_DEGREE]
                 elif wBrEffectMost == 20:
-                        score += x.GATHER_SCORE
+                        gatherArray = [5,10,15]
+                        if x.GATHER_SCORE != 0:
+                                score += gatherArray[x.GATHER_DEGREE]
                 elif wBrEffectMost == 3:
-                        score += x.PUSHUP_SCORE / 15 * 9
+                        pushupArray = [15,10,5]
+                        if x.PUSHUP_SCORE != 0:
+                                score += pushupArray[x.PUSHUP_DEGREE]
                 elif wBrEffectMost == 30:
-                        score += x.PUSHUP_SCORE
+                        pushupArray = [5,10,15]
+                        if x.PUSHUP_SCORE != 0:
+                                score += pushupArray[x.PUSHUP_DEGREE]
                 elif wBrEffectMost == 4:
                         score += x.SUPPORT_SCORE
                 elif wBrEffectMost == 6:
@@ -352,9 +376,11 @@ def recommend():
                 sql_brAll = "select * from BR_ALL"
                 sql_brCh = "select * from BR_CH"
                 sql_brNum = "select * from BR_NUM"
+                sql_brDetail = "select * from BR_DETAIL"
                 
                 # Get BR_ALL
                 df_brAll = pd.read_sql(sql_brAll, db)
+                # log.debug(df_brAll.head())
                 
                 
                 # Get the recommend size
@@ -365,161 +391,162 @@ def recommend():
                 # Size Fitering
                 df_brAll['SIZE_FILTER'] = df_brAll.SIZE.apply(filter_size)
                 df_brAll = df_brAll[df_brAll.SIZE_FILTER == 1]
-                
-                if len(df_brAll.OLD_KEY.unique()) < 2:
-                        return jsonify({"success": "no", "error": "0"})
-                
                 # Get BR_CH 
                 df_brCh = pd.read_sql(sql_brCh, db)
 
                 # Get BR_NUM
                 df_brNum = pd.read_sql(sql_brNum, db)
+
+                # Get BR_DETAIL
+                df_brDetail = pd.read_sql(sql_brDetail, db)
+                df_brDetail = df_brDetail[['PK_ITEM', 'OLD_KEY', 'BIGGER_DEGREE', 'GATHER_DEGREE', 'PUSHUP_DEGREE']]
         
         
                 # df = pd.merge(left = df_brAll, right = df_brCh, on = ['PK_ITEM', 'OLD_KEY'])
                 df = pd.merge(left = df_brAll, right = df_brCh, how = 'left', on = ['PK_ITEM', 'OLD_KEY']) 
                 df = pd.merge(left = df, right = df_brNum, how = 'left', on = ['PK_ITEM', 'OLD_KEY'])
-                
+                df = pd.merge(left = df, right = df_brDetail, how = 'left', on = ['PK_ITEM', 'OLD_KEY'])
                 df['BREAST_FIT_SCORE'] = 0
                 df['EFFECT_FIT_SCORE'] = 0
-        
-                if len(df.OLD_KEY.unique()) < 6:
-                # Filtering
                 
-                        if (flesh == 1) & (defaultSize not in ['65AA', '65A', '65B', '70AA', '70A', '70B', '75AA', '75A']):
-                                df.mTHICKNESS_PP.fillna(0, inplace = True)
-                                df.mTHICKNESS_DETACH_PP.fillna(-1, inplace = True)
-                                isPPs = []
-                                for idx, row in df.iterrows():
-                                        isPP = (max(0, row.mTHICKNESS_DETACH_PP) + row.mTHICKNESS_PP) <= 1.5
-                                        isPPs.append(isPP)
-                                df = df[isPPs]
-                                df.replace({'mTHICKNESS_PP':0}, {'mTHICKNESS_PP':np.nan}, inplace = True)
-                                df.replace({'mTHICKNESS_DETACH_PP' : -1}, {'mTHICKNESS_DETACH_PP':np.nan}, inplace = True)
+                # log.debug(len(df_brAll))
+                if len(df.OLD_KEY.unique()) > 0:
                         
-                        if 1 not in wType: # Wire Filtering
-                                df = df[df.WIRE != 0]  
+                
+                        if len(df.OLD_KEY.unique()) < 6:
+                        # Filtering
                         
-                        if rib == 1:
-                                df = df[df.L_SHAPE == 0]
-                        
-                        elif rib == 2:
-                                df = df[df.mHEIGHT <= mHeightLc]
+                                if (flesh == 1) & (defaultSize not in ['65AA', '65A', '65B', '70AA', '70A', '70B', '75AA', '75A']):
+                                        df.mTHICKNESS_PP.fillna(0, inplace = True)
+                                        df.mTHICKNESS_DETACH_PP.fillna(-1, inplace = True)
+                                        isPPs = []
+                                        for idx, row in df.iterrows():
+                                                isPP = (max(0, row.mTHICKNESS_DETACH_PP) + row.mTHICKNESS_PP) <= 1.5
+                                                isPPs.append(isPP)
+                                        df = df[isPPs]
+                                        df.replace({'mTHICKNESS_PP':0}, {'mTHICKNESS_PP':np.nan}, inplace = True)
+                                        df.replace({'mTHICKNESS_DETACH_PP' : -1}, {'mTHICKNESS_DETACH_PP':np.nan}, inplace = True)
                                 
-                        
-                        
-                        dfTemp = df.copy()
-                        if wPP == 0:
-                                # df = df[df.EXISTENCE_PP == 0 & ( (df.mTHICKNESS_DETACH_PP == None) | (df.mTHICKNESS_DETACH_PP == 0) )]
-                                df = df[df.PP_SCORE == -1]
-                                if len(df.OLD_KEY.unique()) < 6:
-                                        df = dfTemp.copy()
-                                        df['EFFECT_FIT_SCORE'] = df.apply(lambda x:x.EFFECT_FIT_SCORE+100 if x.PP_SCORE == -1 else x.EFFECT_FIT_SCORE, axis = 1)
-                        elif wPP == 1:
-                                if not ((10 in brEffect) | (20 in brEffect) | (30 in brEffect)):
-                                        df = df[(df.PP_SCORE == 0) | (df.PP_SCORE == 1) | (df.PP_SCORE == -1)]
-                                        if len(df.OLD_KEY.unique()) < 6:
-                                                df = dfTemp.copy()
-                                                df['EFFECT_FIT_SCORE'] = df.apply(lambda x:x.EFFECT_FIT_SCORE+100 if ((row.PP_SCORE == 0) | (row.PP_SCORE == 1) | (row.PP_SCORE == -1)) else x.EFFECT_FIT_SCORE, axis = 1)
-                        elif wPP == 2:
-                                if (10 in brEffect) | (20 in brEffect) | (30 in brEffect):
-                                        df = df[(df.PP_SCORE == 2) | (df.PP_SCORE == 1)]
-                                        if len(df.OLD_KEY.unique()) < 6:
-                                                df = dfTemp.copy()
-                                                df['EFFECT_FIT_SCORE'] = df.apply(lambda x:x.EFFECT_FIT_SCORE+100 if ((row.PP_SCORE == 2) | (row.PP_SCORE == 1)) else x.EFFECT_FIT_SCORE, axis = 1)
+                                if 1 not in wType: # Wire Filtering
+                                        df = df[df.WIRE != 0]  
                                 
-                                else:
-                                        df = df[(df.PP_SCORE == 0) | (df.PP_SCORE == 1) | (df.PP_SCORE == 2)]
-                                        if len(df.OLD_KEY.unique()) < 6:
-                                                df = dfTemp.copy()
-                                                df['EFFECT_FIT_SCORE'] = df.apply(lambda x:x.EFFECT_FIT_SCORE+100 if ((row.PP_SCORE == 0) | (row.PP_SCORE == 1) | (row.PP_SCORE == 2)) else x.EFFECT_FIT_SCORE, axis = 1)
+                                if rib == 1:
+                                        df = df[df.L_SHAPE == 0]
                                 
+                                elif rib == 2:
+                                        df = df[df.mHEIGHT <= mHeightLc]
+                                        
+                                
+                                if len(df) > 0:
+                                        dfTemp = df.copy()
+                                        if wPP == 0:
+                                                df = df[df.PP_SCORE == -1]
+                                                if len(df.OLD_KEY.unique()) < 6:
+                                                        df = dfTemp.copy()
+                                                        df['EFFECT_FIT_SCORE'] = df.apply(lambda x:x.EFFECT_FIT_SCORE+200 if x.PP_SCORE == -1 else x.EFFECT_FIT_SCORE, axis = 1)
+                                        elif wPP == 1:
+                                                if not ((10 in brEffect) | (20 in brEffect) | (30 in brEffect)):
+                                                        df = df[(df.PP_SCORE == 0) | (df.PP_SCORE == 1) | (df.PP_SCORE == -1)]
+                                                        if len(df.OLD_KEY.unique()) < 6:
+                                                                df = dfTemp.copy()
+                                                                df['EFFECT_FIT_SCORE'] = df.apply(lambda x:x.EFFECT_FIT_SCORE+200 if ((row.PP_SCORE == 0) | (row.PP_SCORE == 1) | (row.PP_SCORE == -1)) else x.EFFECT_FIT_SCORE, axis = 1)
+                                        elif wPP == 2:
+                                                if (10 in brEffect) | (20 in brEffect) | (30 in brEffect):
+                                                        df = df[(df.PP_SCORE == 2) | (df.PP_SCORE == 1)]
+                                                        if len(df.OLD_KEY.unique()) < 6:
+                                                                df = dfTemp.copy()
+                                                                df['EFFECT_FIT_SCORE'] = df.apply(lambda x:x.EFFECT_FIT_SCORE+200 if ((row.PP_SCORE == 2) | (row.PP_SCORE == 1)) else x.EFFECT_FIT_SCORE, axis = 1)
+                                                
+                                                else:
+                                                        df = df[(df.PP_SCORE == 0) | (df.PP_SCORE == 1) | (df.PP_SCORE == 2)]
+                                                        if len(df.OLD_KEY.unique()) < 6:
+                                                                df = dfTemp.copy()
+                                                                df['EFFECT_FIT_SCORE'] = df.apply(lambda x:x.EFFECT_FIT_SCORE+200 if ((row.PP_SCORE == 0) | (row.PP_SCORE == 1) | (row.PP_SCORE == 2)) else x.EFFECT_FIT_SCORE, axis = 1)
+                                                
 
-                        
-                        dfTemp = df.copy()
-                        
-                        if wImportant == 3:
-                                isDesignConcept = []
-                                for idx, row in df.iterrows():
-                                        isDesignConcept.append(row.DESIGN_CONCEPT in wDesignConcept)
+                                        
+                                        dfTemp = df.copy()
+                                        
+                                        if wImportant == 3:
+                                                isDesignConcept = []
+                                                for idx, row in df.iterrows():
+                                                        isDesignConcept.append(row.DESIGN_CONCEPT in wDesignConcept)
 
-                                df = df[isDesignConcept]
-                                if len(df.OLD_KEY.unique()) < 6:
-                                        df = dfTemp.copy()
-                                        df['BREAST_FIT_SCORE'] = df.apply(lambda x:x.BREAST_FIT_SCORE+50 if x.DESIGN_CONCEPT in wDesignConcept else x.BREAST_FIT_SCORE, axis = 1)
+                                                df = df[isDesignConcept]
+                                                if len(df.OLD_KEY.unique()) < 6:
+                                                        df = dfTemp.copy()
+                                                        df['BREAST_FIT_SCORE'] = df.apply(lambda x:x.BREAST_FIT_SCORE+50 if x.DESIGN_CONCEPT in wDesignConcept else x.BREAST_FIT_SCORE, axis = 1)
+                                                
+                                        
+                                        elif wImportant == 5:
+                                                isPrice = []
+                                                for idx, row in df.iterrows():
+                                                        isPrice.append(row.PRICE <= wPriceMax)
+                                                df = df[isPrice]
+                                                if len(df.OLD_KEY.unique()) < 6:
+                                                        df = dfTemp.copy()
+                                                        df['BREAST_FIT_SCORE'] = df.apply(lambda x:x.BREAST_FIT_SCORE+50 if x.PRICE <= wPriceMax else x.BREAST_FIT_SCORE, axis = 1)
+                        
+
+                        effectWeight = 1.5
+                        if wImportant == 1:
+                                effectWeight = 2                
+
+                        if len(df.OLD_KEY.unique()) > 0:
+                                # Score
+                                df['BREAST_FIT_SCORE'] = df.apply(score_breastFit, axis = 1)
+                                df['EFFECT_FIT_SCORE'] = df.apply(score_effectFit, axis = 1)
                                 
                         
-                        elif wImportant == 5:
-                                isPrice = []
-                                for idx, row in df.iterrows():
-                                        isPrice.append(row.PRICE <= wPriceMax)
-                                df = df[isPrice]
-                                if len(df.OLD_KEY.unique()) < 6:
-                                        df = dfTemp.copy()
-                                        df['BREAST_FIT_SCORE'] = df.apply(lambda x:x.BREAST_FIT_SCORE+50 if x.PRICE <= wPriceMax else x.BREAST_FIT_SCORE, axis = 1)
                 
-
-                effectWeight = 1.5
-                if wImportant == 1:
-                        effectWeight = 2                
-
-                if len(df.OLD_KEY.unique()) < 2:
-                        return jsonify({"success": "no", "error": "0"})
-                # Score
-                df['BREAST_FIT_SCORE'] = df.apply(score_breastFit, axis = 1)
-                df['EFFECT_FIT_SCORE'] = df.apply(score_effectFit, axis = 1)
-                
-        
-    
-                if wBrEffectMost == 0:
-                        df["SCORE"] = df.apply(
-                                lambda x: x.BREAST_FIT_SCORE - (x.BIGGER_SCORE + x.GATHER_SCORE + x.PUSHUP_SCORE + x.SUPPORT_SCORE + x.ACCBREAST_SCORE + x.BACK_SCORE) * effectWeight, axis=1
-                        )
-                        df['EFFECT_FIT_SCORE'] = df.apply(
-                                lambda x: x.BIGGER_SCORE + x.GATHER_SCORE + x.PUSHUP_SCORE + x.SUPPORT_SCORE + x.ACCBREAST_SCORE + x.BACK_SCORE, axis=1
-                        )
-                
-                else: 
-                        df["SCORE"] = df.apply(
-                                lambda x: x.BREAST_FIT_SCORE + x.EFFECT_FIT_SCORE * effectWeight, axis=1
-                        )
-                
-                df.sort_values(by = 'SCORE', ascending = False, inplace = True)
-                df.drop_duplicates(['OLD_KEY'],keep='first',inplace=True)
-                df.reset_index(drop = True, inplace = True)
-        
-                # Brand Balancing
-                counts = df.SCORE.value_counts().to_list()
-                for idx, key in enumerate(df.SCORE.value_counts().keys().tolist()):
-                
-                        if counts[idx] > 1:
-                                dfTemp = df[df.SCORE == key].copy()
-                                start = dfTemp.index[0]
-                                finish = dfTemp.index[-1]
-                                dfLen = len(dfTemp)
-                                dfTemp['BD_NAME'] = dfTemp.PK_ITEM.apply(lambda x:x[:2])
-                                bdNames = dfTemp.BD_NAME.value_counts().keys().tolist()
-                                bdNamesLen = len(bdNames)
+                                if wBrEffectMost == 0:
+                                        df["SCORE"] = df.apply(
+                                                lambda x: x.BREAST_FIT_SCORE - (x.BIGGER_SCORE + x.GATHER_SCORE + x.PUSHUP_SCORE + x.SUPPORT_SCORE + x.ACCBREAST_SCORE + x.BACK_SCORE) * effectWeight, axis=1
+                                        )
+                                        df['EFFECT_FIT_SCORE'] = df.apply(
+                                                lambda x: x.BIGGER_SCORE + x.GATHER_SCORE + x.PUSHUP_SCORE + x.SUPPORT_SCORE + x.ACCBREAST_SCORE + x.BACK_SCORE, axis=1
+                                        )
                                 
-                                for idx, name in enumerate(bdNames):
-                                        globals()['df{}'.format(idx)] = dfTemp[dfTemp.BD_NAME == name].copy()
-                                        globals()['df{}'.format(idx)].reset_index(drop = True, inplace = True)
+                                else: 
+                                        df["SCORE"] = df.apply(
+                                                lambda x: x.BREAST_FIT_SCORE + x.EFFECT_FIT_SCORE * effectWeight, axis=1
+                                        )
                                 
-                                dfNew = pd.DataFrame(index=range(0,0), columns=dfTemp.columns)
-                                stamp = 0
-                                for i in range(dfLen):
-                                        dfNew = dfNew.append(globals()['df{}'.format(stamp)].iloc[0])
-                                        globals()['df{}'.format(stamp)].drop(0, inplace = True)
-                                        globals()['df{}'.format(stamp)].reset_index(drop = True, inplace = True)
-                                        stamp = (stamp+1) % bdNamesLen
-                                        if i != dfLen -1:
-                                                while len(globals()['df{}'.format(stamp)]) == 0:
+                                df.sort_values(by = 'SCORE', ascending = False, inplace = True)
+                                df.drop_duplicates(['OLD_KEY'],keep='first',inplace=True)
+                                df.reset_index(drop = True, inplace = True)
+                        
+                                # Brand Balancing
+                                counts = df.SCORE.value_counts().to_list()
+                                for idx, key in enumerate(df.SCORE.value_counts().keys().tolist()):
+                                
+                                        if counts[idx] > 1:
+                                                dfTemp = df[df.SCORE == key].copy()
+                                                start = dfTemp.index[0]
+                                                finish = dfTemp.index[-1]
+                                                dfLen = len(dfTemp)
+                                                dfTemp['BD_NAME'] = dfTemp.PK_ITEM.apply(lambda x:x[:2])
+                                                bdNames = dfTemp.BD_NAME.value_counts().keys().tolist()
+                                                bdNamesLen = len(bdNames)
+                                                
+                                                for idx, name in enumerate(bdNames):
+                                                        globals()['df{}'.format(idx)] = dfTemp[dfTemp.BD_NAME == name].copy()
+                                                        globals()['df{}'.format(idx)].reset_index(drop = True, inplace = True)
+                                                
+                                                dfNew = pd.DataFrame(index=range(0,0), columns=dfTemp.columns)
+                                                stamp = 0
+                                                for i in range(dfLen):
+                                                        dfNew = dfNew.append(globals()['df{}'.format(stamp)].iloc[0])
+                                                        globals()['df{}'.format(stamp)].drop(0, inplace = True)
+                                                        globals()['df{}'.format(stamp)].reset_index(drop = True, inplace = True)
                                                         stamp = (stamp+1) % bdNamesLen
-                                dfNew.reset_index(drop = True, inplace = True)
-                                df[start:finish+1] = dfNew
+                                                        if i != dfLen -1:
+                                                                while len(globals()['df{}'.format(stamp)]) == 0:
+                                                                        stamp = (stamp+1) % bdNamesLen
+                                                dfNew.reset_index(drop = True, inplace = True)
+                                                df[start:finish+1] = dfNew
 
                 df.reset_index(drop = True, inplace = True)
-        
                 maxLen = min(len(df), 10)
                 df = df[:maxLen]
         
