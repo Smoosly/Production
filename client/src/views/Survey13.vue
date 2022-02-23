@@ -134,6 +134,7 @@ export default {
         this.answer_1[1] = this.bigger[1];
         // 작아보이기 false로
         this.others[1] = false;
+        this.answer_1[7] = false;
       } else if (order == 1) {
         this.gather[index] = !this.gather[index];
         this.answer_1[2] = this.gather[0];
@@ -145,6 +146,7 @@ export default {
       }
       this.others[4] = false;
       this.answer_1[10] = false;
+      console.log(this.answer_1);
       this.decideNext();
     },
     cancelAnswer(order, index) {
@@ -161,10 +163,12 @@ export default {
         this.pushup = [false, false];
       }
       this.answer_1[2 * order + index] = false;
+      console.log(this.answer_1);
       this.decideNext();
     },
     setOthers(i) {
-      // console.log("setOthers");
+      console.log("setOthers");
+      console.log(i);
       this.others[i] = !this.others[i];
 
       if (this.others[1]) {
@@ -192,14 +196,15 @@ export default {
       } else {
         this.others[4] = false;
       }
-      // console.log(this.others);
+      console.log(this.others);
+      console.log(this.answer_1);
       for (const idx in this.others) {
         this.answer_1[Number(idx) + 6] = this.others[Number(idx)];
       }
+      console.log(this.answer_1);
       this.decideNext();
     },
     decideNext() {
-      // console.log(this.answer_1);
       let count = 0;
       for (let i in this.answer_1) {
         if (this.answer_1[i] == true) count++;
@@ -340,16 +345,18 @@ export default {
                 }
                 this.answer_1[4] = this.pushup[0];
                 this.answer_1[5] = this.pushup[1];
+                console.log(this.answer_1);
               }
               //4,5,6,7, 받쳐, 작아, 부유방, 등살
-              if (4 <= Number(ans[0]) <= 7) {
-                // console.log(ans[0], typeof Number(ans[0]));
+              if (Number(ans[0]) >= 4 && Number(ans[0]) <= 7) {
+                console.log(ans[0], typeof Number(ans[0]));
                 this.setOthers(Number(ans[0]) - 4);
               }
             });
 
             let ans2 = result.data.record[this.page[2].column];
             if (ans2 !== null) {
+              console.log(this.answer_1);
               this.decideNext();
               this.answer2 = ans2;
               // console.log(ans2);

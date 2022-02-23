@@ -44,9 +44,11 @@ app.use("/braRecommend", require("./router/braRecommend"));
 app.use("/homeFitting", require("./router/homeFitting"));
 app.use("/review", require("./router/review"));
 app.use("*.html", function (req, res) {
-  res.sendFile(path.join(__dirname, "/public", "/home/smoosly/Smoosly/Production/server/public/naver8a611ac772294471e9f7104411d2030a.html"));
+  res.sendFile(path.join(__dirname, "../", "naver8a611ac772294471e9f7104411d2030a.html"));
 });
-
+app.use("*.txt", function (req, res) {
+  res.status(200).sendFile(path.join(__dirname, "../", "robots.txt"));
+});
 app.use("*", function (req, res) {
   res.sendFile(path.join(__dirname, "/public", "index.html"));
 });
@@ -59,9 +61,9 @@ try {
   };
 
   HTTPS.createServer(option, app).listen(sslport, () => {
-    winston.info(`*443* Example app listening at https://smoosly.com`);
-    winston.info("*443* Check env_var: ", process.env.NODE_ENV, process.env.PORT);
-    winston.info("*443* sslport: ", sslport);
+    console.log(`*443* Example app listening at https://smoosly.com`);
+    console.log("*443* Check env_var: ", process.env.NODE_ENV, process.env.PORT);
+    console.log("*443* sslport: ", sslport);
   });
 } catch (error) {
   winston.error(error);
@@ -69,7 +71,7 @@ try {
 
 // http
 app_http.all("*", (req, res) => {
-  winston.info("https://" + req.headers.host + req.originalUrl);
+  console.log("https://" + req.headers.host + req.originalUrl);
   return res.redirect("https://" + req.headers.host + req.originalUrl);
 });
 
