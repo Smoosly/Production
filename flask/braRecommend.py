@@ -325,14 +325,31 @@ def filter_size(x):
         sizes = x.SIZE.split(',')
         score = 0
         realSizes = ""
-        if Size[0] in sizeonlys:
+        sizeFine = 0
+
+        for size in sizeonlys:
+                if (len(size) < 4) | (size[2:] == 'AA'):
+                        if Size[0] == size:
+                                sizeFine = 1
+                                break
+                else:
+                        if (Size[:2] in size) & (Size[2:] in size):
+                                sizeFine = 1
+                                break
+                        
+        if sizeFine == 1:
                 for size in sizes:
                         for idx, pSize in enumerate(Size):
-                                if (pSize[:2] in size) & (pSize[2:] in size) & (size not in realSizes):
-                                        score += 10**(2-idx)
-                                        realSizes += (size+',')
-        
-        if score > 100:
+                                if (len(size) < 4) | (size[2:] == 'AA'):
+                                        if (pSize in size) & (size not in realSizes):
+                                                score += 10**(2-idx)
+                                                realSizes += (size+',')
+                                else:
+                                        if (pSize[:2] in size) & (pSize[2:] in size) & (size not in realSizes):
+                                                score += 10**(2-idx)
+                                                realSizes += (size+',')
+                
+        if (sizeFine == 1) & (score > 100):
                 return 1
         else:
                 return 0

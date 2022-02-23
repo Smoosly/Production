@@ -51,6 +51,10 @@ const isValidImg = async (leftImg, rightImg) => {
     if (result.data.success === "yes") {
       resolve({ success: true, message: "이미지 업로드 성공" });
     } else {
+      winston.debug("check here")
+      winston.debug(util.inspect(result.data, false, null, true))
+      winston.debug(result.data.error)
+      winston.debug(typeof result.data.error)
       const errCode = Number(result.data.error);
       winston.debug(errCode);
       let errMessage = "";
