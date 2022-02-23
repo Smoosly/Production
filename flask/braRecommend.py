@@ -27,6 +27,8 @@ log.info("logtest3")
 blueprint = Blueprint("braRecommend", __name__, url_prefix="/")
 
 myToken = 'xoxb-2373155174243-3142698051189-XlqjsEmXLlcbLX61Fjy1TCFM'
+slackKit = WebClient(token = myToken)
+
 with open("config.json", "r") as f:
         config = json.load(f)
 
@@ -636,7 +638,6 @@ def recommend():
                         globals()['pkItem10'], globals()['oldKey10'], globals()['size10'], None, globals()['breastScore10'], globals()['effectScore10']))
                 db.commit()
                 current = open('now.txt', 'r')
-                slackKit = WebClient(token = myToken)
                 lines = current.readlines()
                 kitUploads = list(map(int, lines[0].strip().split(' ')))
                 breastTests = list(map(int, lines[1].strip().split(' ')))

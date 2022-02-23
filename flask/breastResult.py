@@ -29,6 +29,7 @@ with open("config.json", "r") as f:
     config = json.load(f)
 
 myToken = 'xoxb-2373155174243-3147919283668-Wybxp5gNVE8CnK1mEoDaAYS6'
+slackKit = WebClient(token = myToken)
 
 def generalSize(mUnderBust, mUpperBust):
         underArr = ["60", "65", "70", "75", "80", "85", "90", "95", "100", "105", "110"]
@@ -267,7 +268,6 @@ def saveBreastResult():
                                         ),
                                 )
                                 current = open('now.txt', 'r')
-                                slackKit = WebClient(token = myToken)
                                 lines = current.readlines()
                                 kitUploads = list(map(int, lines[0].strip().split(' ')))
                                 breastTests = list(map(int, lines[1].strip().split(' ')))

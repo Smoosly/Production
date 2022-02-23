@@ -36,6 +36,7 @@ lsPath = "../LowerShapes/"
 matplotlib.use("Agg")
 
 myToken = "xoxb-2373155174243-3168997936240-3X35cyzmitJ90mwiAt8C8pXY"
+slackKit = WebClient(token = myToken)
 
 with open("config.json", "r") as f:
     config = json.load(f)
@@ -469,7 +470,6 @@ def kitVision():
                                         pkID))
                                 db.commit()
                                 current = open('now.txt', 'r')
-                                slackKit = WebClient(token = myToken)
                                 lines = current.readlines()
                                 kitUploads = list(map(int, lines[0].strip().split(' ')))
                                 breastTests = list(map(int, lines[1].strip().split(' ')))
