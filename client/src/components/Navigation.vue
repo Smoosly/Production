@@ -7,7 +7,7 @@
         </router-link>
       </div>
       <ul v-show="!mobile" class="navigation">
-        <li v-if="!isAdmin"><a @click="navi" class="link" target="_blank" href="https://discreet-puck-4be.notion.site/about-UI-49b269028eea4b43b0c7e00e95c94700">About</a></li>
+        <li v-if="!isAdmin"><a @click="navi" class="link" href="https://discreet-puck-4be.notion.site/about-UI-49b269028eea4b43b0c7e00e95c94700">About</a></li>
         <li v-else-if="isAdmin"><router-link class="link" :to="{ name: 'UserList' }">테이블관리</router-link></li>
         <li><a @click="test" class="link">가슴 테스트</a></li>
         <li v-if="!isUserLogin"><a @click="login" class="link">로그인</a></li>
@@ -21,7 +21,7 @@
       <transition name="mobile-nav">
         <ul v-show="mobileNav" class="dropdown-nav">
           <li><img class="logo_mobile_nav" src="@/assets/smoosly_eng_black_1x.png" alt="" /></li>
-          <li v-if="!isAdmin"><a class="link" target="_blank" href="https://discreet-puck-4be.notion.site/about-UI-49b269028eea4b43b0c7e00e95c94700" @click="navi" >About</a></li>
+          <li v-if="!isAdmin"><a class="link" href="https://discreet-puck-4be.notion.site/about-UI-49b269028eea4b43b0c7e00e95c94700" @click="navi" >About</a></li>
           <li v-else-if="isAdmin"><router-link class="link" :to="{ name: 'UserList' }">테이블관리</router-link></li>
           <li><a @click="test" class="link">가슴 테스트</a></li>
           <li v-if="!isUserLogin"><a class="link" @click="login">로그인</a></li>
