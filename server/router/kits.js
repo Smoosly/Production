@@ -38,7 +38,7 @@ const isValidImg = async (leftImg, rightImg) => {
     };
     //Flask server에 요청
     winston.debug(util.inspect(data, false, null, true));
-    const result = await axios.post("http://127.0.0.1:5000/isKitImgValid", data);
+    const result = await axios.post("http://localhost:5000/isKitImgValid", data);
     winston.debug(util.inspect(result, false, null, true));
     if (!result) {
       resolve({ success: false, message: "재업로드해주세요" });
