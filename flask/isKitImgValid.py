@@ -1,3 +1,4 @@
+from turtle import right
 from flask import request, jsonify, Blueprint
 from operator import itemgetter
 from scipy.interpolate import interp1d
@@ -183,7 +184,7 @@ def measure(filename, type, dir = 0):
 
         data = sorted(rectangleContours, key=itemgetter("xMin")) # Box Sort by xMin
         if len(data) != 4: # Box Missing
-                return jsonify({"success": "no", "error": "0", "dir" : "{}".format(dir)})
+                return {"success": "no", "error": "0", "dir" : "{}".format(dir)}
         
         # Mediate Direction
         dirComRatios = [5.58, 0.167, 0.616, 1.93]
@@ -193,7 +194,7 @@ def measure(filename, type, dir = 0):
         mediation = dirTrue[dirArray.argmin()]
         
         if dirArray.argmin() == 3: # The direction of image is converted
-                return jsonify({"success" : "no", "error" : "1", "dir" : "{}".format(dir)})
+                return {"success" : "no", "error" : "1", "dir" : "{}".format(dir)}
                 
         for i in range(mediation[0]):
                 morph = cv2.rotate(morph, mediation[1])
@@ -245,7 +246,7 @@ def measure(filename, type, dir = 0):
         
                 boxRatio = (xMax - xMin) / (yMax - yMin)
                 if (boxRatio > ratioOffset[idx] + 1) | (boxRatio < ratioOffset[idx] - 1):
-                        return jsonify({"success" : "no", "error" : "{}".format(idx + 2), "dir" : "{}".format(dir)})
+                        return {"success" : "no", "error" : "{}".format(idx + 2), "dir" : "{}".format(dir)}
 
                 grayImg = morph.copy()[
                         int(yMin + imgDropOffset[1][idx]) : int(yMax - imgDropOffset[1][idx]),
@@ -257,12 +258,13 @@ def measure(filename, type, dir = 0):
                                 int(yMin + imgDropOffset[1][idx]) : int(yMax - imgDropOffset[1][idx]),
                                 int(xMin + imgDropOffset[0][idx]) : int(xMax - imgDropOffset[0][idx] * 2),
                         ]
-                        
+
+                cv2.imwrite("{}.jpg".format(idx), grayImg)     
                 contours, _ = cv2.findContours(
                         grayImg, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE
                 )
                 length = np.array([cv2.arcLength(x, closed=True) for x in contours])
-
+                
                 if len(length) != 0:
                         cont = contours[length.argmax()]
                         approx = np.squeeze(
@@ -323,7 +325,7 @@ def measure(filename, type, dir = 0):
                                 measures.append(dictLowercup)
 
                 else:
-                        return jsonify({"success": "no", "error": "{}".format(2 + idx), "dir" : "{}".format(dir)})
+                        return {"success": "no", "error": "{}".format(2 + idx), "dir" : "{}".format(dir)}
 
         return measures
 
@@ -341,6 +343,7 @@ def kitVision():
                 rightImgPath = Data["rightImgPath"]
                 log.info(f"---> {kitType}, {leftImgPath}, {rightImgPath}")
                 whereBt = -1
+                
         
 
                 if kitType == 0:  # Breast kit

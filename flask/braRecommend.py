@@ -449,7 +449,7 @@ def recommend():
                 df['BREAST_FIT_SCORE'] = 0
                 df['EFFECT_FIT_SCORE'] = 0
 
-                print("Hello {}".format(wPP))
+               
                 
                 # log.debug(len(df_brAll))
                 if len(df.OLD_KEY.unique()) > 0:
