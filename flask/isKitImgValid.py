@@ -477,7 +477,7 @@ def kitVision():
                                 kitAll, kitNow = kitUploads
                                 breastAll, breastNow = breastTests
                                 braAll, braNow = braRecommends
-                                slackKit.chat_postMessage(channel = "#3rd-진행상황", text = "{}님이 키트 업로드하였습니다.\n키트 업로드 진행한 사람 : {}/{}\n {}명 남았습니다".format(pkID, kitNow, kitAll, kitAll-kitNow))
+                                slackKit.chat_postMessage(channel = "#3rd-진행상황", text = "{}님이 키트 업로드하였습니다.\n키트 업로드 진행한 사람 : {}/{}\n {}명 남았습니다".format(pkID, kitNow+1, kitAll, kitAll-kitNow))
                                 
                                 
                                 current.close()
