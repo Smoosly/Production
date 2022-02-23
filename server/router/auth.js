@@ -7,10 +7,20 @@ const naver = require("../config/naver");
 const kakao = require("../config/kakao");
 const google = require("../config/google");
 const passport = require("passport");
+const flash = require("connect-flash");
+const session = require("express-session")
 const NaverStrategy = require("passport-naver").Strategy;
 const KakaoStrategy = require("passport-kakao").Strategy;
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const winston = require("../winston");
+
+router.use(flash());
+router.use(session({
+  secret: 'keyboard cat',
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: true }
+}))
 
 passport.serializeUser((user, done) => {
   done(null, { user: user.dataValues.PK_ID, auth: user.dataValues.token });
