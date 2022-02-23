@@ -119,7 +119,7 @@ def get_defaultSize(mUnderBust, mUpperBust, wPressure, breastSizeGeneral, braSiz
                                                 else:
                                                         Size.append(braSize)
                                         else:
-                                                Size.append9('70B')
+                                                Size.append('70B')
                                                 if braSize in Size:
                                                         Size.append('75A')
                                                 else:
@@ -333,15 +333,15 @@ def filter_size(x):
                                 sizeFine = 1
                                 break
                 else:
-                        if (Size[:2] in size) & (Size[2:] in size):
+                        if (Size[0][:2] in size) & (Size[0][2:] in size):
                                 sizeFine = 1
                                 break
-                        
+
         if sizeFine == 1:
                 for size in sizes:
                         for idx, pSize in enumerate(Size):
                                 if (len(size) < 4) | (size[2:] == 'AA'):
-                                        if (pSize in size) & (size not in realSizes):
+                                        if (pSize == size) & (size not in realSizes):
                                                 score += 10**(2-idx)
                                                 realSizes += (size+',')
                                 else:
@@ -360,8 +360,12 @@ def get_each_size(x):
         realSizes = ""
         for size in sizes:
                 for idx, pSize in enumerate(Size):
-                        if (pSize[:2] in size) & (pSize[2:] in size) & (size not in realSizes):
-                                realSizes += (size+',')
+                        if (len(size) < 4) | (size[2:] == 'AA'):
+                                if (pSize == size) & (size not in realSizes):
+                                        realSizes += (size+',')
+                        else:
+                                if (pSize[:2] in size) & (pSize[2:] in size) & (size not in realSizes):
+                                        realSizes += (size+',')
                 
 
         return realSizes
@@ -535,7 +539,7 @@ def recommend():
                                                 df = df[isDesignConcept]
                                                 if len(df.OLD_KEY.unique()) < 6:
                                                         df = dfTemp.copy()
-                                                        df['BREAST_FIT_SCORE'] = df.apply(lambda x:x.BREAST_FIT_SCORE+50 if x.DESIGN_CONCEPT in wDesignConcept else x.BREAST_FIT_SCORE, axis = 1)
+                                                        df['BREAST_FIT_SCORE'] = df.apply(lambda x:x.BREAST_FIT_SCORE+200 if x.DESIGN_CONCEPT in wDesignConcept else x.BREAST_FIT_SCORE, axis = 1)
                                                 
                                         
                                         elif wImportant == 5:
@@ -561,7 +565,7 @@ def recommend():
                 
                                 if wBrEffectMost == 0:
                                         df["SCORE"] = df.apply(
-                                                lambda x: x.BREAST_FIT_SCORE - (x.BIGGER_SCORE + x.GATHER_SCORE + x.PUSHUP_SCORE + x.SUPPORT_SCORE + x.ACCBREAST_SCORE + x.BACK_SCORE) * effectWeight, axis=1
+                                                lambda x: x.BREAST_FIT_SCORE + x.EFFECT_FIT_SCORE - (x.BIGGER_SCORE + x.GATHER_SCORE + x.PUSHUP_SCORE + x.SUPPORT_SCORE + x.ACCBREAST_SCORE + x.BACK_SCORE) * effectWeight, axis=1
                                         )
                                         df['EFFECT_FIT_SCORE'] = df.apply(
                                                 lambda x: x.BIGGER_SCORE + x.GATHER_SCORE + x.PUSHUP_SCORE + x.SUPPORT_SCORE + x.ACCBREAST_SCORE + x.BACK_SCORE, axis=1
@@ -654,6 +658,7 @@ def recommend():
                         globals()['pkItem9'], globals()['oldKey9'], globals()['size9'], None, globals()['breastScore9'], globals()['effectScore9'], 
                         globals()['pkItem10'], globals()['oldKey10'], globals()['size10'], None, globals()['breastScore10'], globals()['effectScore10']))
                 db.commit()
+
                 current = open('now.txt', 'r')
                 lines = current.readlines()
                 kitUploads = list(map(int, lines[0].strip().split(' ')))
