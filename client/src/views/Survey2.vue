@@ -332,6 +332,9 @@ export default {
       if (this.answer_1 === null || this.answer_2 === null || this.answer_4 === null) {
         return this.emitter.emit("showRedToast", "답변을 입력해주세요.");
       }
+      if (this.answer_1 > this.answer_2){
+        return this.emitter.emit("showRedToast", "윗가슴 둘레를 밑가슴 둘레보다 작지 않게 입력해주세요.");
+      }
       const answers = {
         PK_ID: this.$store.state.PK_ID,
         [this.page[0].column]: parseFloat(this.answer_1),
