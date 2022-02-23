@@ -10,7 +10,7 @@
       </h3>
     </div>
     <div class="question-container">
-      <div data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="700" class="slider">
+      <div data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="700" id="q0" class="slider">
         <div class="title">Q. {{ page[0].question_txt }}</div>
         <div class="container">
           <vue-slider :tooltip-style="{ backgroundColor: '#FFD07F', borderColor: '#FFD07F' }" :process-style="{ backgroundColor: 'orange' }" railStyle="height: 20px; width: 256px;" v-model="value" :marks="marks" :included="true" :tooltip-formatter="formatter">
@@ -81,6 +81,7 @@ export default {
     },
     goNext() {
       if (this.value === null) {
+        document.getElementById("q0").scrollIntoView(false);
         return this.emitter.emit("showRedToast", "답변을 입력해주세요");
       }
       const answers = {

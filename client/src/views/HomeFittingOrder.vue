@@ -16,7 +16,7 @@
       <div class="box">
         <div data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="1000" class="postcode-container">
           <div class="input-group item">
-            <input class="form-input postcode" type="text" placeholder="우편번호" v-model="postcode" />
+            <input :disabled="address === ''? disabled : ''" class="form-input postcode" type="text" placeholder="우편번호" v-model="postcode" />
           </div>
           <button type="button" class="btn-primary btn-40 item" @click="execDaumPostcode">주소검색</button>
         </div>
@@ -38,14 +38,14 @@
         />
       </div>
       <div data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="1000" class="input-group">
-        <input class="form-input" type="text" v-model="address" placeholder="주소" />
+        <input :disabled="postcode === ''? disabled : ''" class="form-input" type="text" v-model="address" placeholder="주소" />
       </div>
       <br />
       <div data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="1000" class="input-group">
-        <input class="form-input" type="text" v-model="extraAddress" ref="extraAddress" placeholder="상세주소" />
+        <input :disabled="postcode === ''? disabled : ''" class="form-input" type="text" v-model="extraAddress" ref="extraAddress" placeholder="상세주소(입력 필수)" />
       </div>
       <div data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="1000" class="input-group">
-        <input style="margin-top: 28px" class="form-input" type="text" v-model="message" placeholder="배송 요청사항" />
+        <input :disabled="postcode === ''? disabled : ''" style="margin-top: 28px" class="form-input" type="text" v-model="message" placeholder="배송 요청사항" />
       </div>
 
       <div data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="1000" class="input-group">
@@ -104,14 +104,17 @@ export default {
           }
           if (data.userSelectedType === "R") {
             if (data.bname !== "" && /[동|로|가]$/g.test(data.bname)) {
-              this.extraAddress = data.bname;
+              // this.extraAddress = data.bname;
+              this.address += ` ${data.bname}`
             }
             if (data.buildingName !== "" && data.apartment === "Y") {
-              this.extraAddress += this.extraAddress !== "" ? `, ${data.buildingName}` : data.buildingName;
+              // this.extraAddress += this.extraAddress !== "" ? `, ${data.buildingName}` : data.buildingName;
+              this.address += ` ${data.buildingName}`
+              // console.log(this.extraAddress)
             }
-            if (this.extraAddress !== "") {
-              this.extraAddress = ` (${this.extraAddress})`;
-            }
+            // if (this.extraAddress !== "") {
+            //   this.extraAddress = ` (${this.extraAddress})`;
+            // }
           } else {
             this.extraAddress = "";
           }

@@ -7,7 +7,7 @@
       <h3>{{ page[0].flow_txt }}</h3>
     </div>
     <div class="question-container">
-      <div data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="700" class="single-select">
+      <div data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="700" id="q0" class="single-select">
         <div class="title">Q. {{ page[0].question_txt }}</div>
         <div class="answer-box bbong-box">
           <button type="button" @click="setBBongAnswer(i)" v-for="(ans, i) in page[0].answer_options" :key="i" :class="{ answer_1: answer_0[i] == true }" class="btn-border-answer btn-50-ans answer-btn">
@@ -15,7 +15,7 @@
           </button>
         </div>
       </div>
-      <div data-aos="fade-down" data-aos-anchor-placement="top-bottom" data-aos-duration="700" class="multi-select">
+      <div data-aos="fade-down" data-aos-anchor-placement="top-bottom" data-aos-duration="700" id="q1" class="multi-select">
         <div class="title">Q. {{ page[1].question_txt }}</div>
         <div class="func-bigger">
           <button v-if="isBiggerShow && bigger[0] == false && bigger[1] == false" type="button" @click="setAnswer(0, 0)" :class="{ answer_1: bigger[0] == true }" class="btn-primary-answer btn-50-ans">
@@ -65,7 +65,7 @@
         </div>
       </div>
 
-      <div data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="700" v-if="pickMostImportant" class="single-select">
+      <div data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="700" id="q2" v-if="pickMostImportant" class="single-select">
         <div class="title">Q. {{ page[2].question_txt }}</div>
         <div class="answer-box">
           <button type="button" @click="pickBest(i)" v-for="(ans, i) in selOptions" :key="i" :class="{ answer_1: answer_2[i] == true }" class="btn-border-answer btn-50-ans btn-most">
@@ -276,6 +276,19 @@ export default {
     },
     goNext() {
       if (this.answer0 === null || this.answer1 === null || this.answer1 === "" || (this.pickMostImportant === true && this.answer2 === null)) {
+        const questions = [this.answer0, this.answer1, this.answer2]
+        for (let i=0; i<questions.length; i++) {
+          if (questions[i] === null || questions[i] === "") {
+            if (i === 2 && this.pickMostImportant === true) {
+              document.getElementById("q2").scrollIntoView(false);
+              break;
+            }
+            else {
+              document.getElementById(`q${i}`).scrollIntoView(false);
+              break;
+            }   
+          }
+        }
         return this.emitter.emit("showRedToast", "답변을 입력해주세요");
       }
       const answers = {

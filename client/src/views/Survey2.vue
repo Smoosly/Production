@@ -10,7 +10,7 @@
       </h3>
     </div>
     <div class="question-container">
-      <div data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="700" class="input-set">
+      <div data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="700" id="q0" class="input-set">
         <div class="title">Q. {{ page[0].question_txt }}</div>
         <div class="img-box">
           <img class="img-1" src="@/assets/test_guide/under_dulle.png" alt="" />
@@ -79,7 +79,7 @@
           </div>
         </div>
       </div>
-      <div data-aos="fade-down" data-aos-anchor-placement="top-bottom" data-aos-duration="700" class="input-set">
+      <div data-aos="fade-down" data-aos-anchor-placement="top-bottom" data-aos-duration="700" id="q1" class="input-set">
         <div class="title">Q. {{ page[1].question_txt }}</div>
         <img class="img-2" src="@/assets/test_guide/upper_dulle.png" alt="" />
         <div class="img-guide">
@@ -244,7 +244,7 @@
           </div>
         </div>
       </div>
-      <div data-aos="fade-down" data-aos-anchor-placement="top-bottom" data-aos-duration="700" class="input-set">
+      <div data-aos="fade-down" data-aos-anchor-placement="top-bottom" data-aos-duration="700" id="q2" class="input-set">
         <div class="title">Q. {{ page[3].question_txt }}</div>
         <img class="img-4" src="@/assets/test_guide/shoulder_neobi.png" alt="" />
         <div class="img-guide">
@@ -330,6 +330,13 @@ export default {
     },
     goNext() {
       if (this.answer_1 === null || this.answer_2 === null || this.answer_4 === null) {
+        const questions = [this.answer_1, this.answer_2, this.answer_4]
+        for (let i=0; i<questions.length; i++) {
+          if (questions[i] === null) {
+            document.getElementById(`q${i}`).scrollIntoView(false);
+            break;
+          }
+        }
         return this.emitter.emit("showRedToast", "답변을 입력해주세요.");
       }
       if (this.answer_1 > this.answer_2){

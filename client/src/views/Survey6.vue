@@ -7,7 +7,7 @@
       <h3>{{ page[0].flow_txt }}</h3>
     </div>
     <div class="question-container">
-      <div data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="700" class="single-select">
+      <div data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="700" id="q0" class="single-select">
         <div class="title">Q. {{ page[0].question_txt }}</div>
         <div class="answer-box">
           <div class="image-btn" @click="setAnswer(i)" v-for="(ans, i) in page[0].answer_options" :key="i" :class="{ selected: answer_1[i] == true }">
@@ -72,6 +72,7 @@ export default {
     },
     goNext() {
       if (this.answer === null) {
+        document.getElementById("q0").scrollIntoView(false);
         return this.emitter.emit("showRedToast", "답변을 입력해주세요");
       }
       const answers = {
