@@ -7,7 +7,7 @@
       <h3>{{ page[0].flow_txt }}</h3>
     </div>
     <div class="question-container">
-      <div data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="700" class="single-select">
+      <div data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="700" id="q0" class="single-select">
         <div class="title">Q. {{ page[0].question_txt }}</div>
         <div class="answer-box">
           <button :disabled="ans.show == 'hidden'" type="button" @click="setAnswer(i)" v-for="(ans, i) in page[0].answer_options" :key="i" :class="{ selected: answer_1[i] == true }" class="btn-border-answer btn-50-ans answer-btn">
@@ -19,7 +19,7 @@
         </div>
       </div>
 
-      <div data-aos="fade-down" data-aos-anchor-placement="top-bottom" data-aos-duration="700" class="input-birthyear">
+      <div data-aos="fade-down" data-aos-anchor-placement="top-bottom" data-aos-duration="700" id="q1" class="input-birthyear">
         <div class="title">Q. {{ page[1].question_txt }}</div>
         <scroll-picker :options="options" v-model="selections" />
       </div>
@@ -100,6 +100,13 @@ export default {
     },
     goNext() {
       if (this.answer1 === null || this.birthyear === null) {
+        const questions = [this.answer1, this.birthyear]
+        for (let i=0; i<questions.length; i++) {
+          if (questions[i] === null) {
+            document.getElementById(`q${i}`).scrollIntoView(false);
+            break;
+          }
+        }
         return this.emitter.emit("showRedToast", "답변을 입력해주세요");
       }
       const answers = {

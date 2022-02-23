@@ -51,6 +51,8 @@ export default {
             deleteCookie("user");
             this.$router.push("/");
             //state에서 user 정보 삭제로직 추가
+            const msg = "계정이 삭제되었습니다.";
+            this.emitter.emit("showNoticeToast", msg);
           }
         })
         .catch((error) => {

@@ -2,12 +2,12 @@
   <header :class="{ 'scrolled-nav': scrolledNav }">
     <nav>
       <div class="branding">
-        <router-link @click="this.emitter.emit('Navi', true)" :to="logoLink">
+        <router-link @click="homeButton" :to="logoLink">
           <img src="@/assets/smoosly_eng_main_4x.png" alt="" />
         </router-link>
       </div>
       <ul v-show="!mobile" class="navigation">
-        <li v-if="!isAdmin"><a @click="navi" class="link" target="_blank" href="https://discreet-puck-4be.notion.site/about-UI-49b269028eea4b43b0c7e00e95c94700">About</a></li>
+        <li v-if="!isAdmin"><a @click="navi" class="link" href="https://discreet-puck-4be.notion.site/about-UI-49b269028eea4b43b0c7e00e95c94700">About</a></li>
         <li v-else-if="isAdmin"><router-link class="link" :to="{ name: 'UserList' }">테이블관리</router-link></li>
         <li><a @click="test" class="link">가슴 테스트</a></li>
         <li v-if="!isUserLogin"><a @click="login" class="link">로그인</a></li>
@@ -21,7 +21,7 @@
       <transition name="mobile-nav">
         <ul v-show="mobileNav" class="dropdown-nav">
           <li><img class="logo_mobile_nav" src="@/assets/smoosly_eng_black_1x.png" alt="" /></li>
-          <li v-if="!isAdmin"><a class="link" target="_blank" href="https://discreet-puck-4be.notion.site/about-UI-49b269028eea4b43b0c7e00e95c94700" @click="navi" >About</a></li>
+          <li v-if="!isAdmin"><a class="link" href="https://discreet-puck-4be.notion.site/about-UI-49b269028eea4b43b0c7e00e95c94700" @click="navi" >About</a></li>
           <li v-else-if="isAdmin"><router-link class="link" :to="{ name: 'UserList' }">테이블관리</router-link></li>
           <li><a @click="test" class="link">가슴 테스트</a></li>
           <li v-if="!isUserLogin"><a class="link" @click="login">로그인</a></li>
@@ -75,6 +75,10 @@ export default {
     });
   },
   methods: {
+    homeButton() {
+      this.emitter.emit('Navi', true);
+      window.scrollTo(0,0);
+    },
     navi() {
       this.emitter.emit("Navi", true);
       this.emitter.emit("closeToggle");

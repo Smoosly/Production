@@ -7,7 +7,7 @@
       <h3>{{ page[0].flow_txt }}</h3>
     </div>
     <div class="question-container">
-      <div data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="700" class="single-select">
+      <div data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="700" id="q0" class="single-select">
         <div class="title">Q. {{ page[0].question_txt }}</div>
         <div class="answer-box">
           <button type="button" @click="setAnswer(page[0].column, i)" v-for="(ans, i) in page[0].answer_options" :key="i" :class="{ selected: answer_1[i] == true }" class="btn-border-answer btn-50-ans">
@@ -15,7 +15,7 @@
           </button>
         </div>
       </div>
-      <div data-aos="fade-down" data-aos-anchor-placement="top-bottom" data-aos-duration="700" class="single-select">
+      <div data-aos="fade-down" data-aos-anchor-placement="top-bottom" data-aos-duration="700" id="q1" class="single-select">
         <div class="title">Q. {{ page[1].question_txt }}</div>
         <div class="answer-box">
           <button type="button" @click="setAnswer(page[1].column, i)" v-for="(ans, i) in page[1].answer_options" :key="i" :class="{ selected: answer_2[i] == true }" class="btn-border-answer btn-50-ans">
@@ -86,6 +86,13 @@ export default {
     },
     goNext() {
       if (this.answer1 === null || this.answer2 === null) {
+        const questions = [this.answer1, this.answer2]
+        for (let i=0; i<questions.length; i++) {
+          if (questions[i] === null) {
+            document.getElementById(`q${i}`).scrollIntoView(false);
+            break;
+          }
+        }
         return this.emitter.emit("showRedToast", "답변을 입력해주세요.");
       }
       let answers = {
