@@ -7,7 +7,7 @@
       <h3>{{ page[0].flow_txt }}</h3>
     </div>
     <div class="question-container">
-      <div data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="700" class="multi-select">
+      <div data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="700" id="q0" class="multi-select">
         <div class="title">Q. {{ page[0].question_txt }}</div>
         <div class="answer-box">
           <button :disabled="ans.show == 'hidden'" type="button" @click="setAnswer1(i)" v-for="(ans, i) in page[0].answer_options" :key="i" :class="{ selected: answer_1[i] == true }" class="btn-border-answer btn-50-ans answer-btn">
@@ -24,7 +24,7 @@
         </div>
       </div>
 
-      <div data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="700" class="multi-select">
+      <div data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="700" id="q1" class="multi-select">
         <div class="title">Q. {{ page[2].question_txt }}</div>
         <div class="answer-box">
           <button type="button" @click="setAnswer2(i)" v-for="(ans, i) in page[2].answer_options" :key="i" :class="{ selected: answer_3[i] == true }" class="image-btn answer-btn">
@@ -34,14 +34,14 @@
         </div>
       </div>
 
-      <div data-aos="fade-down" data-aos-anchor-placement="top-bottom" data-aos-duration="700" class="short-answer">
+      <div data-aos="fade-down" data-aos-anchor-placement="top-bottom" data-aos-duration="700" id="q2" class="short-answer">
         <div class="title">Q. {{ page[3].question_txt }}</div>
         <div class="input-group">
           <input v-model="answer4" type="text" class="form-input" placeholder="" />
         </div>
       </div>
 
-      <div data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="700" class="choose-range">
+      <div data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="700" id="q3" class="choose-range">
         <div class="title">Q. {{ page[4].question_txt }}</div>
         <div class="container">
           <vue-slider
@@ -201,6 +201,19 @@ export default {
     },
     goNext() {
       if (this.answer1 === null || this.answer3 === null || this.answer4 === "" || this.answer5_min === null || this.answer5_max === null) {
+        const questions = [this.answer1, this.answer3, this.answer4, this.answer5_min, this.answer5_max]
+        for (let i=0; i<questions.length; i++) {
+          if (questions[i] === null) {
+            if (i === 3 || i ===4) {
+              document.getElementById("q3").scrollIntoView(false);
+              break;
+            }
+            else {
+              document.getElementById(`q${i}`).scrollIntoView(false);
+              break;
+            }
+          }
+        }
         return this.emitter.emit("showRedToast", "답변을 입력해주세요");
       }
       const answers = {

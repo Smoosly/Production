@@ -7,7 +7,7 @@
       <h3>{{ page[0].flow_txt }}</h3>
     </div>
     <div class="question-container">
-      <div data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="700" class="single-select">
+      <div data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="700" id="q0" class="single-select">
         <div class="title">Q. {{ page[0].question_txt }}</div>
         <div class="img-guide">
           <p><i class="far fa-lightbulb"></i> '길'이란 부유방과 실제 유방 사이에 미세하게 접힌 자국을 말해요</p>
@@ -74,6 +74,7 @@ export default {
     },
     goNext() {
       if (this.answer === null) {
+        document.getElementById("q0").scrollIntoView(false);
         return this.emitter.emit("showRedToast", "답변을 입력해주세요");
       }
       const answers = {

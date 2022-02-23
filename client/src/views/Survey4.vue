@@ -7,7 +7,7 @@
       <h3>{{ page[0].flow_txt }}</h3>
     </div>
     <div class="question-container">
-      <div data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="700" class="carousel-container">
+      <div data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="700" id="q0" class="carousel-container">
         <div class="title">{{ page[0].question_txt }} <i @click="isHelp = !isHelp" class="far fa-question-circle question"></i></div>
         <button type="button" class="btn-outlined btn-40 see-all-btn" v-if="!isSelected" @click="open">전체유형보기</button>
         <div v-if="isHelp" class="help">
@@ -56,7 +56,7 @@
     </div>
     <div v-if="isSelected" class="answer-diff">
       <div class="before-start">내 가슴이 선택한 사진과 어떻게 다른지 <br />체크해 주세요&nbsp; <i class="fas fa-angle-double-down"></i></div>
-      <div data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="700" class="single-select">
+      <div data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="700" id="q1" class="single-select">
         <div class="title">Q. 사진과 다른 부분 : {{ page[1].question_txt }}</div>
         <img src="@/assets/test_guide/middle-length.png" alt="" />
         <div class="img-guide">
@@ -66,7 +66,7 @@
           <button type="button" @click="setDanswer(page[1].column, i)" v-for="(ans, i) in page[1].answer_options" :key="i" :class="{ selected: danswer_1[i] == true }" class="btn-border-answer btn-50-ans">{{ ans.content }}</button>
         </div>
       </div>
-      <div data-aos="fade-down" data-aos-anchor-placement="top-bottom" data-aos-duration="700" class="single-select">
+      <div data-aos="fade-down" data-aos-anchor-placement="top-bottom" data-aos-duration="700" id="q2" class="single-select">
         <div class="title">Q. 사진과 다른 부분 : {{ page[2].question_txt }}</div>
         <img src="@/assets/test_guide/youdo_beorugym.png" alt="" />
         <!-- guide -->
@@ -77,7 +77,7 @@
           <button type="button" @click="setDanswer(page[2].column, i)" v-for="(ans, i) in page[2].answer_options" :key="i" :class="{ selected: danswer_2[i] == true }" class="btn-border-answer btn-50-ans">{{ ans.content }}</button>
         </div>
       </div>
-      <div data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="700" class="single-select">
+      <div data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="700" id="q3" class="single-select">
         <div class="title">Q. 사진과 다른 부분 : {{ page[3].question_txt }}</div>
         <div class="answer-box">
           <button type="button" @click="setDanswer(page[3].column, i)" v-for="(ans, i) in page[3].answer_options" :key="i" :class="{ selected: danswer_3[i] == true }" class="btn-border-answer btn-50-ans">{{ ans.content }}</button>
@@ -223,6 +223,13 @@ export default {
     },
     goNext() {
       if (this.answer === null || this.danswer1 === null || this.danswer2 === null || this.danswer3 === null) {
+        const questions = [this.danswer, this.danswer1, this.danswer2, this.danswer3]
+        for (let i=0; i<questions.length; i++) {
+          if (questions[i] === null) {
+            document.getElementById(`q${i}`).scrollIntoView(false);
+            break;
+          }
+        }
         return this.emitter.emit("showRedToast", "답변을 입력해주세요.");
       }
       const answers = {

@@ -7,7 +7,7 @@
       <h3>{{ page[0].flow_txt }}</h3>
     </div>
     <div class="question-container">
-      <div data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="700" class="single-select">
+      <div data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="700" id="q0" class="single-select">
         <div class="title">Q. {{ page[0].question }}</div>
         <img src="@/assets/test_guide/line_guide.png" alt="" />
         <div class="img-guide">
@@ -102,6 +102,7 @@ export default {
     },
     goNext() {
       if (this.answer1 === null || this.answer2 === null) {
+        document.getElementById("q0").scrollIntoView(false);
         return this.emitter.emit("showRedToast", "답변을 입력해주세요");
       }
       const answers = {
