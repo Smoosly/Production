@@ -2,7 +2,7 @@
   <header :class="{ 'scrolled-nav': scrolledNav }">
     <nav>
       <div class="branding">
-        <router-link @click="this.emitter.emit('Navi', true)" :to="logoLink">
+        <router-link @click="homeButton" :to="logoLink">
           <img src="@/assets/smoosly_eng_main_4x.png" alt="" />
         </router-link>
       </div>
@@ -75,6 +75,10 @@ export default {
     });
   },
   methods: {
+    homeButton() {
+      this.emitter.emit('Navi', true);
+      window.scrollTo(0,0);
+    },
     navi() {
       this.emitter.emit("Navi", true);
       this.emitter.emit("closeToggle");
