@@ -29,7 +29,7 @@
           <li v-if="isUserLogin"><router-link class="link" :to="{ name: 'Mypage' }" @click="navi">마이페이지</router-link></li>
           <li v-if="isUserLogin"><a @click="logoutUser" class="link">로그아웃</a></li>
         </ul>
-        <div v-show="mobileNav" @click="toggleMobileNav" class="overlay"></div>
+        <!-- <div v-show="mobileNav" @click="toggleMobileNav" class="overlay"></div> -->
       </transition>
     </nav>
   </header>

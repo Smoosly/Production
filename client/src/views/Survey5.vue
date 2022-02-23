@@ -61,7 +61,7 @@ export default {
       };
       // console.log(this.answers);
       axios
-        .post("/breastTest/save/5", answers)
+        .post("/breastTest/save/5?back=yes", answers)
         .then((result) => {
           console.log(result.data);
           this.$router.push("/survey/4");

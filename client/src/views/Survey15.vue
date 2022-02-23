@@ -91,7 +91,7 @@ export default {
         [this.page[1].column]: this.birthyear,
       };
       axios
-        .post("/breastTest/save/15", answers)
+        .post("/breastTest/save/15?back=yes", answers)
         .then((result) => {
           console.log(result.data);
           this.$router.push("/survey/14");
