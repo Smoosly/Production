@@ -645,13 +645,14 @@ def recommend():
                 kitAll, kitNow = kitUploads
                 breastAll, breastNow = breastTests
                 braAll, braNow = braRecommends
-                slackKit.chat_postMessage(channel = "#3rd-진행상황", text = "{}님의 브라 추천이 완료되었습니다.\n브라 추천된 사람 : {}/{}\n {}명 남았습니다".format(pkId, braNow+1, braAll, braAll-braNow))
+                braNow += 1
+                slackKit.chat_postMessage(channel = "#3rd-진행상황", text = "{}님의 브라 추천이 완료되었습니다.\n브라 추천된 사람 : {}/{}\n {}명 남았습니다".format(pkId, braNow, braAll, braAll-braNow))
                 
                 
                 current.close()
                 
                 update = open('now.txt', 'w')
-                update.write("{} {}\n{} {}\n{} {}".format(kitAll, kitNow, breastAll, breastNow, braAll, braNow+1))
+                update.write("{} {}\n{} {}\n{} {}".format(kitAll, kitNow, breastAll, breastNow, braAll, braNow))
                 update.close()
         
                 return jsonify({"success": "yes", "error": ""})

@@ -275,13 +275,14 @@ def saveBreastResult():
                                 kitAll, kitNow = kitUploads
                                 breastAll, breastNow = breastTests
                                 braAll, braNow = braRecommends
-                                slackKit.chat_postMessage(channel = "#3rd-진행상황", text = "{}님의 가슴 결과 테스트가 완료되었습니다.\n가슴 결과 진행한 사람 : {}/{}\n {}명 남았습니다".format(pkId, breastNow+1, breastAll, breastAll-breastNow))
+                                breastNow += 1
+                                slackKit.chat_postMessage(channel = "#3rd-진행상황", text = "{}님의 가슴 결과 테스트가 완료되었습니다.\n가슴 결과 진행한 사람 : {}/{}\n {}명 남았습니다".format(pkId, breastNow, breastAll, breastAll-breastNow))
                                 
                                 
                                 current.close()
                                 
                                 update = open('now.txt', 'w')
-                                update.write("{} {}\n{} {}\n{} {}".format(kitAll, kitNow, breastAll, breastNow+1, braAll, braNow))
+                                update.write("{} {}\n{} {}\n{} {}".format(kitAll, kitNow, breastAll, breastNow, braAll, braNow))
                                 update.close()
                                 db.commit()
                                 log.info(f"{pkId}'s BOTH breast result update complete!")

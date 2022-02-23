@@ -475,15 +475,16 @@ def kitVision():
                                 breastTests = list(map(int, lines[1].strip().split(' ')))
                                 braRecommends = list(map(int, lines[2].strip().split(' ')))
                                 kitAll, kitNow = kitUploads
+                                kitNow += 1
                                 breastAll, breastNow = breastTests
                                 braAll, braNow = braRecommends
-                                slackKit.chat_postMessage(channel = "#3rd-진행상황", text = "{}님이 키트 업로드하였습니다.\n키트 업로드 진행한 사람 : {}/{}\n {}명 남았습니다".format(pkID, kitNow+1, kitAll, kitAll-kitNow))
+                                slackKit.chat_postMessage(channel = "#3rd-진행상황", text = "{}님이 키트 업로드하였습니다.\n키트 업로드 진행한 사람 : {}/{}\n {}명 남았습니다".format(pkID, kitNow, kitAll, kitAll-kitNow))
                                 
                                 
                                 current.close()
                                 
                                 update = open('now.txt', 'w')
-                                update.write("{} {}\n{} {}\n{} {}".format(kitAll, kitNow+1, breastAll, breastNow, braAll, braNow))
+                                update.write("{} {}\n{} {}\n{} {}".format(kitAll, kitNow, breastAll, breastNow, braAll, braNow))
                                 update.close()
                                 log.info(f"{pkID}'s breast update complete!")
                                 return jsonify({"success": "yes", "message": "Kit upload success",})
