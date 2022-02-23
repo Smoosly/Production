@@ -40,7 +40,7 @@
       </div>
       <br />
       <div data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="1000" class="input-group">
-        <input :disabled="postcode === ''? disabled : ''" class="form-input" type="text" style="cursor: pointer" v-model="extraAddress" ref="extraAddress" placeholder="상세주소" />
+        <input :disabled="postcode === ''? disabled : ''" class="form-input" type="text" style="cursor: pointer" v-model="extraAddress" ref="extraAddress" placeholder="상세주소(입력 필수)" />
       </div>
       <!-- <div data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="1000" class="input-group">
         <input class="form-input" type="text" style="margin-top: 28px" v-model="message" placeholder="배송 요청사항" />
@@ -104,16 +104,17 @@ export default {
           }
           if (data.userSelectedType === "R") {
             if (data.bname !== "" && /[동|로|가]$/g.test(data.bname)) {
-              this.extraAddress = data.bname;
+              // this.extraAddress = data.bname;
+              this.address += ` ${data.bname}`
             }
             if (data.buildingName !== "" && data.apartment === "Y") {
-              this.extraAddress += this.extraAddress !== "" ? `, ${data.buildingName}` : data.buildingName;
+              // this.extraAddress += this.extraAddress !== "" ? `, ${data.buildingName}` : data.buildingName;
+              this.address += ` ${data.buildingName}`
               // console.log(this.extraAddress)
             }
-            if (this.extraAddress !== "") {
-              this.extraAddress = ` (${this.extraAddress})`;
-              // console.log(this.extraAddress)
-            }
+            // if (this.extraAddress !== "") {
+            //   this.extraAddress = ` (${this.extraAddress})`;
+            // }
           } else {
             this.extraAddress = "";
             console.log(this.extraAddress);
