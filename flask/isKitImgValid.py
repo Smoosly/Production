@@ -11,6 +11,7 @@ import cv2
 import os
 import logging
 import logging.handlers
+from slack_sdk import WebClient
 
 log = logging.getLogger("isKitImgValid")
 log.setLevel(logging.DEBUG)
@@ -33,6 +34,8 @@ kitPath = "../KitUploads/"
 lsPath = "../LowerShapes/"
 
 matplotlib.use("Agg")
+
+myToken = "xoxb-2373155174243-3168997936240-3X35cyzmitJ90mwiAt8C8pXY"
 
 with open("config.json", "r") as f:
     config = json.load(f)
@@ -465,6 +468,23 @@ def kitVision():
                                         mVolumeR,
                                         pkID))
                                 db.commit()
+                                current = open('now.txt', 'r')
+                                slackKit = WebClient(token = myToken)
+                                lines = current.readlines()
+                                kitUploads = list(map(int, lines[0].strip().split(' ')))
+                                breastTests = list(map(int, lines[1].strip().split(' ')))
+                                braRecommends = list(map(int, lines[2].strip().split(' ')))
+                                kitAll, kitNow = kitUploads
+                                breastAll, breastNow = breastTests
+                                braAll, braNow = braRecommends
+                                slackKit.chat_postMessage(channel = "#3rd-진행상황", text = "{}님이 키트 업로드하였습니다.\n키트 업로드 진행한 사람 : {}/{}\n {}명 남았습니다".format(pkID, kitNow, kitAll, kitAll-kitNow))
+                                
+                                
+                                current.close()
+                                
+                                update = open('now.txt', 'w')
+                                update.write("{} {}\n{} {}\n{} {}".format(kitAll, kitNow+1, breastAll, breastNow, braAll, braNow))
+                                update.close()
                                 log.info(f"{pkID}'s breast update complete!")
                                 return jsonify({"success": "yes", "message": "Kit upload success",})
 
@@ -473,6 +493,7 @@ def kitVision():
                         return jsonify({"success": "yes", "error": "", "dir": ""})
                 
         except Exception as e:
+                slackKit.chat_postMessage(channel = "#3rd-진행상황", text = "{}님이 키트 업로드하는데 예기치 못한 오류가 발생하였습니다".format(pkID))
                 log.exception(f"{str(e)}, {type(e)}")
                 return jsonify({"success": "no", "error": str(e)})
         
