@@ -43,15 +43,7 @@ app.use("/breastTest", require("./router/breastTest"));
 app.use("/braRecommend", require("./router/braRecommend"));
 app.use("/homeFitting", require("./router/homeFitting"));
 app.use("/review", require("./router/review"));
-app.get("/naverd09c2f4f1f390b62f16abf7699b7714d.html", function (req, res) {
-  res.sendFile(path.join(__dirname, "../", "naverd09c2f4f1f390b62f16abf7699b7714d.html"));
-});
-app.get("/google6b7ae7ef182f2168.html", function (req, res) {
-  res.sendFile(path.join(__dirname, "../", "google6b7ae7ef182f2168.html"));
-});
-app.get("*.txt", function (req, res) {
-  res.status(200).sendFile(path.join(__dirname, "../", "robots.txt"));
-});
+
 app.get("*", function (req, res) {
   res.sendFile(path.join(__dirname, "/public", "index.html"));
 });

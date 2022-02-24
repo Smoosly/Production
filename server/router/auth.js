@@ -1,23 +1,23 @@
-"use strict";
-const express = require("express");
-const { USER } = require("../models");
+'use strict';
+const express = require('express');
+const { USER } = require('../models');
 const router = express.Router();
-const util = require("util");
-const naver = require("../config/naver");
-const kakao = require("../config/kakao");
-const google = require("../config/google");
-const passport = require("passport");
-const flash = require("connect-flash");
-const session = require("cookie-session");
-const NaverStrategy = require("passport-naver").Strategy;
-const KakaoStrategy = require("passport-kakao").Strategy;
-const GoogleStrategy = require("passport-google-oauth20").Strategy;
-const winston = require("../winston");
+const util = require('util');
+const naver = require('../config/naver');
+const kakao = require('../config/kakao');
+const google = require('../config/google');
+const passport = require('passport');
+const flash = require('connect-flash');
+const session = require('cookie-session');
+const NaverStrategy = require('passport-naver').Strategy;
+const KakaoStrategy = require('passport-kakao').Strategy;
+const GoogleStrategy = require('passport-google-oauth20').Strategy;
+const winston = require('../winston');
 
 router.use(flash());
 router.use(
   session({
-    secret: "keyboard cat",
+    secret: 'keyboard cat',
     resave: false,
     saveUninitialized: true,
     cookie: { secure: true },
@@ -41,7 +41,7 @@ passport.deserializeUser((user, done) => {
 
 //kakao
 passport.use(
-  "kakao",
+  'kakao',
   new KakaoStrategy(
     {
       clientID: kakao.clientID,
@@ -50,12 +50,12 @@ passport.use(
       proxy: true,
     },
     async (accessToken, refreshToken, profile, done) => {
-      winston.debug("---> Kakao auth start");
+      winston.debug('---> Kakao auth start');
       winston.debug(util.inspect(profile, false, null, true)); // winston.debug(accessToken); // winston.debug(refreshToken);
       let userInfo = {
-        username: profile.username || profile._json.properties.nickname || "사용자",
+        username: profile.username || profile._json.properties.nickname || '사용자',
         email: profile._json.kakao_account.email,
-        provider: profile.provider || "kakao",
+        provider: profile.provider || 'kakao',
         birthday: null,
         token: accessToken,
       };
@@ -73,10 +73,10 @@ passport.use(
         const user = result[0];
         const created = result[1];
         if (created) {
-          winston.debug("---> Create instance successfully(Kakao).");
+          winston.debug('---> Create instance successfully(Kakao).');
         } else {
           await user.update({ username: userInfo.username, birthday: userInfo.birthday, token: userInfo.token });
-          winston.debug("---> Already Exist, Database Update(Kakao)");
+          winston.debug('---> Already Exist, Database Update(Kakao)');
         }
         done(null, user);
       } catch (err) {
@@ -86,26 +86,26 @@ passport.use(
   )
 );
 
-router.get("/kakao", passport.authenticate("kakao", { scope: ["account_email", "profile_nickname", "birthday"] }));
+router.get('/kakao', passport.authenticate('kakao', { scope: ['account_email', 'profile_nickname', 'birthday'] }));
 
 router.get(
-  "/kakao/callback",
-  passport.authenticate("kakao", {
-    failureRedirect: "https://smoosly.com/signup",
+  '/kakao/callback',
+  passport.authenticate('kakao', {
+    failureRedirect: 'https://smoosly.com/signup',
     failureFlash: true,
   }),
   async (req, res) => {
-    winston.debug("---> In callback(Kakao)");
-    res.cookie("user", req.user.dataValues.PK_ID, { overwrite: true });
-    res.cookie("auth", req.user.dataValues.token, { overwrite: true });
-    res.redirect(302, "https://smoosly.com");
-    winston.debug("---> Cookie update, Kakao Login Success");
+    winston.debug('---> In callback(Kakao)');
+    res.cookie('user', req.user.dataValues.PK_ID, { overwrite: true });
+    res.cookie('auth', req.user.dataValues.token, { overwrite: true });
+    res.redirect(302, 'https://smoosly.com');
+    winston.debug('---> Cookie update, Kakao Login Success');
   }
 );
 
 //naver
 passport.use(
-  "naver",
+  'naver',
   new NaverStrategy(
     {
       clientID: naver.clientID,
@@ -114,12 +114,12 @@ passport.use(
       proxy: true,
     },
     async (accessToken, refreshToken, profile, done) => {
-      winston.debug("---> Naver auth start");
+      winston.debug('---> Naver auth start');
       winston.debug(util.inspect(profile, false, null, true)); // winston.debug(accessToken); // winston.debug(refreshToken);
       let userInfo = {
-        username: profile._json.name || profile._json.nickname || "사용자",
+        username: profile._json.name || profile._json.nickname || '사용자',
         email: profile._json.email,
-        provider: profile.provider || "naver",
+        provider: profile.provider || 'naver',
         birthday: null,
         token: accessToken,
       };
@@ -137,10 +137,10 @@ passport.use(
         const user = result[0];
         const created = result[1];
         if (created) {
-          winston.debug("---> Create instance successfully(Naver).");
+          winston.debug('---> Create instance successfully(Naver).');
         } else {
           await user.update({ username: userInfo.username, birthday: userInfo.birthday, token: userInfo.token });
-          winston.debug("---> Already Exist, Database Update(Naver)");
+          winston.debug('---> Already Exist, Database Update(Naver)');
         }
         done(null, user);
       } catch (err) {
@@ -150,26 +150,26 @@ passport.use(
   )
 );
 
-router.get("/naver", passport.authenticate("naver", { scope: ["profile", "email"] }));
+router.get('/naver', passport.authenticate('naver', { scope: ['profile', 'email'] }));
 
 router.get(
-  "/naver/callback",
-  passport.authenticate("naver", {
-    failureRedirect: "https://smoosly.com/signup",
+  '/naver/callback',
+  passport.authenticate('naver', {
+    failureRedirect: 'https://smoosly.com/signup',
     failureFlash: true,
   }),
   async (req, res) => {
-    winston.debug("---> In callback(Naver)");
-    res.cookie("user", req.user.dataValues.PK_ID, { overwrite: true });
-    res.cookie("auth", req.user.dataValues.token, { overwrite: true });
-    res.redirect(302, "https://smoosly.com");
-    winston.debug("---> Cookie update, Naver Login Success");
+    winston.debug('---> In callback(Naver)');
+    res.cookie('user', req.user.dataValues.PK_ID, { overwrite: true });
+    res.cookie('auth', req.user.dataValues.token, { overwrite: true });
+    res.redirect(302, 'https://smoosly.com');
+    winston.debug('---> Cookie update, Naver Login Success');
   }
 );
 
 //google
 passport.use(
-  "google",
+  'google',
   new GoogleStrategy(
     {
       clientID: google.client_id,
@@ -178,12 +178,12 @@ passport.use(
       proxy: true,
     },
     async (accessToken, refreshToken, profile, done) => {
-      winston.debug("---> Google auth start");
+      winston.debug('---> Google auth start');
       winston.debug(util.inspect(profile, false, null, true)); // winston.debug(accessToken); // winston.debug(refreshToken);
       let userInfo = {
-        username: profile.displayName || profile._json.name || profile.name.familyName + profile.name.givenName || profile._json.family_name + profile._json.given_name || "사용자",
+        username: profile.displayName || profile._json.name || profile.name.familyName + profile.name.givenName || profile._json.family_name + profile._json.given_name || '사용자',
         email: profile._json.email,
-        provider: profile.provider || "google",
+        provider: profile.provider || 'google',
         birthday: null,
         token: accessToken,
       };
@@ -201,10 +201,10 @@ passport.use(
         const user = result[0];
         const created = result[1];
         if (created) {
-          winston.debug("---> Create instance successfully(Google).");
+          winston.debug('---> Create instance successfully(Google).');
         } else {
           await user.update({ username: userInfo.username, birthday: userInfo.birthday, token: userInfo.token });
-          winston.debug("---> Already Exist, Database Update(Google)");
+          winston.debug('---> Already Exist, Database Update(Google)');
         }
         done(null, user);
       } catch (err) {
@@ -214,20 +214,20 @@ passport.use(
   )
 );
 
-router.get("/google", passport.authenticate("google", { scope: ["profile", "email", "https://www.googleapis.com/auth/plus.login"] }));
+router.get('/google', passport.authenticate('google', { scope: ['profile', 'email', 'https://www.googleapis.com/auth/plus.login'] }));
 
 router.get(
-  "/google/callback",
-  passport.authenticate("google", {
-    failureRedirect: "https://smoosly.com/signup",
+  '/google/callback',
+  passport.authenticate('google', {
+    failureRedirect: 'https://smoosly.com/signup',
     failureFlash: true,
   }),
   async (req, res) => {
-    winston.debug("---> In callback(Google)");
-    res.cookie("user", req.user.dataValues.PK_ID, { overwrite: true });
-    res.cookie("auth", req.user.dataValues.token, { overwrite: true });
-    res.redirect(302, "https://smoosly.com");
-    winston.debug("---> Cookie update, Google Login Success");
+    winston.debug('---> In callback(Google)');
+    res.cookie('user', req.user.dataValues.PK_ID, { overwrite: true });
+    res.cookie('auth', req.user.dataValues.token, { overwrite: true });
+    res.redirect(302, 'https://smoosly.com');
+    winston.debug('---> Cookie update, Google Login Success');
   }
 );
 
