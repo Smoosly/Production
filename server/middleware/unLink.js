@@ -5,7 +5,6 @@ const naver = require("../config/naver");
 const { client_secret } = require("../config/google");
 
 let unLink = (req, res, next) => {
-  console.log(`https://nid.naver.com/oauth2.0/token?grant_type=delete&client_id=${naver.clientID}&client_secret=${client_secret}&access_tocken=${req.cookies.auth}`);
   try {
     winston.debug("unLink");
     winston.debug(util.inspect(req.cookies, false, null, true));
@@ -27,10 +26,11 @@ let unLink = (req, res, next) => {
         })
         .catch(console.log);
     } else if (req.user.provider === "naver") {
-
+      console.log(`https://nid.naver.com/oauth2.0/token?grant_type=delete&client_id=${naver.clientID}&client_secret=${client_secret}&access_token=${req.cookies.auth}&service_provider=NAVER`);
       axios
-        .post(`https://nid.naver.com/oauth2.0/token?grant_type=delete&client_id=${naver.clientID}&client_secret=${client_secret}&access_tocken=${req.cookies.auth}`)
+        .post(`https://nid.naver.com/oauth2.0/token?grant_type=delete&client_id=${naver.clientID}&client_secret=${client_secret}&access_token=${req.cookies.auth}&service_provider=NAVER`)
         .then((result) => {
+          console.log(util.inspect(result.data, false, null, true));
           winston.debug(util.inspect(result.data, false, null, true));
           return next();
         })
