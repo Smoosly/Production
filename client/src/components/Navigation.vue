@@ -302,7 +302,7 @@ header {
       height: 100vh;
       z-index: 998;
       background-color: black;
-      opacity: 0.2;
+      opacity: 0.15;
   }
 
   }
