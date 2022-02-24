@@ -16,7 +16,7 @@
       <div class="box">
         <div data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="1000" class="postcode-container">
           <div class="input-group item">
-            <input class="form-input postcode" type="text" placeholder="우편번호" v-model="postcode" />
+            <input :disabled="isSearching" class="form-input postcode" type="text" placeholder="우편번호" v-model="postcode" />
           </div>
           <button type="button" class="btn-primary btn-40 item" @click="execDaumPostcode">주소검색</button>
         </div>
@@ -77,6 +77,7 @@ export default {
         display: "none",
         height: "300px",
       },
+      isSearching: false,
       postcode: "",
       address: "",
       extraAddress: "",
@@ -92,6 +93,7 @@ export default {
   },
   methods: {
     execDaumPostcode() {
+      this.isSearching = true;
       const currentScroll = Math.max(document.body.scrollTop, document.documentElement.scrollTop);
       console.log("what");
       // eslint-disable-next-line
@@ -122,6 +124,7 @@ export default {
           this.$refs.extraAddress.focus();
           this.searchWindow.display = "none";
           document.body.scrollTop = currentScroll;
+          this.isSearching = false;
         },
         onResize: (size) => {
           this.searchWindow.height = `${size.height}px`;
