@@ -29,8 +29,8 @@
           <li v-if="isUserLogin"><router-link class="link" :to="{ name: 'Mypage' }" @click="navi">마이페이지</router-link></li>
           <li v-if="isUserLogin"><a @click="logoutUser" class="link">로그아웃</a></li>
         </ul>
-        <!-- <div v-show="mobileNav" @click="toggleMobileNav" class="overlay"></div> -->
       </transition>
+      <div v-show="mobileNav" class="overlay" @click="toggleMobileNav"></div>
     </nav>
   </header>
 </template>
@@ -295,15 +295,15 @@ header {
     .mobile-nav-enter-to {
       transform: translateX(0);
     }
-
+    
     .overlay {
-        position: fixed;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.6);
-        z-index: 998;
-        display: none;
-    }
+      position: absolute;
+      width: 100vw;
+      height: 100vh;
+      z-index: 998;
+      background-color: black;
+      opacity: 0.2;
+  }
 
   }
 }
