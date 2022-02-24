@@ -125,7 +125,7 @@ def save_as_graph(arr, filename, dir, ratio, rratio, xDiff, yDiff):
         finalImg = np.concatenate([blankLeft, finalImg], axis = 1)
         finalImg = np.concatenate([finalImg, blankRight], axis = 1)
   
-        cv2.imwrite(lsPath+filename.split('.')[0]+'.png', finalImg)    
+        # cv2.imwrite(lsPath+filename.split('.')[0]+'.png', finalImg)    
 
 
 
