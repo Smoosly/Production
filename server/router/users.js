@@ -8,6 +8,7 @@ const smtpTransport = require("../config/mailInfo");
 const { USER, KIT, BREAST_TEST, BREAST_RESULT, HOME_FITTING, BRA_REVIEW, DELETED_USER, BRA_FIX } = require("../models");
 const router = express.Router();
 const { isAuth } = require("../middleware/isAuth");
+const { unLink } = require("../middleware/unLink");
 const winston = require("../winston");
 
 const sendWelcomEmail = (email) => {
@@ -241,7 +242,7 @@ router.post("/editUserInfo", isAuth, async (req, res) => {
   }
 });
 
-router.delete("/delete", isAuth, async (req, res) => {
+router.delete("/delete", isAuth, unLink, async (req, res) => {
   const PK_ID = req.cookies.user;
   try {
     const user = await USER.findOne({ where: { PK_ID: PK_ID } });
