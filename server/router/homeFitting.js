@@ -1,17 +1,17 @@
 'use strict';
 const express = require('express');
 const router = express.Router();
-const { sequelize, HOME_FITTING, BRA_FIX, BRA_REVIEW } = require('../models');
+const { sequelize, KIT, HOME_FITTING, BRA_FIX, BRA_REVIEW } = require('../models');
 const winston = require('../winston');
 const deliveryInfo = require('../config/delivery');
 const jasx = require('json-as-xlsx');
 const util = require('util');
 const axios = require('axios');
+const slack = require('slack-node');
 
 const { isAuth } = require('../middleware/isAuth');
-router.use(isAuth);
 
-router.post('/apply', async (req, res) => {
+router.post('/apply', isAuth, async (req, res) => {
   let homeFitting = {};
   Object.assign(homeFitting, req.body);
   delete homeFitting.PK_ID;
@@ -38,7 +38,7 @@ router.post('/apply', async (req, res) => {
   }
 });
 
-router.get('/checkRecom', async (req, res) => {
+router.get('/checkRecom', isAuth, async (req, res) => {
   try {
     const braFix = await BRA_FIX.findOne({ where: { PK_ID: req.cookies.user } });
     if (!braFix || braFix.CHECK_ADMIN !== 2) {
@@ -52,7 +52,7 @@ router.get('/checkRecom', async (req, res) => {
   }
 });
 
-router.get('/getMyInfo', async (req, res) => {
+router.get('/getMyInfo', isAuth, async (req, res) => {
   try {
     const homeFitting = await HOME_FITTING.findOne({
       where: { PK_ID: req.cookies.user },
@@ -82,7 +82,7 @@ router.get('/getMyInfo', async (req, res) => {
   }
 });
 
-router.get('/getCanReturn', async (req, res) => {
+router.get('/getCanReturn', isAuth, async (req, res) => {
   try {
     const homeFitting = await HOME_FITTING.findOne({ where: { PK_ID: req.cookies.user }, attributes: ['state'] });
     const braReview = await BRA_REVIEW.findAll({ where: { PK_ID: req.cookies.user }, attributes: ['ID'] });
@@ -99,7 +99,7 @@ router.get('/getCanReturn', async (req, res) => {
   }
 });
 
-router.post('/returning', async (req, res) => {
+router.post('/returning', isAuth, async (req, res) => {
   try {
     const result = await HOME_FITTING.findOne({ where: { PK_ID: req.body.PK_ID } });
     if (!result) {
@@ -119,42 +119,96 @@ router.post('/returning', async (req, res) => {
   }
 });
 
-router.post('/invoice', async (req, res) => {
+router.post('/invoice/:what', async (req, res) => {
+  var Slack = require('slack-node');
+
+  webhookUri = '__uri___';
+
+  slack = new Slack();
+  slack.setWebhook(webhookUri);
+
+  // slack emoji
+  slack.webhook(
+    {
+      channel: '#general',
+      username: 'webhookbot',
+      icon_emoji: ':ghost:',
+      text: 'test message, test message',
+    },
+    function (err, response) {
+      console.log(response);
+    }
+  );
+  
+  const what = req.params.what;
+  console.log(what);
   try {
-    const homeFitting = await HOME_FITTING.findAll();
-    let data = [
-      {
-        sheet: 'Adults',
-        columns: [
-          { label: 'PK_ID', value: 'PK_ID' }, // Top level data
-          { label: 'recipient', value: 'recipient' }, // Top level data
-          { label: 'phone', value: 'phone' }, // Top level data
-          { label: 'postcode', value: 'postcode' }, // Top level data
-          { label: 'address', value: 'address' }, // Top level data
-          { label: 'extraAddress', value: 'extraAddress' }, // Top level data
-          { label: 'message', value: 'message' }, // Top level data
-          { label: 'state', value: 'state' }, // Top level data
-          // { label: "Age", value: (row) => row.age + " years" }, // Run functions
-          // { label: "Phone", value: (row) => (row.more ? row.more.phone || "" : "") }, // Deep props
-        ],
-        // content: [
-        //   { user: "Andrea", age: 20, more: { phone: "11111111" } },
-        //   { user: "Luis", age: 21, more: { phone: "12345678" } },
-        // ],
-        content: homeFitting,
-      },
-    ];
+    if (what === 'kit') {
+      const kits = await KIT.findAll({ attributes: ['recipient', 'phone', [sequelize.fn('concat', sequelize.col('address'), ' ', sequelize.col('extraAddress')), 'fulladdress']] });
+      winston.debug(util.inspect(kits, false, null, true));
+      const kitdata = kits.map((kit) => {
+        return kit.dataValues;
+      });
+      console.log(kitdata);
+      winston.debug(util.inspect(kitdata, false, null, true));
+      const data = [
+        {
+          sheet: 'Info',
+          columns: [
+            { label: 'recipient', value: 'recipient' }, // Top level data
+            { label: 'phone', value: 'phone' }, // Top level data
+            // { label: 'address', value: 'address' }, // Top level data
+            // { label: 'extraAddress', value: 'extraAddress' }, // Top level data
+            { label: 'fulladdress', value: 'fulladdress' }, // Top level data
+            // { label: "Age", value: (row) => row.age + " years" }, // Run functions
+            // { label: "Phone", value: (row) => (row.more ? row.more.phone || "" : "") }, // Deep props
+          ],
+          // content: [
+          //   { user: "Andrea", age: 20, more: { phone: "11111111" } },
+          //   { user: "Luis", age: 21, more: { phone: "12345678" } },
+          // ],
+          content: kitdata,
+        },
+      ];
 
-    let settings = {
-      fileName: 'HomeFittingInvoces', // Name of the resulting spreadsheet
-      extraLength: 3, // A bigger number means that columns will be wider
-      writeOptions: {}, // Style options from https://github.com/SheetJS/sheetjs#writing-options
-    };
+      const settings = {
+        fileName: 'KitInvoices', // Name of the resulting spreadsheet
+        extraLength: 3, // A bigger number means that columns will be wider
+        writeOptions: {}, // Style options from https://github.com/SheetJS/sheetjs#writing-options
+      };
 
-    jasx(data, settings); // Will download the excel file
-    winston.info({ success: true, message: '송장출력용 엑셀파일 생성 성공' });
-    return res.json({ success: true, message: '송장출력용 엑셀파일 생성 성공' });
-  } catch (error) {
+      jasx(data, settings); // Will download the excel file
+      winston.info({ success: true, message: '키트 송장출력용 엑셀파일 생성 성공' });
+      return res.json({ success: true, message: '키트 송장출력용 엑셀파일 생성 성공' });
+    } else if (what === 'homeFitting') {
+      const homeFitting = await HOME_FITTING.findAll();
+      const data = [
+        {
+          sheet: 'Info',
+          columns: [
+            { label: 'PK_ID', value: 'PK_ID' },
+            { label: 'recipient', value: 'recipient' },
+            { label: 'phone', value: 'phone' },
+            { label: 'postcode', value: 'postcode' },
+            { label: 'address', value: 'address' },
+            { label: 'extraAddress', value: 'extraAddress' },
+            { label: 'message', value: 'message' },
+          ],
+          content: homeFitting,
+        },
+      ];
+
+      const settings = {
+        fileName: 'HomeFittingInvoices',
+        extraLength: 3,
+        writeOptions: {},
+      };
+
+      jasx(data, settings);
+      winston.info({ success: true, message: '홈피팅 송장출력용 엑셀파일 생성 성공' });
+      return res.json({ success: true, message: '홈피팅 송장출력용 엑셀파일 생성 성공' });
+    }
+  } catch (err) {
     winston.error(err);
     return res.json({ success: false, message: '송장출력용 엑셀파일 생성 실패', err });
   }
