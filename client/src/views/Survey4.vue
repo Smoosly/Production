@@ -214,7 +214,7 @@ export default {
         [this.page[4].column]: this.opinions,
       };
       axios
-        .post("/breastTest/save/4", answers)
+        .post("/breastTest/save/4?back=yes", answers)
         .then((result) => {
           console.log(result.data);
           this.$router.push("/survey/3");

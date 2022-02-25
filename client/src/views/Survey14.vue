@@ -192,7 +192,7 @@ export default {
         [this.page[4].column[1]]: this.answer5_max,
       };
       axios
-        .post("/breastTest/save/14", answers)
+        .post("/breastTest/save/14?back=yes", answers)
         .then((result) => {
           console.log(result.data);
           this.$router.push("/survey/13");

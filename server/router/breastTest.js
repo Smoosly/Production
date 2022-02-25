@@ -17,6 +17,7 @@ router.use(isAuth);
 router.post("/save/:pageId", async (req, res) => {
   const PK_ID = req.body.PK_ID;
   const pageId = Number(req.params.pageId);
+  const isBack = req.query.back === "yes" ? true : false;
   try {
     const test = await BREAST_TEST.findOne({ where: { PK_ID: PK_ID } });
     if (!test) {
@@ -27,8 +28,8 @@ router.post("/save/:pageId", async (req, res) => {
     Object.assign(data, req.body);
     delete data.PK_ID;
 
-    //STEP 가 DB저장된 값보다 높아졌을 때만 저장
-    if (pageId > test.STEP) {
+    // STEP이 DB저장된 값보다 높아졌을 때만 저장
+    if (!isBack && pageId > test.STEP) {
       data.STEP = pageId;
     }
     winston.debug(util.inspect(data, false, null, true));

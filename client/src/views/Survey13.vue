@@ -267,7 +267,7 @@ export default {
       };
       console.log(answers);
       axios
-        .post("/breastTest/save/13", answers)
+        .post("/breastTest/save/13?back=yes", answers)
         .then((result) => {
           console.log(result.data);
           this.$router.push("/survey/12");

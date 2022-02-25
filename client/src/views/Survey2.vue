@@ -321,12 +321,12 @@ export default {
         [this.page[3].column]: parseFloat(this.answer_4),
       };
       axios
-        .post("/breastTest/save/2", answers)
+        .post("/breastTest/save/2?back=yes", answers)
         .then((result) => {
           console.log(result.data);
+          this.$router.push("/Test");
         })
         .catch(console.log);
-      this.$router.push("/Test");
     },
     goNext() {
       if (this.answer_1 === null || this.answer_2 === null || this.answer_4 === null) {
