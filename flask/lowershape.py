@@ -10,63 +10,17 @@ import math
 import json
 import cv2
 import os
-import logging
-import logging.handlers
-from slack_sdk import WebClient
 
-log = logging.getLogger("isKitImgValid")
-log.setLevel(logging.DEBUG)
-
-formatter = logging.Formatter("[%(levelname)s] (%(filename)s:%(lineno)d) > %(message)s")
-
-fileHandler = logging.FileHandler("logs/isKitImgValid.log")
-streamHandler = logging.StreamHandler()
-
-fileHandler.setFormatter(formatter)
-streamHandler.setFormatter(formatter)
-
-log.addHandler(fileHandler)
-log.addHandler(streamHandler)
-
-log.info("logtest")
-blueprint = Blueprint("isKitImgValid", __name__, url_prefix="/")
 
 kitPath = "../KitUploads/"
 lsPath = "../LowerShapes/"
 
-matplotlib.use("Agg")
 
-myToken = "xoxb-2373155174243-3168997936240-3X35cyzmitJ90mwiAt8C8pXY"
-slackKit = WebClient(token = myToken)
+
 
 with open("config.json", "r") as f:
     config = json.load(f)
 
-def getVolume(mINNER_LEN, mINNER_WIDTH_LC, mOUTER_LEN, mOUTER_WIDTH_LC, mHEIGHT):
-        height = []
-        candidate = []
-        if mINNER_WIDTH_LC < mINNER_LEN:
-                height.append(math.sqrt (mINNER_LEN**2 - mINNER_WIDTH_LC**2 ))
-        else:
-                diff = mINNER_WIDTH_LC - mINNER_LEN
-                mINNER_WIDTH_LC = mINNER_WIDTH_LC - diff * 1.2
-                candidate.append(math.sqrt (mINNER_LEN**2 - mINNER_WIDTH_LC**2 ))
-                
-        if mOUTER_WIDTH_LC < mOUTER_LEN:
-                height.append(math.sqrt (mOUTER_LEN**2 - mOUTER_WIDTH_LC**2 ))
-        else:
-                diff = mOUTER_WIDTH_LC - mOUTER_LEN
-                mOUTER_WIDTH_LC = mOUTER_WIDTH_LC - diff * 1.2
-                candidate.append(math.sqrt (mOUTER_LEN**2 - mOUTER_WIDTH_LC**2 ))
-                
-        if len(height) != 0:
-                meanHeight = np.mean(np.array(height))
-                mVolume = (mINNER_WIDTH_LC + mOUTER_WIDTH_LC) /2 * 0.25 * mHEIGHT * math.pi * meanHeight
-                return mVolume * 2
-        else:
-                meanHeight = np.mean(np.array(candidate))
-                mVolume = (mINNER_WIDTH_LC + mOUTER_WIDTH_LC) /2 * 0.25 * mHEIGHT * math.pi * meanHeight
-                return mVolume * 2
         
 def find_nearest(array, x, value):
         idxes = (np.abs(array[:, 1] - value)).argsort()
@@ -131,7 +85,6 @@ def save_as_graph(arr, filename, dir, ratio, rratio, xDiff, yDiff):
 
 def measure(filename, type, dir = 0):
     # type 0: Breast, type 1: Bra
-        log.info(f"{kitPath}{filename}")
         img = cv2.imread(kitPath+filename)
         img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
@@ -183,8 +136,7 @@ def measure(filename, type, dir = 0):
                         rectangleContours.append(dictContour)
 
         data = sorted(rectangleContours, key=itemgetter("xMin")) # Box Sort by xMin
-        if len(data) != 4: # Box Missing
-                return {"success": "no", "error": "0", "dir" : "{}".format(dir)}
+       
         
         # Mediate Direction
         dirComRatios = [5.58, 0.167, 0.616, 1.93]
@@ -193,8 +145,7 @@ def measure(filename, type, dir = 0):
         dirArray = np.array([abs(ratioCom - num) for num in dirComRatios])
         mediation = dirTrue[dirArray.argmin()]
         
-        if dirArray.argmin() == 3: # The direction of image is converted
-                return {"success" : "no", "error" : "1", "dir" : "{}".format(dir)}
+
                 
         for i in range(mediation[0]):
                 morph = cv2.rotate(morph, mediation[1])
@@ -245,8 +196,8 @@ def measure(filename, type, dir = 0):
                 yMax = rectangle["yMax"]
         
                 boxRatio = (xMax - xMin) / (yMax - yMin)
-                if (boxRatio > ratioOffset[idx] + 1) | (boxRatio < ratioOffset[idx] - 1):
-                        return {"success" : "no", "error" : "{}".format(idx + 2), "dir" : "{}".format(dir)}
+                # if (boxRatio > ratioOffset[idx] + 1) | (boxRatio < ratioOffset[idx] - 1):
+                #         return {"success" : "no", "error" : "{}".format(idx + 2), "dir" : "{}".format(dir)}
 
                 grayImg = morph.copy()[
                         int(yMin + imgDropOffset[1][idx]) : int(yMax - imgDropOffset[1][idx]),
@@ -321,27 +272,30 @@ def measure(filename, type, dir = 0):
                                 aspectRatio = (yMax - yMin) / (xMax - xMin)
                                 # kernel = np.ones((kernelSize,kernelSize), np.uint8)
                                 # lsmorph = cv2.morphologyEx(lsImg, cv2.MORPH_CLOSE, kernel)
+                                print("vvv")
                                 save_as_graph(lsImg, filename, dir, ratio, aspectRatio, xMax-xMin, yMax-yMin)
                                 measures.append(dictLowercup)
 
                 else:
-                        return {"success": "no", "error": "{}".format(2 + idx), "dir" : "{}".format(dir)}
+                        # return {"success": "no", "error": "{}".format(2 + idx), "dir" : "{}".format(dir)}
+                        print('a')
 
         return measures
 
 
-# @app.route("/isKitImgValid", methods=["POST"])
-@blueprint.route("isKitImgValid", methods=["POST"])
 def kitVision():
-        try:
-                log.info("Image Processing in here!")
-                requestData = request.data.decode("utf-8")
-                log.info(f"---> {type(request.data)},{type(requestData)}")
-                Data = json.loads(requestData)
-                kitType = int(Data["type"])
-                leftImgPath = Data["leftImgPath"]
-                rightImgPath = Data["rightImgPath"]
-                log.info(f"---> {kitType}, {leftImgPath}, {rightImgPath}")
+        # try:
+                # log.info("Image Processing in here!")
+                # requestData = request.data.decode("utf-8")
+                # log.info(f"---> {type(request.data)},{type(requestData)}")
+                # Data = json.loads(requestData)
+                # kitType = int(Data["type"])
+                # leftImgPath = Data["leftImgPath"]
+                # rightImgPath = Data["rightImgPath"]
+                kitType = 0
+                leftImgPath = '3ewcjcc4hr_left_20220225131101.jpg'
+                rightImgPath = ''
+                # log.info(f"---> {kitType}, {leftImgPath}, {rightImgPath}")
                 whereBt = -1
                 
         
@@ -373,32 +327,32 @@ def kitVision():
                 
                         if leftImgPath != "":
                                 pkID = leftImgPath.split(".")[0].split("/")[-1].split("_")[0]
+                                print(pkID)
                                 measureResult = measure(leftImgPath, type=0)
-                                log.info("measureResult left=>")
-                                log.info(f"{measureResult}, {isinstance(measureResult, dict)}")
+                                # log.info("measureResult left=>"
                                 if isinstance(measureResult, dict):
                                         return jsonify(measureResult)
                                 else:
                                         mInnerLenL, mLowerLenL, lowerShapeL, mOuterLenL = measure(leftImgPath, type=0)
-                                whereBt = 0
-                                (
-                                        mHeightLcL,
-                                        mLenLcL,
-                                        mWidthLcL,
-                                        mInnerWidthLcL,
-                                        mOuterWidthLcL,
-                                        mCurveInnerLcL,
-                                        mCurveOuterLcL,
-                                ) = (
-                                        lowerShapeL["height"],
-                                        lowerShapeL["length"],
-                                        lowerShapeL["width"],
-                                        lowerShapeL["inner_width"],
-                                        lowerShapeL["outer_width"],
-                                        lowerShapeL["inner_curvature"],
-                                        lowerShapeL["outer_curvature"],
-                                )
-                                mVolumeL = getVolume(mInnerLenL, mInnerWidthLcL, mOuterLenL, mOuterWidthLcL, mHeightLcL)
+                                # whereBt = 0
+                                # (
+                                #         mHeightLcL,
+                                #         mLenLcL,
+                                #         mWidthLcL,
+                                #         mInnerWidthLcL,
+                                #         mOuterWidthLcL,
+                                #         mCurveInnerLcL,
+                                #         mCurveOuterLcL,
+                                # ) = (
+                                #         lowerShapeL["height"],
+                                #         lowerShapeL["length"],
+                                #         lowerShapeL["width"],
+                                #         lowerShapeL["inner_width"],
+                                #         lowerShapeL["outer_width"],
+                                #         lowerShapeL["inner_curvature"],
+                                #         lowerShapeL["outer_curvature"],
+                                # )
+                                # mVolumeL = getVolume(mInnerLenL, mInnerWidthLcL, mOuterLenL, mOuterWidthLcL, mHeightLcL)
 
                         if rightImgPath != "":
                                 pkID = rightImgPath.split(".")[0].split("/")[-1].split("_")[0]
@@ -407,97 +361,100 @@ def kitVision():
                                 else:
                                         whereBt = 1
                                 # mInnerLenR, mLowerLenR, lowerShapeR, mOuterLenR = measure(rightImgPath, type=0, dir = 1)
-                                measureResult = measure(rightImgPath, type=0, dir = 1)
-                                log.info("measureResult right=>")
-                                log.info(f"{measureResult}, {isinstance(measureResult, dict)}")
-                                if isinstance(measureResult, dict):
-                                        return jsonify(measureResult)
-                                else:
-                                        mInnerLenR, mLowerLenR, lowerShapeR, mOuterLenR = measure(rightImgPath, type=0, dir = 1)
+                        #         measureResult = measure(rightImgPath, type=0, dir = 1)
+                        #         log.info("measureResult right=>")
+                        #         log.info(f"{measureResult}, {isinstance(measureResult, dict)}")
+                        #         if isinstance(measureResult, dict):
+                        #                 return jsonify(measureResult)
+                        #         else:
+                        #                 mInnerLenR, mLowerLenR, lowerShapeR, mOuterLenR = measure(rightImgPath, type=0, dir = 1)
 
-                                (
-                                        mHeightLcR,
-                                        mLenLcR,
-                                        mWidthLcR,
-                                        mInnerWidthLcR,
-                                        mOuterWidthLcR,
-                                        mCurveInnerLcR,
-                                        mCurveOuterLcR,
-                                ) = (
-                                        lowerShapeR["height"],
-                                        lowerShapeR["length"],
-                                        lowerShapeR["width"],
-                                        lowerShapeR["inner_width"],
-                                        lowerShapeR["outer_width"],
-                                        lowerShapeR["inner_curvature"],
-                                        lowerShapeR["outer_curvature"],
-                                )
-                                mVolumeR = getVolume(mInnerLenR, mInnerWidthLcR, mOuterLenR, mOuterWidthLcR, mHeightLcR)
+                        #         (
+                        #                 mHeightLcR,
+                        #                 mLenLcR,
+                        #                 mWidthLcR,
+                        #                 mInnerWidthLcR,
+                        #                 mOuterWidthLcR,
+                        #                 mCurveInnerLcR,
+                        #                 mCurveOuterLcR,
+                        #         ) = (
+                        #                 lowerShapeR["height"],
+                        #                 lowerShapeR["length"],
+                        #                 lowerShapeR["width"],
+                        #                 lowerShapeR["inner_width"],
+                        #                 lowerShapeR["outer_width"],
+                        #                 lowerShapeR["inner_curvature"],
+                        #                 lowerShapeR["outer_curvature"],
+                        #         )
+                        #         mVolumeR = getVolume(mInnerLenR, mInnerWidthLcR, mOuterLenR, mOuterWidthLcR, mHeightLcR)
 
-                        if whereBt == -1:  # Error, No Data path come in
-                                return jsonify({"success": "no", "error": "10"})
+                        # if whereBt == -1:  # Error, No Data path come in
+                                # return jsonify({"success": "no", "error": "10"})
 
-                        else:
-                                db = pymysql.connect(
-                                        host=config["host"],
-                                        user=config["user"],
-                                        db=config["db"],
-                                        password=config["password"],
-                                        charset=config["charset"],
-                                )
-                                curs = db.cursor()
-                                sql = "UPDATE `BREAST_TEST` SET WHERE_BT = %s, mINNER_LEN_L=%s, mOUTER_LEN_L=%s, mLOWER_LEN_L=%s, mHEIGHT_LC_L=%s, mLEN_LC_L=%s, mWIDTH_LC_L=%s, mINNER_WIDTH_LC_L=%s, mOUTER_WIDTH_LC_L=%s, mCURVE_INNER_LC_L=%s, mCURVE_OUTER_LC_L=%s, mVOLUME_L = %s, mINNER_LEN_R=%s, mOUTER_LEN_R=%s, mLOWER_LEN_R=%s, mHEIGHT_LC_R=%s, mLEN_LC_R=%s, mWIDTH_LC_R=%s, mINNER_WIDTH_LC_R=%s, mOUTER_WIDTH_LC_R=%s, mCURVE_INNER_LC_R=%s, mCURVE_OUTER_LC_R=%s, mVOLUME_R = %s WHERE PK_ID=%s"
-                                curs.execute(sql, (whereBt,
-                                        mInnerLenL,
-                                        mOuterLenL,
-                                        mLowerLenL,
-                                        mHeightLcL,
-                                        mLenLcL,
-                                        mWidthLcL,
-                                        mInnerWidthLcL,
-                                        mOuterWidthLcL,
-                                        mCurveInnerLcL,
-                                        mCurveOuterLcL,
-                                        mVolumeL,
-                                        mInnerLenR,
-                                        mOuterLenR,
-                                        mLowerLenR,
-                                        mHeightLcR,
-                                        mLenLcR,
-                                        mWidthLcR,
-                                        mInnerWidthLcR,
-                                        mOuterWidthLcR,
-                                        mCurveInnerLcR,
-                                        mCurveOuterLcR,
-                                        mVolumeR,
-                                        pkID))
-                                db.commit()
-                                current = open('now.txt', 'r')
-                                lines = current.readlines()
-                                kitUploads = list(map(int, lines[0].strip().split(' ')))
-                                breastTests = list(map(int, lines[1].strip().split(' ')))
-                                braRecommends = list(map(int, lines[2].strip().split(' ')))
-                                kitAll, kitNow = kitUploads
-                                kitNow += 1
-                                breastAll, breastNow = breastTests
-                                braAll, braNow = braRecommends
-                                slackKit.chat_postMessage(channel = "#3rd-진행상황", text = "{}님이 키트 업로드하였습니다.\n키트 업로드 진행한 사람 : {}/{}\n {}명 남았습니다".format(pkID, kitNow, kitAll, kitAll-kitNow))
+                        # else:
+                        #         db = pymysql.connect(
+                        #                 host=config["host"],
+                        #                 user=config["user"],
+                        #                 db=config["db"],
+                        #                 password=config["password"],
+                        #                 charset=config["charset"],
+                        #         )
+                        #         curs = db.cursor()
+                        #         sql = "UPDATE `BREAST_TEST` SET WHERE_BT = %s, mINNER_LEN_L=%s, mOUTER_LEN_L=%s, mLOWER_LEN_L=%s, mHEIGHT_LC_L=%s, mLEN_LC_L=%s, mWIDTH_LC_L=%s, mINNER_WIDTH_LC_L=%s, mOUTER_WIDTH_LC_L=%s, mCURVE_INNER_LC_L=%s, mCURVE_OUTER_LC_L=%s, mVOLUME_L = %s, mINNER_LEN_R=%s, mOUTER_LEN_R=%s, mLOWER_LEN_R=%s, mHEIGHT_LC_R=%s, mLEN_LC_R=%s, mWIDTH_LC_R=%s, mINNER_WIDTH_LC_R=%s, mOUTER_WIDTH_LC_R=%s, mCURVE_INNER_LC_R=%s, mCURVE_OUTER_LC_R=%s, mVOLUME_R = %s WHERE PK_ID=%s"
+                        #         curs.execute(sql, (whereBt,
+                        #                 mInnerLenL,
+                        #                 mOuterLenL,
+                        #                 mLowerLenL,
+                        #                 mHeightLcL,
+                        #                 mLenLcL,
+                        #                 mWidthLcL,
+                        #                 mInnerWidthLcL,
+                        #                 mOuterWidthLcL,
+                        #                 mCurveInnerLcL,
+                        #                 mCurveOuterLcL,
+                        #                 mVolumeL,
+                        #                 mInnerLenR,
+                        #                 mOuterLenR,
+                        #                 mLowerLenR,
+                        #                 mHeightLcR,
+                        #                 mLenLcR,
+                        #                 mWidthLcR,
+                        #                 mInnerWidthLcR,
+                        #                 mOuterWidthLcR,
+                        #                 mCurveInnerLcR,
+                        #                 mCurveOuterLcR,
+                        #                 mVolumeR,
+                        #                 pkID))
+                        #         db.commit()
+                        #         current = open('now.txt', 'r')
+                        #         lines = current.readlines()
+                        #         kitUploads = list(map(int, lines[0].strip().split(' ')))
+                        #         breastTests = list(map(int, lines[1].strip().split(' ')))
+                        #         braRecommends = list(map(int, lines[2].strip().split(' ')))
+                        #         kitAll, kitNow = kitUploads
+                        #         kitNow += 1
+                        #         breastAll, breastNow = breastTests
+                        #         braAll, braNow = braRecommends
+                        #         slackKit.chat_postMessage(channel = "#3rd-진행상황", text = "{}님이 키트 업로드하였습니다.\n키트 업로드 진행한 사람 : {}/{}\n {}명 남았습니다".format(pkID, kitNow, kitAll, kitAll-kitNow))
                                 
                                 
-                                current.close()
+                        #         current.close()
                                 
-                                update = open('now.txt', 'w')
-                                update.write("{} {}\n{} {}\n{} {}".format(kitAll, kitNow, breastAll, breastNow, braAll, braNow))
-                                update.close()
-                                log.info(f"{pkID}'s breast update complete!")
-                                return jsonify({"success": "yes", "message": "Kit upload success",})
+                        #         update = open('now.txt', 'w')
+                        #         update.write("{} {}\n{} {}\n{} {}".format(kitAll, kitNow, breastAll, breastNow, braAll, braNow))
+                        #         update.close()
+                        #         log.info(f"{pkID}'s breast update complete!")
+                        #         return jsonify({"success": "yes", "message": "Kit upload success",})
 
                 else:  # Bra kit
                         result = measure(leftImgPath, type=0)
-                        return jsonify({"success": "yes", "error": "", "dir": ""})
+                        # return jsonify({"success": "yes", "error": "", "dir": ""})
                 
-        except Exception as e:
-                slackKit.chat_postMessage(channel = "#3rd-진행상황", text = "{}님이 키트 업로드하는데 예기치 못한 오류가 발생하였습니다".format(pkID))
-                log.exception(f"{str(e)}, {type(e)}")
-                return jsonify({"success": "no", "error": str(e)})
+        # except Exception as e:
+        #         slackKit.chat_postMessage(channel = "#3rd-진행상황", text = "{}님이 키트 업로드하는데 예기치 못한 오류가 발생하였습니다".format(pkID))
+        #         log.exception(f"{str(e)}, {type(e)}")
+        #         return jsonify({"success": "no", "error": str(e)})
         
+        
+if __name__ == "__main__":
+    kitVision()
