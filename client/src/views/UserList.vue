@@ -7,8 +7,8 @@
       <button type="button" @click="step = 4" class="btn-secondary btn-48">브라 재고 관리</button>
     </div>
     <div class="title">
-      <h2 v-if="step == 1">키트 배송 관리 테이블</h2>
-      <h2 v-if="step == 2">브라 추천 관리 테이블</h2>
+      <h2 v-if="step == 1">브라 추천 관리 테이블</h2>
+      <h2 v-if="step == 2">키트 배송 관리 테이블</h2>
       <h2 v-if="step == 3">홈피팅 신청 관리 테이블</h2>
       <h2 v-if="step == 4">브라 재고 관리 테이블</h2>
     </div>
@@ -87,9 +87,9 @@
         :pagination-options="{
           enabled: true,
           mode: 'records',
-          perPage: 10,
+          perPage: 30,
           position: 'top',
-          perPageDropdown: [3, 7, 9],
+          perPageDropdown: [10, 20, 30],
           dropdownAllowAll: false,
           setCurrentPage: 1,
           nextLabel: '다음',
