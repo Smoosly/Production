@@ -156,3 +156,6 @@ config.json
 #flask
 /logs
 nohup.out
+now.txt
+
+*.jpg

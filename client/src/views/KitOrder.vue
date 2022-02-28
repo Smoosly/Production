@@ -14,33 +14,22 @@
       <div class="box">
         <div data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="1000" class="postcode-container">
           <div class="input-group item">
-            <input :disabled="address === ''? '' : disabled" class="form-input postcode" type="text" placeholder="우편번호" v-model="postcode" />
+            <input :disabled="isSearching" class="form-input postcode" type="text" placeholder="우편번호" v-model="postcode" />
           </div>
           <button type="button" class="btn-primary btn-40 item" @click="execDaumPostcode">주소검색</button>
         </div>
         <p data-aos="fade-up" class="code-valid" v-if="postcode && !isCodeValid">우편번호가 올바른지 확인해 주세요.</p>
       </div>
       <br />
-      <div
-        ref="searchWindow"
-        :style="searchWindow"
-        class="searchWindow-form"
-        style="border: 1px solid; width: 100%; height: 350px; margin: 5px 0; position: relative; margin-bottom: 16px"
-      >
-        <img
-          src="//t1.daumcdn.net/postcode/resource/images/close.png"
-          id="btnFoldWrap"
-          style="cursor: pointer; position: absolute; right: 0px; top: -1px; z-index: 1"
-          @click="searchWindow.display = 'none'"
-          alt="close"
-        />
+      <div ref="searchWindow" :style="searchWindow" class="searchWindow-form" style="border: 1px solid; width: 100%; height: 350px; margin: 5px 0; position: relative; margin-bottom: 16px">
+        <img src="//t1.daumcdn.net/postcode/resource/images/close.png" id="btnFoldWrap" style="cursor: pointer; position: absolute; right: 0px; top: -1px; z-index: 1" @click="searchWindow.display = 'none'" alt="close" />
       </div>
       <div data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="1000" class="input-group">
-        <input :disabled="postcode === ''? disabled : ''" class="form-input" type="text" v-model="address" placeholder="주소" />
+        <input class="form-input" type="text" v-model="address" placeholder="주소" />
       </div>
       <br />
       <div data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="1000" class="input-group">
-        <input :disabled="postcode === ''? disabled : ''" class="form-input" type="text" style="cursor: pointer" v-model="extraAddress" ref="extraAddress" placeholder="상세주소(입력 필수)" />
+        <input class="form-input" type="text" style="cursor: pointer" v-model="extraAddress" ref="extraAddress" placeholder="상세주소(입력 필수)" />
       </div>
       <!-- <div data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="1000" class="input-group">
         <input class="form-input" type="text" style="margin-top: 28px" v-model="message" placeholder="배송 요청사항" />
@@ -63,9 +52,9 @@
 </template>
 
 <script>
-import axios from "axios";
+import axios from 'axios';
 import { validatePostcode } from '@/utils/validation';
-import { deleteCookie }  from '@/utils/cookies'
+import { deleteCookie } from '@/utils/cookies';
 // import { checkAuth } from '@/utils/loginAuth';
 // import { fetchUserData } from '@/api/index'
 
@@ -73,17 +62,18 @@ export default {
   data() {
     return {
       searchWindow: {
-        display: "none",
-        height: "300px",
+        display: 'none',
+        height: '300px',
       },
-      postcode: "",
-      address: "",
-      extraAddress: "",
-      phone: "",
+      isSearching: false,
+      postcode: '',
+      address: '',
+      extraAddress: '',
+      phone: '',
       isPhoneValid: false,
 
-      username: "",
-      recipient: "",
+      username: '',
+      recipient: '',
       // couponCode: "",
     };
   },
@@ -92,45 +82,45 @@ export default {
   },
   methods: {
     execDaumPostcode() {
+      this.isSearching = true;
       const currentScroll = Math.max(document.body.scrollTop, document.documentElement.scrollTop);
-      console.log("what");
-      // eslint-disable-next-line
       new window.daum.Postcode({
         onComplete: (data) => {
-          if (data.userSelectedType === "R") {
+          if (data.userSelectedType === 'R') {
             this.address = data.roadAddress;
           } else {
             this.address = data.jibunAddress;
           }
-          if (data.userSelectedType === "R") {
-            if (data.bname !== "" && /[동|로|가]$/g.test(data.bname)) {
+          if (data.userSelectedType === 'R') {
+            if (data.bname !== '' && /[동|로|가]$/g.test(data.bname)) {
               // this.extraAddress = data.bname;
-              this.address += ` ${data.bname}`
+              this.address += `${data.bname}`;
             }
-            if (data.buildingName !== "" && data.apartment === "Y") {
+            if (data.buildingName !== '' && data.apartment === 'Y') {
               // this.extraAddress += this.extraAddress !== "" ? `, ${data.buildingName}` : data.buildingName;
-              this.address += ` ${data.buildingName}`
+              this.address += `${data.buildingName}`;
               // console.log(this.extraAddress)
             }
             // if (this.extraAddress !== "") {
             //   this.extraAddress = ` (${this.extraAddress})`;
             // }
           } else {
-            this.extraAddress = "";
+            this.extraAddress = '';
             console.log(this.extraAddress);
           }
           this.postcode = data.zonecode;
           this.$refs.extraAddress.focus();
-          this.searchWindow.display = "none";
+          this.searchWindow.display = 'none';
           document.body.scrollTop = currentScroll;
+          this.isSearching = false;
         },
         onResize: (size) => {
           this.searchWindow.height = `${size.height}px`;
         },
-        width: "100%",
-        height: "100%",
+        width: '100%',
+        height: '100%',
       }).embed(this.$refs.searchWindow);
-      this.searchWindow.display = "block";
+      this.searchWindow.display = 'block';
     },
     getPhoneMask(val) {
       let res = this.getMask(val);
@@ -140,47 +130,47 @@ export default {
     },
     getMask(phoneNumber) {
       if (!phoneNumber) return phoneNumber;
-      phoneNumber = phoneNumber.replace(/[^0-9]/g, "");
+      phoneNumber = phoneNumber.replace(/[^0-9]/g, '');
 
-      let res = "";
+      let res = '';
       if (phoneNumber.length < 3) {
         res = phoneNumber;
       } else {
-        if (phoneNumber.substr(0, 2) == "02") {
+        if (phoneNumber.substr(0, 2) == '02') {
           if (phoneNumber.length <= 5) {
             //02-123-5678
-            res = phoneNumber.substr(0, 2) + "-" + phoneNumber.substr(2, 3);
+            res = phoneNumber.substr(0, 2) + '-' + phoneNumber.substr(2, 3);
           } else if (phoneNumber.length > 5 && phoneNumber.length <= 9) {
             //02-123-5678
-            res = phoneNumber.substr(0, 2) + "-" + phoneNumber.substr(2, 3) + "-" + phoneNumber.substr(5);
+            res = phoneNumber.substr(0, 2) + '-' + phoneNumber.substr(2, 3) + '-' + phoneNumber.substr(5);
           } else if (phoneNumber.length > 9) {
             //02-1234-5678
-            res = phoneNumber.substr(0, 2) + "-" + phoneNumber.substr(2, 4) + "-" + phoneNumber.substr(6);
+            res = phoneNumber.substr(0, 2) + '-' + phoneNumber.substr(2, 4) + '-' + phoneNumber.substr(6);
           }
         } else {
           if (phoneNumber.length < 8) {
             res = phoneNumber;
           } else if (phoneNumber.length == 8) {
-            res = phoneNumber.substr(0, 4) + "-" + phoneNumber.substr(4);
+            res = phoneNumber.substr(0, 4) + '-' + phoneNumber.substr(4);
           } else if (phoneNumber.length == 9) {
-            res = phoneNumber.substr(0, 3) + "-" + phoneNumber.substr(3, 3) + "-" + phoneNumber.substr(6);
+            res = phoneNumber.substr(0, 3) + '-' + phoneNumber.substr(3, 3) + '-' + phoneNumber.substr(6);
           } else if (phoneNumber.length == 10) {
-            res = phoneNumber.substr(0, 3) + "-" + phoneNumber.substr(3, 3) + "-" + phoneNumber.substr(6);
+            res = phoneNumber.substr(0, 3) + '-' + phoneNumber.substr(3, 3) + '-' + phoneNumber.substr(6);
           } else if (phoneNumber.length > 10) {
             //010-1234-5678
-            res = phoneNumber.substr(0, 3) + "-" + phoneNumber.substr(3, 4) + "-" + phoneNumber.substr(7);
+            res = phoneNumber.substr(0, 3) + '-' + phoneNumber.substr(3, 4) + '-' + phoneNumber.substr(7);
           }
         }
       }
 
-      this.validatePhone(this.phone)
+      this.validatePhone(this.phone);
 
       return res;
     },
 
     async submitForm() {
-      if (!this.recipient || !this.postcode || !this.address || !this.extraAddress || !this.phone ) {
-        this.emitter.emit("showRedToast", "입력하지 않은 항목이 있습니다.");
+      if (!this.recipient || !this.postcode || !this.address || !this.extraAddress || !this.phone) {
+        this.emitter.emit('showRedToast', '입력하지 않은 항목이 있습니다.');
         return;
       }
       const kitData = {
@@ -192,19 +182,19 @@ export default {
         phone: this.phone,
         // couponCode: this.couponCode,
       };
-      const result = await axios.post("/kits/request", kitData);
+      const result = await axios.post('/kits/request', kitData);
       console.log(result.data);
       if (result.data.success) {
         console.log(result.data.message);
-        this.emitter.emit("KitCompleteModal", true);
+        this.emitter.emit('KitCompleteModal', true);
       } else {
         console.log(result.data.message);
-        this.emitter.emit("showNoticeToast", result.data.message);
-        this.emitter.emit("ServiceNotOpenModal", true);
+        this.emitter.emit('showNoticeToast', result.data.message);
+        this.emitter.emit('ServiceNotOpenModal', true);
       }
     },
     async fetchInfo() {
-      const result = await axios.get("/users/getUserInfo");
+      const result = await axios.get('/users/getUserInfo');
       console.log(result.data);
       if (result.data.success) {
         this.username = result.data.userInfo.username;
@@ -216,54 +206,54 @@ export default {
         this.extraAddress = result.data.userInfo.extraAddress;
       } else {
         if (Object.keys(result.data).includes('isAuth') && result.data.isAuth === false) {
-          this.$store.commit("clearCode");
-          this.$store.commit("clearToken");
-          deleteCookie("auth");
-          deleteCookie("user");
-          console.log("여기 로직 리팩토링");
-          this.$router.push("/");
-          this.emitter.emit("loginModal", true);
-          this.emitter.emit("showRedToast", "로그인 후 이용해주세요.");
+          this.$store.commit('clearCode');
+          this.$store.commit('clearToken');
+          deleteCookie('auth');
+          deleteCookie('user');
+          console.log('여기 로직 리팩토링');
+          this.$router.push('/');
+          this.emitter.emit('loginModal', true);
+          this.emitter.emit('showRedToast', '로그인 후 이용해주세요.');
           return;
         }
         console.log(result.data.message);
       }
-      
+
       if (this.phone !== '') {
-        this.isPhoneValid = true
-      } 
+        this.isPhoneValid = true;
+      }
       // checkAuth(result.data)
     },
     validatePhone(phone) {
-      console.log(phone)
-      let num = phone.split("-").join("");
-      
+      console.log(phone);
+      let num = phone.split('-').join('');
+
       //1. 모두 숫자인지 체크
       const checkNum = Number.isInteger(Number(num));
-      
+
       //2. 앞 세자리가 010으로 시작하는지 체크
-      const checkStartNum = num.slice(0, 3) === '010' || num.slice(0, 3) === '011' ? true : false
-      
+      const checkStartNum = num.slice(0, 3) === '010' || num.slice(0, 3) === '011' ? true : false;
+
       //3. 010을 제외한 나머지 숫자가 7 혹은 8자리인지 체크
-      const checkLength = num.slice(3).length === 7 || num.slice(3).length === 8 ? true : false
-      
+      const checkLength = num.slice(3).length === 7 || num.slice(3).length === 8 ? true : false;
+
       //4. 123 모두 true면 true를, 아니면 false를 반환
-      this.isPhoneValid = checkNum && checkStartNum && checkLength ? true : false
-    }
+      this.isPhoneValid = checkNum && checkStartNum && checkLength ? true : false;
+    },
   },
   computed: {
     isCodeValid() {
-      return validatePostcode(this.postcode)
-    }
+      return validatePostcode(this.postcode);
+    },
   },
   created() {
     this.fetchInfo();
-  }
+  },
 };
 </script>
 
 <style lang="scss" scoped>
-*:not(i):not(button):not(input[type="password"]) {
+*:not(i):not(button):not(input[type='password']) {
   font-family: $font-main, sans-serif !important;
 }
 

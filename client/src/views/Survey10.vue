@@ -75,7 +75,7 @@ export default {
         [this.page[0].column]: this.answer,
       };
       axios
-        .post("/breastTest/save/10", answers)
+        .post("/breastTest/save/10?back=yes", answers)
         .then((result) => {
           console.log(result.data);
           this.$router.push("/survey/9");

@@ -43,13 +43,8 @@ app.use("/breastTest", require("./router/breastTest"));
 app.use("/braRecommend", require("./router/braRecommend"));
 app.use("/homeFitting", require("./router/homeFitting"));
 app.use("/review", require("./router/review"));
-app.use("*.html", function (req, res) {
-  res.sendFile(path.join(__dirname, "../", "naver8a611ac772294471e9f7104411d2030a.html"));
-});
-app.use("*.txt", function (req, res) {
-  res.status(200).sendFile(path.join(__dirname, "../", "robots.txt"));
-});
-app.use("*", function (req, res) {
+
+app.get("*", function (req, res) {
   res.sendFile(path.join(__dirname, "/public", "index.html"));
 });
 

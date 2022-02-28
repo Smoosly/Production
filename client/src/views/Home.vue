@@ -995,6 +995,10 @@ export default {
     flex-direction: column;
   }
 
+  @media screen and (max-width: 375px) {
+    padding: 18px;
+  }
+
   h3 {
     font-size: 40px;
     color: $primary;

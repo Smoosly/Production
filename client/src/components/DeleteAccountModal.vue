@@ -53,7 +53,9 @@ export default {
             //state에서 user 정보 삭제로직 추가
             const msg = "계정이 삭제되었습니다.";
             this.emitter.emit("showNoticeToast", msg);
+            return;
           }
+          this.emitter.emit("showNoticeToast", "탈퇴에 실패하였습니다.");
         })
         .catch((error) => {
           //error handling

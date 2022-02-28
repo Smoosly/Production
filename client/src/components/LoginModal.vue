@@ -169,7 +169,7 @@ export default {
       // } finally {
       //   this.initForm();
       // }
-       try {
+      try {
         //logic
         const userData = {
           email: this.email,

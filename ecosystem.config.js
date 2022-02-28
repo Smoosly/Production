@@ -6,7 +6,7 @@ module.exports = {
       script: "./server/index.js",
       env: {
         NODE_ENV: "production",
-        PORT: "443", //443
+        PORT: "443", //https
       },
     },
     {
@@ -16,17 +16,18 @@ module.exports = {
       ingore_watch: ["server/log"],
       env: {
         NODE_ENV: "development",
-        PORT: "443", //443
+        PORT: "443", //https
       },
     },
     {
       name: "Smoosly_local",
       script: "./server/index_local.js",
+      // watch: true,
       watch: ["server/index_local.js", "server/router", "server/middleware", "server/winston.js"],
       ingore_watch: ["server/log"],
       env: {
-        NODE_ENV: "development", // 배포환경시 적용될 설정 지정
-        PORT: "3000", //443
+        NODE_ENV: "development",
+        PORT: "3000",
       },
     },
   ],
