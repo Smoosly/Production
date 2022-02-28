@@ -4,10 +4,13 @@ const router = express.Router();
 const { sequelize, KIT, HOME_FITTING, BRA_FIX, BRA_REVIEW } = require('../models');
 const winston = require('../winston');
 const deliveryInfo = require('../config/delivery');
+const slackInfo = require('../config/slack');
 const jasx = require('json-as-xlsx');
 const util = require('util');
+const fs = require('fs');
+const path = require('path');
 const axios = require('axios');
-const slack = require('slack-node');
+const Slack = require('slack-node');
 
 const { isAuth } = require('../middleware/isAuth');
 
@@ -120,46 +123,23 @@ router.post('/returning', isAuth, async (req, res) => {
 });
 
 router.post('/invoice/:what', async (req, res) => {
-  var Slack = require('slack-node');
-
-  webhookUri = '__uri___';
-
-  slack = new Slack();
-  slack.setWebhook(webhookUri);
-
-  // slack emoji
-  slack.webhook(
-    {
-      channel: '#general',
-      username: 'webhookbot',
-      icon_emoji: ':ghost:',
-      text: 'test message, test message',
-    },
-    function (err, response) {
-      console.log(response);
-    }
-  );
-  
+  const slack = new Slack(slackInfo.token);
   const what = req.params.what;
-  console.log(what);
   try {
     if (what === 'kit') {
       const kits = await KIT.findAll({ attributes: ['recipient', 'phone', [sequelize.fn('concat', sequelize.col('address'), ' ', sequelize.col('extraAddress')), 'fulladdress']] });
-      winston.debug(util.inspect(kits, false, null, true));
+      // winston.debug(util.inspect(kits, false, null, true));
       const kitdata = kits.map((kit) => {
         return kit.dataValues;
       });
-      console.log(kitdata);
       winston.debug(util.inspect(kitdata, false, null, true));
       const data = [
         {
           sheet: 'Info',
           columns: [
             { label: 'recipient', value: 'recipient' }, // Top level data
-            { label: 'phone', value: 'phone' }, // Top level data
-            // { label: 'address', value: 'address' }, // Top level data
-            // { label: 'extraAddress', value: 'extraAddress' }, // Top level data
-            { label: 'fulladdress', value: 'fulladdress' }, // Top level data
+            { label: 'phone', value: 'phone' },
+            { label: 'fulladdress', value: 'fulladdress' },
             // { label: "Age", value: (row) => row.age + " years" }, // Run functions
             // { label: "Phone", value: (row) => (row.more ? row.more.phone || "" : "") }, // Deep props
           ],
@@ -176,25 +156,42 @@ router.post('/invoice/:what', async (req, res) => {
         extraLength: 3, // A bigger number means that columns will be wider
         writeOptions: {}, // Style options from https://github.com/SheetJS/sheetjs#writing-options
       };
-
       jasx(data, settings); // Will download the excel file
+
+      const fileName = path.join(__dirname, '../../KitInvoices.xlsx');
+      slack.api(
+        'files.upload',
+        {
+          channels: slackInfo.channelId,
+          file: fs.createReadStream(fileName),
+          initial_comment: '키트 송장 출력용 엑셀파일입니다. :smile:',
+        },
+        function (err, response) {
+          if (err) {
+            winston.error(err);
+          }
+          winston.debug(util.inspect(response, false, null, true));
+        }
+      );
+
       winston.info({ success: true, message: '키트 송장출력용 엑셀파일 생성 성공' });
       return res.json({ success: true, message: '키트 송장출력용 엑셀파일 생성 성공' });
     } else if (what === 'homeFitting') {
-      const homeFitting = await HOME_FITTING.findAll();
+      const homeFitting = await HOME_FITTING.findAll({ attributes: ['recipient', 'phone', 'postcode', [sequelize.fn('concat', sequelize.col('address'), ' ', sequelize.col('extraAddress')), 'fulladdress'], 'message'] });
+      const fhdata = homeFitting.map((hf) => {
+        return hf.dataValues;
+      });
       const data = [
         {
           sheet: 'Info',
           columns: [
-            { label: 'PK_ID', value: 'PK_ID' },
             { label: 'recipient', value: 'recipient' },
             { label: 'phone', value: 'phone' },
             { label: 'postcode', value: 'postcode' },
-            { label: 'address', value: 'address' },
-            { label: 'extraAddress', value: 'extraAddress' },
+            { label: 'fulladdress', value: 'fulladdress' },
             { label: 'message', value: 'message' },
           ],
-          content: homeFitting,
+          content: fhdata,
         },
       ];
 
@@ -205,8 +202,28 @@ router.post('/invoice/:what', async (req, res) => {
       };
 
       jasx(data, settings);
+
+      const fileName = path.join(__dirname, '../../HomeFittingInvoices.xlsx');
+      slack.api(
+        'files.upload',
+        {
+          channels: slackInfo.channelId,
+          file: fs.createReadStream(fileName),
+          initial_comment: '홈피팅 송장 출력용 엑셀파일입니다. :smile:',
+        },
+        function (err, response) {
+          if (err) {
+            winston.error(err);
+          }
+          winston.debug(util.inspect(response, false, null, true));
+        }
+      );
+
       winston.info({ success: true, message: '홈피팅 송장출력용 엑셀파일 생성 성공' });
       return res.json({ success: true, message: '홈피팅 송장출력용 엑셀파일 생성 성공' });
+    } else {
+      winston.info({ success: false, message: '라우터를 다시 검토하세요.' });
+      return res.json({ success: false, message: '라우터를 다시 검토하세요.' });
     }
   } catch (err) {
     winston.error(err);
