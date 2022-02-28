@@ -13,7 +13,7 @@
             3. 신청 일자의 <span>오전 9시</span>까지 제품을 꼭 내놓아 주세요!
           </p>
         </div>
-        <div class="datePick">
+        <!-- <div class="datePick">
           <h3>신청 가능일</h3>
           <div class="select-group is-active">
             <select v-model="date" class="form-select">
@@ -23,9 +23,9 @@
             </select>
             <i class="fas fa-caret-down" aria-hidden></i>
           </div>
-        </div>
+        </div> -->
 
-        <button @click="braReturn" class="btn-primary btn-48">해당 날짜로 반송 요청하기</button>
+        <button @click="braReturn" class="btn-primary btn-48">오늘 날짜로 반송 요청하기</button>
       </div>
       <div class="modal__overlay" @click="close"></div>
     </form>
@@ -144,7 +144,8 @@ export default {
     p {
       @include text-style(14, $primary);
       font-weight: bold;
-      margin-bottom: 12px;
+      margin-bottom: 28px;
+      margin-top: 8px;
       padding: 4px;
       background-color: $background;
       border-radius: 8px;
@@ -190,7 +191,7 @@ export default {
     display: block;
     overflow: hidden;
     width: 20rem;
-    height: 26rem;
+    height: 20rem;
 
     @media screen and (max-width: 320px) {
       width: 18rem;
