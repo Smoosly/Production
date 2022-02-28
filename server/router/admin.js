@@ -10,8 +10,8 @@ const util = require('util');
 
 const { isAuth } = require('../middleware/isAuth');
 const { isAdmin } = require('../middleware/isAdmin');
-// router.use(isAuth);
-// router.use(isAdmin);
+router.use(isAuth);
+router.use(isAdmin);
 
 router.get('/getUserList', async (req, res) => {
   // const [list] = await sequelize.query("select BRA_RECOM.*, BRA_FIX.CHECK_ADMIN from Smoosly.BRA_RECOM left join Smoosly.BRA_FIX on BRA_RECOM.PK_ID = BRA_FIX.PK_ID;");
@@ -365,7 +365,7 @@ router.get('/getData/:PK_ID', async (req, res) => {
         },
       ],
     };
-    // winston.debug(util.inspect(breastTestResult, false, null, true));
+    winston.debug(util.inspect(breastTestResult, false, null, true));
     return res.json({
       success: true,
       message: '설문 데이터 + 추천브라 데이터 + 수정할 데이터',
