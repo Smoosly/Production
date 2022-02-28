@@ -120,11 +120,62 @@
       </VueGoodTable>
 
       <!-- 홈피팅 신청 관리 테이블 -->
+      <VueGoodTable
+        v-if="step == 3"
+        :columns="column3"
+        :rows="homeFitting"
+        v-on:selected-rows-change="selection3Changed"
+        :select-options="{
+          enabled: true,
+          selectionText: '개 선택됨',
+          clearSelectionText: '선택 해제',
+        }"
+        :search-options="{
+          enabled: true,
+        }"
+        :sort-options="{
+          enabled: true,
+        }"
+        :pagination-options="{
+          enabled: true,
+          mode: 'records',
+          perPage: 10,
+          position: 'top',
+          perPageDropdown: [3, 7, 9],
+          dropdownAllowAll: false,
+          setCurrentPage: 1,
+          nextLabel: '다음',
+          prevLabel: '이전',
+          pageLabel: '페이지',
+          allLabel: '전체',
+        }"
+        :line-numbers="true"
+        :row-style-class="rowStyleClassFn"
+      >
+        <template #selected-row-actions>
+          <button type="button" class="btn-secondary btn-32" style="height: 24px; margin-bottom: 4px; margin-right: 4px">송장 출력</button>
+        </template>
+        <template #table-row="props">
+          <span v-if="props.column.field == 'state'">
+            <p style="color: orange" v-if="props.row.state == 1">신청완료</p>
+            <p style="color: red" v-if="props.row.state == 2">배송중</p>
+            <p style="color: green" v-if="props.row.state == 3">배송 완료</p>
+          </span>
+          <span v-else-if="props.column.field == 'return'">
+            <p style="color: orange" v-if="props.row.state == 1">신청완료</p>
+            <p style="color: red" v-if="props.row.state == 2">반송중</p>
+            <p style="color: green" v-if="props.row.state == 3">반송 완료</p>
+          </span>    
+          <span v-else>
+            {{ props.formattedRow[props.column.field] }}
+          </span>
+        </template>
+      </VueGoodTable>
 
       <!-- 재고 관리 테이블 -->
       <VueGoodTable
         v-if="step == 4"
-        :columns="columns3"
+        :columns="column4"
         :rows="braStockInfo"
         :search-options="{
           enabled: true,
@@ -239,8 +290,153 @@ export default {
       ],
       kitDeliverInfo: [],
 
+      // 홈피팅 신청
+      rowSelection3: [],
+      column3: [
+        { label: '사용자 아이디', field: 'PK_ID' },
+        { label: '받는사람이름', field: 'recipient' },
+        { label: '전화번호', field: 'phone' },
+        { label: '우편번호', field: 'postcode' },
+        { label: '배송지', field: 'fullAddress' },
+        { label: '배송상태', field: 'state', type: 'number', sortable: true, width: '90px' },
+        { label: '송장번호', field: 'invoice', type: 'number'},
+        { label: '반송여부', field: 'return', type: 'number', width: '90px' },
+        { label: '반송날짜', field: 'returnDate', width: '120px' }
+      ],
+
+      homeFitting: [
+        {
+            "id": 1,
+            "PK_ID": "kvjv8b2eup",
+            "recipient": "이보경",
+            "phone": "010-5094-2804",
+            "postcode": "02845",
+            "fullAddress": "서울 성북구 동소문로24길 13-13",
+            "message": null, // x
+            "state": 1, // 배송상태 - 1:신청완료, 2:배송중, 3:배송완료
+            "invoice": null, // 송장번호
+            "return": 1, // 반송여부 - 1: 반송신청완료, 2:반송중, 3:반송완료
+            "returnDate": "2022-02-23", // 반송날짜
+            "returnInvoice": null, //x
+            "createdAt": "2022-02-21T10:24:20.000Z", // x
+            "updatedAt": "2022-02-21T10:39:31.000Z" // x
+        },
+        {
+            "id": 2,
+            "PK_ID": "x2gj9j2uwf",
+            "recipient": "백유라",
+            "phone": "010-4512-9080",
+            "postcode": "22000",
+            "fullAddress": "인천 연수구 해송로 70",
+            "message": "문앞에",
+            "state": 2,
+            "invoice": null,
+            "return": 1,
+            "returnDate": "2022-02-23",
+            "returnInvoice": null,
+            "createdAt": "2022-02-21T10:28:41.000Z",
+            "updatedAt": "2022-02-21T16:02:07.000Z"
+        },
+        {
+            "id": 3,
+            "PK_ID": "qiv0dz299e",
+            "recipient": "이보경",
+            "phone": "010-444-5666",
+            "postcode": "13536",
+            "fullAddress": "경기 성남시 분당구 백현동 581-5",
+            "message": null,
+            "state": 1,
+            "invoice": null,
+            "return": 0,
+            "returnDate": null,
+            "returnInvoice": null,
+            "createdAt": "2022-02-21T13:21:33.000Z",
+            "updatedAt": "2022-02-21T16:02:07.000Z"
+        },
+        {
+            "id": 4,
+            "PK_ID": "x5vanyia2p",
+            "recipient": "류뚱혜",
+            "phone": "010-6371-9570",
+            "postcode": "02830",
+            "fullAddress": "서울 성북구 동소문동6가 71-1",
+            "message": null,
+            "state": 1,
+            "invoice": null,
+            "return": 0,
+            "returnDate": null,
+            "returnInvoice": null,
+            "createdAt": "2022-02-21T13:38:51.000Z",
+            "updatedAt": "2022-02-21T16:02:07.000Z"
+        },
+        {
+            "id": 5,
+            "PK_ID": "qsvub0y8p0",
+            "recipient": "강은수",
+            "phone": "010-3408-9775",
+            "postcode": "16357",
+            "fullAddress": "경기 수원시 장안구 서부로2167번길 4",
+            "message": "Jj",
+            "state": 1,
+            "invoice": null,
+            "return": 0,
+            "returnDate": null,
+            "returnInvoice": null,
+            "createdAt": "2022-02-21T13:44:36.000Z",
+            "updatedAt": "2022-02-21T16:02:07.000Z"
+        },
+        {
+            "id": 6,
+            "PK_ID": "6wv6ntaw37",
+            "recipient": "최은서",
+            "phone": "010-6489-5538",
+            "postcode": "02845",
+            "fullAddress": "서울 성북구 동소문로20가길 54",
+            "message": null,
+            "state": 2,
+            "invoice": null,
+            "return": 1,
+            "returnDate": "2022-02-25",
+            "returnInvoice": null,
+            "createdAt": "2022-02-21T16:08:57.000Z",
+            "updatedAt": "2022-02-22T03:27:15.000Z"
+        },
+        {
+            "id": 7,
+            "PK_ID": "5hzz843mr3",
+            "recipient": "라스트팡",
+            "phone": "010-455-5334",
+            "postcode": "03164",
+            "fullAddress": "서울 종로구 삼일대로 401-8",
+            "message": null,
+            "state": 1,
+            "invoice": null,
+            "return": 0,
+            "returnDate": null,
+            "returnInvoice": null,
+            "createdAt": "2022-02-23T07:56:52.000Z",
+            "updatedAt": "2022-02-23T07:56:52.000Z"
+        },
+        {
+            "id": 8,
+            "PK_ID": "n0cwd4q9rd",
+            "recipient": "사랑둥이",
+            "phone": "010-5363-7305",
+            "postcode": "001",
+            "fullAddress": "Dd",
+            "message": null,
+            "state": 1,
+            "invoice": null,
+            "return": 0,
+            "returnDate": null,
+            "returnInvoice": null,
+            "createdAt": "2022-02-25T05:45:50.000Z",
+            "updatedAt": "2022-02-25T05:45:50.000Z"
+        }
+      ],
+
       // 브라재고
-      columns3: [
+      column4: [
         { label: 'No', field: 'ID', type: 'number' },
         { label: '품번1(PK_ITEM)', field: 'PK_ITEM', width: '90px' },
         { label: '품번2(OLD_KEY)', field: 'OLD_KEY' },
@@ -293,6 +489,13 @@ export default {
       }
       console.log(this.rowSelection2);
     },
+    selection3Changed(params) {
+      this.rowSelection3 = [];
+      for (let row of params.selectedRows) {
+        this.rowSelection3.push(row.PK_ID);
+      }
+      console.log(this.rowSelection3);
+    },    
     // 선택한 줄만 최종 완료 처리하는 요청 함수
     totalComplete() {
       console.log('checkAtOnce');
