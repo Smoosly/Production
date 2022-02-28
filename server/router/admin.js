@@ -160,7 +160,7 @@ router.get('/getData/:PK_ID', async (req, res) => {
 
       mUNDER_BUST: breastTestValue.mUNDER_BUST, //밑가슴둘레
       mUPPER_BUST: breastTestValue.mUPPER_BUST, //윗가슴둘레
-      SIZE: '',
+      SIZE: braRecom.SIZE,
       BRA_SIZE: breastTestValue.BRA_SIZE, //자주 입는 브라 사이즈
 
       surface_len: [
@@ -355,7 +355,7 @@ router.get('/getData/:PK_ID', async (req, res) => {
         },
       ],
     };
-    // winston.debug(util.inspect(braRecomResult.decision, false, null, true));
+    // winston.debug(util.inspect(breastTestResult, false, null, true));
     return res.json({
       success: true,
       message: '설문 데이터 + 추천브라 데이터 + 수정할 데이터',

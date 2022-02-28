@@ -33,24 +33,24 @@
               <td style="width: 180px; text-align: center">{{ adminBreastTest.PRICE_RANGE }}</td>
             </tr>
           </table>
-          <table style="margin-left: 16px;background-color: lightgray; border-radius: 8px">
+          <table style="margin-left: 16px; background-color: lightgray; border-radius: 8px">
             <tr>
               <th style="padding: 8px 16px; font-weight: bold">밑가슴 둘레</th>
-              <td style="width: 180px; text-align: center">{{ adminBreastTest.other_len.mUNDER_BUST }}</td>
+              <td style="width: 180px; text-align: center">{{ adminBreastTest.mUNDER_BUST }}</td>
             </tr>
             <tr>
               <th style="padding: 8px 16px; font-weight: bold">윗가슴 둘레</th>
-              <td style="width: 180px; text-align: center">{{ adminBreastTest.other_len.mUPPER_BUST }}</td>
+              <td style="width: 180px; text-align: center">{{ adminBreastTest.mUPPER_BUST }}</td>
             </tr>
             <tr>
               <th style="padding: 8px 16px; font-weight: bold">추천 사이즈</th>
-              <td style="width: 180px; text-align: center">{{ adminBreastTest.BRA_SIZE }}</td>
+              <td style="width: 180px; text-align: center">{{ adminBreastTest.SIZE }}</td>
             </tr>
             <tr>
               <th style="padding: 8px 16px; font-weight: bold">자주 입는 브라 사이즈</th>
               <td style="width: 180px; text-align: center">{{ adminBreastTest.BRA_SIZE }}</td>
             </tr>
-          </table>          
+          </table>
         </div>
 
         <!-- 정보: {{ this.adminBreastTest }} -->
@@ -61,8 +61,8 @@
         <label style="padding: 8px" for="column1">가슴 표면 길이</label>
         <VueGoodTable id="column1" :columns="column1" :rows="adminBreastTest.surface_len" :sort-options="false" style="margin-bottom: 44px"> </VueGoodTable>
 
-        <label style="padding: 8px" for="column2">기타 길이 정보</label>
-        <VueGoodTable id="column2" :columns="column2" :rows="adminBreastTest.other_len" :sort-options="false" style="margin-bottom: 44px"> </VueGoodTable>
+        <!--<label style="padding: 8px" for="column2">기타 길이 정보</label>
+        <VueGoodTable id="column2" :columns="column2" :rows="adminBreastTest.other_len" :sort-options="false" style="margin-bottom: 44px"> </VueGoodTable>-->
 
         <label style="padding: 8px" for="column3">사진과의 차이</label>
         <VueGoodTable id="column3" :columns="column3" :rows="adminBreastTest.diff" :sort-options="false" style="margin-bottom: 44px"> </VueGoodTable>
@@ -170,64 +170,73 @@
 </template>
 
 <script>
-import "vue-good-table-next/dist/vue-good-table-next.css";
-import { VueGoodTable } from "vue-good-table-next";
-import axios from "axios";
-import typeImages from "../../BreastTypeImage";
-import { deleteCookie } from "@/utils/cookies";
+import 'vue-good-table-next/dist/vue-good-table-next.css';
+import { VueGoodTable } from 'vue-good-table-next';
+import axios from 'axios';
+import typeImages from '../../BreastTypeImage';
+import { deleteCookie } from '@/utils/cookies';
 
 // import { checkAuth } from '@/utils/loginAuth';
 
 export default {
   data() {
     return {
-      brataImg: "",
+      brataImg: '',
       // columns - Test Result
       column1: [
-        { label: "안쪽(왼쪽)", field: "mINNER_LEN_L", type: "number" },
-        { label: "바깥쪽(왼쪽)", field: "mOUTER_LEN_L", type: "number" },
-        { label: "아래쪽(왼쪽)", field: "mLOWER_LEN_L", type: "number" },
-        { label: "안쪽(오른쪽)", field: "mINNER_LEN_R", type: "number" },
-        { label: "바깥쪽(오른쪽)", field: "mOUTER_LEN_R", type: "number" },
-        { label: "아래쪽(오른쪽)", field: "mLOWER_LEN_R", type: "number" },
+        { label: '안쪽(왼쪽)', field: 'mINNER_LEN_L', type: 'number' },
+        { label: '바깥쪽(왼쪽)', field: 'mOUTER_LEN_L', type: 'number' },
+        { label: '아래쪽(왼쪽)', field: 'mLOWER_LEN_L', type: 'number' },
+        { label: '안쪽(오른쪽)', field: 'mINNER_LEN_R', type: 'number' },
+        { label: '바깥쪽(오른쪽)', field: 'mOUTER_LEN_R', type: 'number' },
+        { label: '아래쪽(오른쪽)', field: 'mLOWER_LEN_R', type: 'number' },
       ],
       column2: [
-        { label: "밑가슴둘레", field: "mUNDER_BUST", type: "number" },
-        { label: "윗가슴둘레", field: "mUPPER_BUST", type: "number" },
-        { label: "유장길이", field: "mSHtoBP", type: "number" },
-        { label: "어깨너비", field: "mSHOULDER", type: "number" },
+        { label: '밑가슴둘레', field: 'mUNDER_BUST', type: 'number' },
+        { label: '윗가슴둘레', field: 'mUPPER_BUST', type: 'number' },
+        { label: '유장길이', field: 'mSHtoBP', type: 'number' },
+        { label: '어깨너비', field: 'mSHOULDER', type: 'number' },
       ],
       column3: [
-        { label: "가슴 사이 거리", field: "DIFF_BT_GAP" },
-        { label: "유두 벌어짐", field: "DIFF_BP_DIR" },
-        { label: "처짐 정도", field: "DIFF_BT_SAG" },
-        { label: "기타", field: "DIFF_STR" },
+        { label: '가슴 사이 거리', field: 'DIFF_BT_GAP' },
+        { label: '유두 벌어짐', field: 'DIFF_BP_DIR' },
+        { label: '처짐 정도', field: 'DIFF_BT_SAG' },
+        { label: '기타', field: 'DIFF_STR' },
       ],
       column4: [
-        { label: "양쪽 가슴 사이즈 차이", field: "TYPE_BT_SIZEDIFF" },
-        { label: "어깨", field: "TYPE_SHOULDER" },
-        { label: "흉곽", field: "TYPE_RIB" },
-        { label: "부유방", field: "TYPE_ACCBREAST" },
-        { label: "왼쪽 가슴의 끝", field: "TYPE_FINISH_BT_L" },
-        { label: "오른쪽 가슴의 끝", field: "TYPE_FINISH_BT_R" },
-        { label: "가슴의 살결", field: "TYPE_BT_FLESH" },
+        { label: '양쪽 가슴 사이즈 차이', field: 'TYPE_BT_SIZEDIFF' },
+        { label: '어깨', field: 'TYPE_SHOULDER' },
+        { label: '흉곽', field: 'TYPE_RIB' },
+        { label: '부유방', field: 'TYPE_ACCBREAST' },
+        { label: '왼쪽 가슴의 끝', field: 'TYPE_FINISH_BT_L' },
+        { label: '오른쪽 가슴의 끝', field: 'TYPE_FINISH_BT_R' },
+        { label: '가슴의 살결', field: 'TYPE_BT_FLESH' },
       ],
       column5: [
-        { label: "압박감", field: "wPRESSURE", type: "number" },
-        { label: "종류", field: "wTYPE" },
-        { label: "뽕브라", field: "wPP" },
-        { label: "원하는 기능", field: "wBR_EFFECT" },
-        { label: "가장 원하는 기능", field: "wBR_EFFECT_MOST" },
+        { label: '압박감', field: 'wPRESSURE', type: 'number' },
+        { label: '종류', field: 'wTYPE' },
+        { label: '뽕브라', field: 'wPP' },
+        { label: '원하는 기능', field: 'wBR_EFFECT' },
+        { label: '가장 원하는 기능', field: 'wBR_EFFECT_MOST' },
       ],
       column5_1: [
-        { label: "원하는 소재", field: "wMATERIAL" },
-        { label: "원하는 소재 기타", field: "wMATERIAL_STR" },
-        { label: "선호 디자인", field: "wDESIGN_CONCEPT" },
-        { label: "색상", field: "wCOLOR_TASTE" },
-        { label: "가장 중요 항목", field: "wIMPORTANT" },
+        { label: '원하는 소재', field: 'wMATERIAL' },
+        { label: '원하는 소재 기타', field: 'wMATERIAL_STR' },
+        { label: '선호 디자인', field: 'wDESIGN_CONCEPT' },
+        { label: '색상', field: 'wCOLOR_TASTE' },
+        { label: '가장 중요 항목', field: 'wIMPORTANT' },
       ],
 
       adminBreastTest: {
+        AGE: '', //나이(현재 연도에서 출생 연도를 뺀 값)
+        BIRTH_YEAR: 0, //출생 연도
+        PRICE_RANGE: '', //가격 범위
+
+        mUNDER_BUST: 0, //밑가슴둘레
+        mUPPER_BUST: 0, //윗가슴둘레
+        SIZE: '',
+        BRA_SIZE: '', //자주 입는 브라 사이즈
+
         surface_len: [
           {
             mINNER_LEN_L: 0, // 왼쪽 안쪽 표면길이
@@ -238,36 +247,27 @@ export default {
             mLOWER_LEN_R: 0, // 오른쪽 아래쪽 표면길이
           },
         ],
-        other_len: [
-          {
-            mUNDER_BUST: 0, //밑가슴둘레
-            mUPPER_BUST: 0, //윗가슴둘레
-            mSHtoBP: 0, //유장길이
-            mSHOULDER: 0, //어깨 너비
-          },
-        ],
 
-        BRA_SIZE: "",
         NUM_BRATABASE: 1,
 
         diff: [
           {
-            DIFF_BT_GAP: "", //가슴 사이 거리
-            DIFF_BP_DIR: "", //유두 벌어짐
-            DIFF_BT_SAG: "", //처짐 정도
-            DIFF_STR: "", //기타
+            DIFF_BT_GAP: '', //가슴 사이 거리
+            DIFF_BP_DIR: '', //유두 벌어짐
+            DIFF_BT_SAG: '', //처짐 정도
+            DIFF_STR: '', //기타
           },
         ],
 
         type: [
           {
-            TYPE_BT_SIZEDIFF: "", //양쪽 가슴 사이즈 차이
-            TYPE_SHOULDER: "", //어깨
-            TYPE_RIB: "", //흉곽
-            TYPE_ACCBREAST: "", //부유방
-            TYPE_FINISH_BT_L: "", //왼쪽 가슴의 끝
-            TYPE_FINISH_BT_R: "", //오른쪽 가슴의 끝
-            TYPE_BT_FLESH: "", //가슴의 살결
+            TYPE_BT_SIZEDIFF: '', //양쪽 가슴 사이즈 차이
+            // TYPE_SHOULDER: '', //어깨
+            TYPE_RIB: '', //흉곽
+            TYPE_ACCBREAST: '', //부유방
+            // TYPE_FINISH_BT_L: '', //왼쪽 가슴의 끝
+            // TYPE_FINISH_BT_R: '', //오른쪽 가슴의 끝
+            // TYPE_BT_FLESH: '', //가슴의 살결
           },
         ],
 
@@ -275,47 +275,43 @@ export default {
           {
             wPRESSURE: 0, //압박감 취향
             wTYPE: [], //종류
-            wPP: "", //뽕브라 선호
+            wPP: '', //뽕브라 선호
             wBR_EFFECT: [], //브라 원하는 기능
-            wBR_EFFECT_MOST: "", //브라 가장 원하는 기능
+            wBR_EFFECT_MOST: '', //브라 가장 원하는 기능
           },
         ],
 
         want2: [
           {
             wMATERIAL: [], //원하는 소재
-            wMATERIAL_STR: "", //원하는 소재 기타
+            wMATERIAL_STR: '', //원하는 소재 기타
             wDESIGN_CONCEPT: [], //선호하는 디자인
-            wCOLOR_TASTE: "", //색상 취향
-            wIMPORTANT: "", //브라에서 가장 중요한 항목
+            wCOLOR_TASTE: '', //색상 취향
+            wIMPORTANT: '', //브라에서 가장 중요한 항목
           },
         ],
-
-        PRICE_RANGE: "",
-        BIRTH_YEAR: 2000,
-        AGE: "",
       },
 
       // column for homefitting table
       columnRecom: [
-        { label: "브라 명", field: "BRA_NAME", width: "140px" },
-        { label: "PK_ITEM", field: "PK_ITEM" },
-        { label: "OLD_KEY", field: "OLD_KEY" },
-        { label: "태그", field: "TAGS", width: "120px" },
-        { label: "링크 목록", field: "LINK", width: "200px" }, // 링크들 각각 클릭 가능하게 (버튼 명은 색깔로)
-        { label: "사이즈 후보", field: "SIZE", width: "120px" },
-        { label: "선택 색상", field: "SELECTED_COLOR" },
-        { label: "가슴 적합도 점수", field: "BREAST_SCORE", type: "number" },
-        { label: "기능 적합도 점수", field: "EFFECT_SCORE", type: "number" },
+        { label: '브라 명', field: 'BRA_NAME', width: '140px' },
+        { label: 'PK_ITEM', field: 'PK_ITEM' },
+        { label: 'OLD_KEY', field: 'OLD_KEY' },
+        { label: '태그', field: 'TAGS', width: '120px' },
+        { label: '링크 목록', field: 'LINK', width: '200px' }, // 링크들 각각 클릭 가능하게 (버튼 명은 색깔로)
+        { label: '사이즈 후보', field: 'SIZE', width: '120px' },
+        { label: '선택 색상', field: 'SELECTED_COLOR' },
+        { label: '가슴 적합도 점수', field: 'BREAST_SCORE', type: 'number' },
+        { label: '기능 적합도 점수', field: 'EFFECT_SCORE', type: 'number' },
       ],
 
       columnComp: [
-        { label: "기본 사이즈", field: "SIZE" },
+        { label: '기본 사이즈', field: 'SIZE' },
         // { label: "홈 피팅 신청", field: "H_FITTING_APPLY", type: "boolean" },
         // { label: "홈 피팅 그룹", field: "GROUP_NUM", type: "number", width: "30px" },
-        { label: "추천된 브라 개수", field: "NUM", type: "number" },
-        { label: "보내줄 브라 번호", field: "DECISION" },
-        { label: "추천 완료 여부", field: "COMPLETE", type: "number" },
+        { label: '추천된 브라 개수', field: 'NUM', type: 'number' },
+        { label: '보내줄 브라 번호', field: 'DECISION' },
+        { label: '추천 완료 여부', field: 'COMPLETE', type: 'number' },
       ],
 
       adminBraRecom: {
@@ -331,86 +327,86 @@ export default {
 
         bras: [
           {
-            BRA_NAME: "",
-            PK_ITEM: "",
-            OLD_KEY: "",
+            BRA_NAME: '',
+            PK_ITEM: '',
+            OLD_KEY: '',
             TAGS: [],
             LINK: [],
-            SIZE: "", //edit
+            SIZE: '', //edit
             COLOR: [], //editX
-            SELECTED_COLOR: "", //edit
+            SELECTED_COLOR: '', //edit
             BREAST_SCORE: 0,
             EFFECT_SCORE: 0,
           },
           {
-            BRA_NAME: "",
-            PK_ITEM: "",
-            OLD_KEY: "",
+            BRA_NAME: '',
+            PK_ITEM: '',
+            OLD_KEY: '',
             TAGS: [],
             LINK: [],
-            SIZE: "", //edit
+            SIZE: '', //edit
             COLOR: [], //editX
-            SELECTED_COLOR: "", //edit
+            SELECTED_COLOR: '', //edit
             BREAST_SCORE: 0,
             EFFECT_SCORE: 0,
           },
           {
-            BRA_NAME: "",
-            PK_ITEM: "",
-            OLD_KEY: "",
+            BRA_NAME: '',
+            PK_ITEM: '',
+            OLD_KEY: '',
             TAGS: [],
             LINK: [],
-            SIZE: "",
+            SIZE: '',
             COLOR: [], //editX
-            SELECTED_COLOR: "", //edit
+            SELECTED_COLOR: '', //edit
             BREAST_SCORE: 0,
             EFFECT_SCORE: 0,
           },
           {
-            BRA_NAME: "",
-            PK_ITEM: "",
-            OLD_KEY: "",
+            BRA_NAME: '',
+            PK_ITEM: '',
+            OLD_KEY: '',
             TAGS: [],
             LINK: [],
-            SIZE: "", //edit
+            SIZE: '', //edit
             COLOR: [], //editX
-            SELECTED_COLOR: "", //edit
+            SELECTED_COLOR: '', //edit
             BREAST_SCORE: 0,
             EFFECT_SCORE: 0,
           },
           {
-            BRA_NAME: "",
-            PK_ITEM: "",
-            OLD_KEY: "",
+            BRA_NAME: '',
+            PK_ITEM: '',
+            OLD_KEY: '',
             TAGS: [],
             LINK: [],
-            SIZE: "", //edit
+            SIZE: '', //edit
             COLOR: [], //editX
-            SELECTED_COLOR: "", //edit
+            SELECTED_COLOR: '', //edit
             BREAST_SCORE: 0,
             EFFECT_SCORE: 0,
           },
           {
-            BRA_NAME: "",
-            PK_ITEM: "",
-            OLD_KEY: "",
+            BRA_NAME: '',
+            PK_ITEM: '',
+            OLD_KEY: '',
             TAGS: [],
             LINK: [],
-            SIZE: "", //edit
+            SIZE: '', //edit
             COLOR: [], //editX
-            SELECTED_COLOR: "", //edit
+            SELECTED_COLOR: '', //edit
             BREAST_SCORE: 0,
             EFFECT_SCORE: 0,
           },
           {
-            BRA_NAME: "",
-            PK_ITEM: "",
-            OLD_KEY: "",
+            BRA_NAME: '',
+            PK_ITEM: '',
+            OLD_KEY: '',
             TAGS: [],
             LINK: [],
-            SIZE: "", //edit
+            SIZE: '', //edit
             COLOR: [], //editX
-            SELECTED_COLOR: "", //edit
+            SELECTED_COLOR: '', //edit
             BREAST_SCORE: 0,
             EFFECT_SCORE: 0,
           },
@@ -463,26 +459,26 @@ export default {
             this.brataImg = images[this.adminBreastTest.NUM_BRATABASE - 1].path;
             return;
           } else {
-            if (Object.keys(result.data).includes("isAuth") && result.data.isAuth === false) {
-              this.$store.commit("clearCode");
-              this.$store.commit("clearToken");
-              deleteCookie("auth");
-              deleteCookie("user");
-              console.log("여기 로직 리팩토링");
-              this.$router.push("/");
-              this.emitter.emit("loginModal", true);
-              this.emitter.emit("showRedToast", "로그인 후 이용해주세요.");
+            if (Object.keys(result.data).includes('isAuth') && result.data.isAuth === false) {
+              this.$store.commit('clearCode');
+              this.$store.commit('clearToken');
+              deleteCookie('auth');
+              deleteCookie('user');
+              console.log('여기 로직 리팩토링');
+              this.$router.push('/');
+              this.emitter.emit('loginModal', true);
+              this.emitter.emit('showRedToast', '로그인 후 이용해주세요.');
               return;
             }
             console.log(result.data.message);
-            return this.emitter.emit("showRedToast", result.data.message);
+            return this.emitter.emit('showRedToast', result.data.message);
             // checkAuth(result.data);
           }
         })
         .catch(console.log);
     },
     saveTemp() {
-      console.log("saveTemp");
+      console.log('saveTemp');
       const data = {
         COMPLETE: 0,
         // GROUP_NUM: this.adminBraRecom.decision[0].GROUP_NUM,
@@ -498,16 +494,16 @@ export default {
         SIZE_8: this.adminBraRecom.bras[7].SIZE,
         SIZE_9: this.adminBraRecom.bras[8].SIZE,
         SIZE_10: this.adminBraRecom.bras[9].SIZE,
-        SELECTED_COLOR_1: this.adminBraRecom.bras[0].SELECTED_COLOR === "" ? null : this.adminBraRecom.bras[0].SELECTED_COLOR,
-        SELECTED_COLOR_2: this.adminBraRecom.bras[1].SELECTED_COLOR === "" ? null : this.adminBraRecom.bras[1].SELECTED_COLOR,
-        SELECTED_COLOR_3: this.adminBraRecom.bras[2].SELECTED_COLOR === "" ? null : this.adminBraRecom.bras[2].SELECTED_COLOR,
-        SELECTED_COLOR_4: this.adminBraRecom.bras[3].SELECTED_COLOR === "" ? null : this.adminBraRecom.bras[3].SELECTED_COLOR,
-        SELECTED_COLOR_5: this.adminBraRecom.bras[4].SELECTED_COLOR === "" ? null : this.adminBraRecom.bras[4].SELECTED_COLOR,
-        SELECTED_COLOR_6: this.adminBraRecom.bras[5].SELECTED_COLOR === "" ? null : this.adminBraRecom.bras[5].SELECTED_COLOR,
-        SELECTED_COLOR_7: this.adminBraRecom.bras[6].SELECTED_COLOR === "" ? null : this.adminBraRecom.bras[6].SELECTED_COLOR,
-        SELECTED_COLOR_8: this.adminBraRecom.bras[7].SELECTED_COLOR === "" ? null : this.adminBraRecom.bras[7].SELECTED_COLOR,
-        SELECTED_COLOR_9: this.adminBraRecom.bras[8].SELECTED_COLOR === "" ? null : this.adminBraRecom.bras[8].SELECTED_COLOR,
-        SELECTED_COLOR_10: this.adminBraRecom.bras[9].SELECTED_COLOR === "" ? null : this.adminBraRecom.bras[9].SELECTED_COLOR,
+        SELECTED_COLOR_1: this.adminBraRecom.bras[0].SELECTED_COLOR === '' ? null : this.adminBraRecom.bras[0].SELECTED_COLOR,
+        SELECTED_COLOR_2: this.adminBraRecom.bras[1].SELECTED_COLOR === '' ? null : this.adminBraRecom.bras[1].SELECTED_COLOR,
+        SELECTED_COLOR_3: this.adminBraRecom.bras[2].SELECTED_COLOR === '' ? null : this.adminBraRecom.bras[2].SELECTED_COLOR,
+        SELECTED_COLOR_4: this.adminBraRecom.bras[3].SELECTED_COLOR === '' ? null : this.adminBraRecom.bras[3].SELECTED_COLOR,
+        SELECTED_COLOR_5: this.adminBraRecom.bras[4].SELECTED_COLOR === '' ? null : this.adminBraRecom.bras[4].SELECTED_COLOR,
+        SELECTED_COLOR_6: this.adminBraRecom.bras[5].SELECTED_COLOR === '' ? null : this.adminBraRecom.bras[5].SELECTED_COLOR,
+        SELECTED_COLOR_7: this.adminBraRecom.bras[6].SELECTED_COLOR === '' ? null : this.adminBraRecom.bras[6].SELECTED_COLOR,
+        SELECTED_COLOR_8: this.adminBraRecom.bras[7].SELECTED_COLOR === '' ? null : this.adminBraRecom.bras[7].SELECTED_COLOR,
+        SELECTED_COLOR_9: this.adminBraRecom.bras[8].SELECTED_COLOR === '' ? null : this.adminBraRecom.bras[8].SELECTED_COLOR,
+        SELECTED_COLOR_10: this.adminBraRecom.bras[9].SELECTED_COLOR === '' ? null : this.adminBraRecom.bras[9].SELECTED_COLOR,
       };
       console.log(data);
       axios
@@ -516,15 +512,15 @@ export default {
           console.log(result.data);
           if (result.data.success) {
             this.fetchRecomData();
-            return this.emitter.emit("showToast", result.data.message);
+            return this.emitter.emit('showToast', result.data.message);
           } else {
             console.log(result.data.message);
-            return this.emitter.emit("showRedToast", result.data.message);
+            return this.emitter.emit('showRedToast', result.data.message);
           }
         })
         .catch((err) => {
           console.log(err);
-          return this.emitter.emit("showRedToast", "임시 저장 실패");
+          return this.emitter.emit('showRedToast', '임시 저장 실패');
         });
     },
     saveComplete() {
@@ -543,16 +539,16 @@ export default {
         SIZE_8: this.adminBraRecom.bras[7].SIZE,
         SIZE_9: this.adminBraRecom.bras[8].SIZE,
         SIZE_10: this.adminBraRecom.bras[9].SIZE,
-        SELECTED_COLOR_1: this.adminBraRecom.bras[0].SELECTED_COLOR === "" ? null : this.adminBraRecom.bras[0].SELECTED_COLOR,
-        SELECTED_COLOR_2: this.adminBraRecom.bras[1].SELECTED_COLOR === "" ? null : this.adminBraRecom.bras[1].SELECTED_COLOR,
-        SELECTED_COLOR_3: this.adminBraRecom.bras[2].SELECTED_COLOR === "" ? null : this.adminBraRecom.bras[2].SELECTED_COLOR,
-        SELECTED_COLOR_4: this.adminBraRecom.bras[3].SELECTED_COLOR === "" ? null : this.adminBraRecom.bras[3].SELECTED_COLOR,
-        SELECTED_COLOR_5: this.adminBraRecom.bras[4].SELECTED_COLOR === "" ? null : this.adminBraRecom.bras[4].SELECTED_COLOR,
-        SELECTED_COLOR_6: this.adminBraRecom.bras[5].SELECTED_COLOR === "" ? null : this.adminBraRecom.bras[5].SELECTED_COLOR,
-        SELECTED_COLOR_7: this.adminBraRecom.bras[6].SELECTED_COLOR === "" ? null : this.adminBraRecom.bras[6].SELECTED_COLOR,
-        SELECTED_COLOR_8: this.adminBraRecom.bras[7].SELECTED_COLOR === "" ? null : this.adminBraRecom.bras[7].SELECTED_COLOR,
-        SELECTED_COLOR_9: this.adminBraRecom.bras[8].SELECTED_COLOR === "" ? null : this.adminBraRecom.bras[8].SELECTED_COLOR,
-        SELECTED_COLOR_10: this.adminBraRecom.bras[9].SELECTED_COLOR === "" ? null : this.adminBraRecom.bras[9].SELECTED_COLOR,
+        SELECTED_COLOR_1: this.adminBraRecom.bras[0].SELECTED_COLOR === '' ? null : this.adminBraRecom.bras[0].SELECTED_COLOR,
+        SELECTED_COLOR_2: this.adminBraRecom.bras[1].SELECTED_COLOR === '' ? null : this.adminBraRecom.bras[1].SELECTED_COLOR,
+        SELECTED_COLOR_3: this.adminBraRecom.bras[2].SELECTED_COLOR === '' ? null : this.adminBraRecom.bras[2].SELECTED_COLOR,
+        SELECTED_COLOR_4: this.adminBraRecom.bras[3].SELECTED_COLOR === '' ? null : this.adminBraRecom.bras[3].SELECTED_COLOR,
+        SELECTED_COLOR_5: this.adminBraRecom.bras[4].SELECTED_COLOR === '' ? null : this.adminBraRecom.bras[4].SELECTED_COLOR,
+        SELECTED_COLOR_6: this.adminBraRecom.bras[5].SELECTED_COLOR === '' ? null : this.adminBraRecom.bras[5].SELECTED_COLOR,
+        SELECTED_COLOR_7: this.adminBraRecom.bras[6].SELECTED_COLOR === '' ? null : this.adminBraRecom.bras[6].SELECTED_COLOR,
+        SELECTED_COLOR_8: this.adminBraRecom.bras[7].SELECTED_COLOR === '' ? null : this.adminBraRecom.bras[7].SELECTED_COLOR,
+        SELECTED_COLOR_9: this.adminBraRecom.bras[8].SELECTED_COLOR === '' ? null : this.adminBraRecom.bras[8].SELECTED_COLOR,
+        SELECTED_COLOR_10: this.adminBraRecom.bras[9].SELECTED_COLOR === '' ? null : this.adminBraRecom.bras[9].SELECTED_COLOR,
       };
       console.log(data);
       axios
@@ -561,14 +557,14 @@ export default {
           console.log(result.data);
           if (result.data.success) {
             this.fetchRecomData();
-            return this.emitter.emit("showToast", result.data.message);
+            return this.emitter.emit('showToast', result.data.message);
           }
           console.log(result.data.message);
-          return this.emitter.emit("showRedToast", result.data.message);
+          return this.emitter.emit('showRedToast', result.data.message);
         })
         .catch((err) => {
           console.log(err);
-          return this.emitter.emit("showRedToast", "추천 브라 확정 실패");
+          return this.emitter.emit('showRedToast', '추천 브라 확정 실패');
         });
     },
   },
