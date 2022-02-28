@@ -4,6 +4,7 @@ import pymysql
 import json
 import logging
 import logging.handlers
+from flask import request, jsonify, Blueprint
 
 log = logging.getLogger("braResult")
 log.setLevel(logging.DEBUG)
@@ -37,6 +38,9 @@ def result():
                         charset=config["charset"],
                 )
                 cur = db.cursor()
+                requestData = request.data.decode("utf-8")
+                Data = json.loads(requestData)
+                print(Data["PK_IDs"])
 
                 sql_brAll = "select * from BR_ALL"
                 # Get BR_ALL

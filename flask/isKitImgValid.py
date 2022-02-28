@@ -259,7 +259,7 @@ def measure(filename, type, dir = 0):
                                 int(xMin + imgDropOffset[0][idx]) : int(xMax - imgDropOffset[0][idx] * 2),
                         ]
 
-                cv2.imwrite("{}.jpg".format(idx), grayImg)     
+                # cv2.imwrite("{}.jpg".format(idx), grayImg)     
                 contours, _ = cv2.findContours(
                         grayImg, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE
                 )
@@ -481,7 +481,7 @@ def kitVision():
                                 kitNow += 1
                                 breastAll, breastNow = breastTests
                                 braAll, braNow = braRecommends
-                                slackKit.chat_postMessage(channel = "#3rd-진행상황", text = "{}님이 키트 업로드하였습니다.\n키트 업로드 진행한 사람 : {}/{}\n {}명 남았습니다".format(pkID, kitNow, kitAll, kitAll-kitNow))
+                                slackKit.chat_postMessage(channel = "#웹테스트", text = "{}님이 키트 업로드하였습니다.\n키트 업로드 진행한 사람 : {}/{}\n {}명 남았습니다".format(pkID, kitNow, kitAll, kitAll-kitNow))
                                 
                                 
                                 current.close()
@@ -497,7 +497,7 @@ def kitVision():
                         return jsonify({"success": "yes", "error": "", "dir": ""})
                 
         except Exception as e:
-                slackKit.chat_postMessage(channel = "#3rd-진행상황", text = "{}님이 키트 업로드하는데 예기치 못한 오류가 발생하였습니다".format(pkID))
+                slackKit.chat_postMessage(channel = "#웹테스트", text = "{}님이 키트 업로드하는데 예기치 못한 오류가 발생하였습니다".format(pkID))
                 log.exception(f"{str(e)}, {type(e)}")
                 return jsonify({"success": "no", "error": str(e)})
         
