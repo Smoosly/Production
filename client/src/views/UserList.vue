@@ -3,12 +3,14 @@
     <div class="button-box">
       <button type="button" @click="step = 1" class="btn-secondary btn-48">홈 피팅 관리</button>
       <button type="button" @click="step = 2" class="btn-secondary btn-48">키트 배송 관리</button>
-      <button type="button" @click="step = 3" class="btn-secondary btn-48">브라 재고 관리</button>
+      <button type="button" @click="step = 3" class="btn-secondary btn-48">홈피팅 신청 관리</button>
+      <button type="button" @click="step = 4" class="btn-secondary btn-48">브라 재고 관리</button>
     </div>
     <div class="title">
-      <h2 v-if="step == 1">홈 피팅 관리 테이블</h2>
-      <h2 v-if="step == 2">키트 배송 관리 테이블</h2>
-      <h2 v-if="step == 3">브라 재고 관리 테이블</h2>
+      <h2 v-if="step == 1">키트 배송 관리 테이블</h2>
+      <h2 v-if="step == 2">브라 추천 관리 테이블</h2>
+      <h2 v-if="step == 3">홈피팅 신청 관리 테이블</h2>
+      <h2 v-if="step == 4">브라 재고 관리 테이블</h2>
     </div>
     <div class="form">
       <!-- 홈 피팅 관리 테이블 -->
@@ -120,9 +122,13 @@
           </span>
         </template>
       </VueGoodTable>
+
+      <!-- 홈피팅 신청 관리 테이블 -->
+      
+
       <!-- 재고 관리 테이블 -->
       <VueGoodTable
-        v-if="step == 3"
+        v-if="step == 4"
         :columns="columns3"
         :rows="braStockInfo"
         :search-options="{
@@ -181,7 +187,7 @@
           </span>
         </template>
       </VueGoodTable>
-      <div v-if="step == 3" class="button-box" style="display: flex; justify-content: flex-end">
+      <div v-if="step == 4" class="button-box" style="display: flex; justify-content: flex-end">
         <button type="button" style="margin-right: 16px; padding: 24px" class="btn-primary btn-55">저장하기</button>
       </div>
     </div>

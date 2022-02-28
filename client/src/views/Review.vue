@@ -86,9 +86,13 @@
                   <input id="size2" type="radio" name="size" v-model="answers_save[step].q1" value="2" />
                   <label for="size2">{{ questionData[step].recommendSize[1] }}</label>
                 </li>
-                <li v-if="questionData[step].sizeNum === 3">
+                <li v-if="questionData[step].sizeNum >= 3">
                   <input id="size3" type="radio" name="size" v-model="answers_save[step].q1" value="3" />
                   <label for="size3">{{ questionData[step].recommendSize[2] }}</label>
+                </li>
+                <li v-if="questionData[step].sizeNum === 4">
+                  <input id="size4" type="radio" name="size" v-model="answers_save[step].q1" value="4" />
+                  <label for="size4">{{ questionData[step].recommendSize[3] }}</label>
                 </li>
                 <li v-else-if="questionData[step].sizeNum === 2">
                   <input id="size3" type="radio" name="size" v-model="answers_save[step].q1" value="0" />

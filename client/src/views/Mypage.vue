@@ -172,7 +172,7 @@
               <div v-if="isOrderedHometry && deliverTousreq" class="delivery-to-us-info">
                 <div class="box">
                   <div class="order-date">
-                    <p>수거 예정일: {{ deliverTousDate }}</p>
+                    <p>신청 일자: {{ deliverTousDate }}</p>
                     <h3>홈 피팅용 브라</h3>
                   </div>
                   <ul class="progressbar">
