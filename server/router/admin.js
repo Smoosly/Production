@@ -153,6 +153,16 @@ router.get('/getData/:PK_ID', async (req, res) => {
     });
 
     const breastTestResult = {
+      PRICE_RANGE: breastTestValue.PRICE_RANGE, //가격 범위
+
+      BIRTH_YEAR: breastTestValue.BIRTH_YEAR, //출생 연도
+      AGE: breastTestValue.AGE, //나이(현재 연도에서 출생 연도를 뺀 값)
+
+      mUNDER_BUST: breastTestValue.mUNDER_BUST, //밑가슴둘레
+      mUPPER_BUST: breastTestValue.mUPPER_BUST, //윗가슴둘레
+      SIZE: '',
+      BRA_SIZE: breastTestValue.BRA_SIZE, //자주 입는 브라 사이즈
+
       surface_len: [
         {
           mINNER_LEN_L: breastTestValue.mINNER_LEN_L !== null ? breastTestValue.mINNER_LEN_L : '결과 없음', // 왼쪽 안쪽 표면길이
@@ -163,17 +173,6 @@ router.get('/getData/:PK_ID', async (req, res) => {
           mLOWER_LEN_R: breastTestValue.mLOWER_LEN_R !== null ? breastTestValue.mLOWER_LEN_R : '결과 없음', // 오른쪽 아래쪽 표면길이
         },
       ],
-
-      other_len: [
-        {
-          mUNDER_BUST: breastTestValue.mUNDER_BUST, //밑가슴둘레
-          mUPPER_BUST: breastTestValue.mUPPER_BUST, //윗가슴둘레
-          mSHtoBP: breastTestValue.mSHtoBP, //유장길이
-          mSHOULDER: breastTestValue.mSHOULDER, //어깨 너비
-        },
-      ],
-
-      BRA_SIZE: breastTestValue.BRA_SIZE, //자주 입는 브라 사이즈
 
       NUM_BRATABASE: breastTestValue.NUM_BRATABASE, //브라타베이스 사진
       // 얘는 사진 자체를 불러와야 하는데 이건 내가 이미지 태그에 링크 걸어서 가져올게!!
@@ -190,12 +189,12 @@ router.get('/getData/:PK_ID', async (req, res) => {
       type: [
         {
           TYPE_BT_SIZEDIFF: breastTestValue.TYPE_BT_SIZEDIFF, //양쪽 가슴 사이즈 차이
-          TYPE_SHOULDER: breastTestValue.TYPE_SHOULDER, //어깨
+          // TYPE_SHOULDER: breastTestValue.TYPE_SHOULDER, //어깨
           TYPE_RIB: breastTestValue.TYPE_RIB, //흉곽
           TYPE_ACCBREAST: breastTestValue.TYPE_ACCBREAST, //부유방
-          TYPE_BT_FINISH_L: breastTestValue.TYPE_BT_FINISH_L, //왼쪽 가슴의 끝
-          TYPE_BT_FINISH_R: breastTestValue.TYPE_BT_FINISH_R, //오른쪽 가슴의 끝
-          TYPE_BT_FLESH: breastTestValue.TYPE_BT_FLESH, //가슴의 살결
+          // TYPE_BT_FINISH_L: breastTestValue.TYPE_BT_FINISH_L, //왼쪽 가슴의 끝
+          // TYPE_BT_FINISH_R: breastTestValue.TYPE_BT_FINISH_R, //오른쪽 가슴의 끝
+          // TYPE_BT_FLESH: breastTestValue.TYPE_BT_FLESH, //가슴의 살결
         },
       ],
 
@@ -219,11 +218,6 @@ router.get('/getData/:PK_ID', async (req, res) => {
           wIMPORTANT: breastTestValue.wIMPORTANT, //브라에서 가장 중요한 항목
         },
       ],
-
-      PRICE_RANGE: breastTestValue.PRICE_RANGE, //가격 범위
-
-      BIRTH_YEAR: breastTestValue.BIRTH_YEAR, //출생 연도
-      AGE: breastTestValue.AGE, //나이(현재 연도에서 출생 연도를 뺀 값)
     };
 
     const braRecomResult = {
