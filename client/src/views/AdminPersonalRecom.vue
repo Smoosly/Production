@@ -29,14 +29,28 @@
               <td style="width: 180px; text-align: center">{{ adminBreastTest.BIRTH_YEAR }}</td>
             </tr>
             <tr>
-              <th style="padding: 8px 16px; font-weight: bold">자주 입는 브라 사이즈</th>
-              <td style="width: 180px; text-align: center">{{ adminBreastTest.BRA_SIZE }}</td>
-            </tr>
-            <tr>
               <th style="padding: 8px 16px; font-weight: bold">가격 범위</th>
               <td style="width: 180px; text-align: center">{{ adminBreastTest.PRICE_RANGE }}</td>
             </tr>
           </table>
+          <table style="margin-left: 16px;background-color: lightgray; border-radius: 8px">
+            <tr>
+              <th style="padding: 8px 16px; font-weight: bold">밑가슴 둘레</th>
+              <td style="width: 180px; text-align: center">{{ adminBreastTest.other_len.mUNDER_BUST }}</td>
+            </tr>
+            <tr>
+              <th style="padding: 8px 16px; font-weight: bold">윗가슴 둘레</th>
+              <td style="width: 180px; text-align: center">{{ adminBreastTest.other_len.mUPPER_BUST }}</td>
+            </tr>
+            <tr>
+              <th style="padding: 8px 16px; font-weight: bold">추천 사이즈</th>
+              <td style="width: 180px; text-align: center">{{ adminBreastTest.BRA_SIZE }}</td>
+            </tr>
+            <tr>
+              <th style="padding: 8px 16px; font-weight: bold">자주 입는 브라 사이즈</th>
+              <td style="width: 180px; text-align: center">{{ adminBreastTest.BRA_SIZE }}</td>
+            </tr>
+          </table>          
         </div>
 
         <!-- 정보: {{ this.adminBreastTest }} -->
