@@ -72,7 +72,7 @@
           <img src="braRecommend/getImg/bra/4" alt="" />
         </div>
         <div class="survey-container">
-          <div data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="1000" class="question-container one">
+          <div data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="1000" id="q0" class="question-container one">
             <div class="question-title">
               <h3><span>1.</span>&nbsp;배송된 사이즈 중 어떤 것이 가장 괜찮았나요?</h3>
             </div>
@@ -106,7 +106,7 @@
               <!--<p><i class="far fa-check-square"></i>&nbsp;없음 답변 있는 경우만 보이게 - questionData[step].sizeNum === 2일 때만 없음 선택한 경우 그나마 나은걸 기준으로 답변하라고 하기 - 멘트정해야함&nbsp;</p>-->
             </div>
           </div>
-          <div data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="1000" class="question-container two">
+          <div data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="1000" id="q1" class="question-container two">
             <div class="question-title">
               <h3><span>2.</span>&nbsp;전체적인 착용감은 어땠나요?</h3>
             </div>
@@ -123,7 +123,7 @@
               </ul>
             </div>
           </div>
-          <div data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="1000" class="question-container three">
+          <div data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="1000" id="q2" class="question-container three">
             <div class="question-title">
               <h3><span>3.</span>&nbsp;몇 번째 후크를 채우셨나요?</h3>
             </div>
@@ -144,7 +144,7 @@
               </ul>
             </div>
           </div>
-          <div data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="1000" class="question-container four">
+          <div data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="1000" id="q3" class="question-container four">
             <div class="question-title">
               <h3><span>4.</span>&nbsp;밑둘레는 어떤 느낌이었나요?</h3>
             </div>
@@ -158,7 +158,7 @@
               <p><span class="start">안입은 듯</span><span class="end">꽉 잡아주는</span></p>
             </div>
           </div>
-          <div data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="1000" class="question-container five">
+          <div data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="1000" id="q4" class="question-container five">
             <div class="question-title">
               <h3><span>5.</span>&nbsp;밑둘레의 착용감은 만족스러운가요?</h3>
             </div>
@@ -179,7 +179,7 @@
               </ul>
             </div>
           </div>
-          <div data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="1000" class="question-container six">
+          <div data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="1000" id="q5" class="question-container six">
             <div class="question-title">
               <h3><span>6.</span>&nbsp;불편 사항이 있었던 것에 모두 체크해 주세요.</h3>
             </div>
@@ -298,7 +298,7 @@
               <label for="nothing">전체 해당사항 없음</label>
             </div>
           </div>
-          <div data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="1000" class="question-container seven">
+          <div data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="1000" id="q10" class="question-container seven">
             <div class="question-title">
               <h3><span>7.</span>&nbsp;원하는 기능을 만족시켰나요?</h3>
             </div>
@@ -381,7 +381,7 @@
               </div>
             </div>
           </div>
-          <div data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="1000" class="question-container eight">
+          <div data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="1000" id="q6" class="question-container eight">
             <div class="question-title">
               <h3><span>8.</span>&nbsp;퀄리티는 어땠나요?</h3>
             </div>
@@ -402,7 +402,7 @@
               </ul>
             </div>
           </div>
-          <div data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="1000" class="question-container nine">
+          <div data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="1000" id="q7" class="question-container nine">
             <div class="question-title">
               <h3><span>9.</span>&nbsp;전반적인 만족도는 몇 점인가요?</h3>
             </div>
@@ -416,7 +416,7 @@
               <p><span class="start">불만족</span><span class="end">만족</span></p>
             </div>
           </div>
-          <div data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="1000" class="question-container ten">
+          <div data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="1000" id="q8" class="question-container ten">
             <div class="question-title">
               <h3><span>10.</span>&nbsp;이 제품을 구매하시나요?</h3>
             </div>
@@ -433,7 +433,7 @@
               </ul>
             </div>
           </div>
-          <div data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="1000" class="question-container eleven">
+          <div data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="1000" id="q9" class="question-container eleven">
             <div class="question-title">
               <h3><span>11.</span>&nbsp;구매한다면, 혹은 하지 않는다면 그 이유를 자유롭게 적어주세요.</h3>
             </div>
@@ -730,11 +730,29 @@ export default {
         answer.HOOK === null ||
         answer.PK_SIZE === "" ||
         answer.PURCHASE === null ||
+        answer.UNCOM_DETAIL === "" ||
         answer.QUALITY === null ||
         answer.TOTAL_SCORE === null ||
-        answer.PURCHASE === null ||
         answer.PURCHASE_REASON === null
       ) {
+        const questions = [ answer.PK_SIZE, answer.FIT, answer.HOOK, answer.BAND_PRESSURE, answer.BAND_FIT, answer.UNCOM_DETAIL, answer.QUALITY, answer.TOTAL_SCORE, answer.PURCHASE, answer.PURCHASE_REASON]
+        for (let i=0; i<questions.length; i++) {
+          if (i !== 4 && questions[i] === null) {
+            document.getElementById(`q${i}`).scrollIntoView(false)
+            window.scrollBy(0,180)
+            break
+          }
+          if (i === 4 && questions[i] === "") {
+            document.getElementById(`q${i}`).scrollIntoView(false)
+            window.scrollBy(0,180)
+            break
+          }
+          if (i === 5 && questions[i] === "") {
+            document.getElementById(`q${i}`).scrollIntoView(false)
+            window.scrollBy(0,180)
+            break
+          }
+        }
         return this.emitter.emit("showRedToast", "입력하지 않은 항목이 있습니다.");
       }
       console.log(this.braFunc);
@@ -745,6 +763,7 @@ export default {
         (this.braFunc[3] && answer.SATIS_ACCBREAST === null) ||
         (this.braFunc[4] && answer.SATIS_ACCBACK === null)
       ) {
+        document.getElementById(`q10`).scrollIntoView(false)
         return this.emitter.emit("showRedToast", "7번 문항에 입력하지 않은 항목이 있습니다.");
       }
       axios
