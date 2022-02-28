@@ -181,15 +181,20 @@ router.post('/invoice/:what', async (req, res) => {
       const fhdata = homeFitting.map((hf) => {
         return hf.dataValues;
       });
+      fhdata.map((hf) => {
+        hf.category = '의류';
+        hf.money = 2800;
+      });
       const data = [
         {
           sheet: 'Info',
           columns: [
-            { label: 'recipient', value: 'recipient' },
-            { label: 'phone', value: 'phone' },
-            { label: 'postcode', value: 'postcode' },
-            { label: 'fulladdress', value: 'fulladdress' },
-            { label: 'message', value: 'message' },
+            { label: '받는사람', value: 'recipient' },
+            { label: '번호', value: 'phone' },
+            { label: '주소', value: 'fulladdress' },
+            { label: '품목명', value: 'category' },
+            { label: '기본운임', value: 'money' },
+            { label: '배송메시지', value: 'message' },
           ],
           content: fhdata,
         },
