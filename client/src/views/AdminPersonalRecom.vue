@@ -58,14 +58,17 @@
       <div style="padding: 16px 32px" class="test-info">
         <h2 style="margin: 32px auto">답변 정보</h2>
 
-        <label style="padding: 8px" for="column1">가슴 표면 길이</label>
-        <VueGoodTable id="column1" :columns="column1" :rows="adminBreastTest.surface_len" :sort-options="false" style="margin-bottom: 44px"> </VueGoodTable>
+        <label style="padding: 8px" for="column1">왼쪽 표면 길이</label>
+        <VueGoodTable id="column1" :columns="column1" :rows="adminBreastTest.len_left" :sort-options="false" style="margin-bottom: 44px"> </VueGoodTable>
 
-        <!--<label style="padding: 8px" for="column2">기타 길이 정보</label>
-        <VueGoodTable id="column2" :columns="column2" :rows="adminBreastTest.other_len" :sort-options="false" style="margin-bottom: 44px"> </VueGoodTable>-->
+        <label style="padding: 8px" for="column2">오른쪽 표면 길이</label>
+        <VueGoodTable id="column2" :columns="column2" :rows="adminBreastTest.len_right" :sort-options="false" style="margin-bottom: 44px"> </VueGoodTable>
 
         <label style="padding: 8px" for="column3">사진과의 차이</label>
         <VueGoodTable id="column3" :columns="column3" :rows="adminBreastTest.diff" :sort-options="false" style="margin-bottom: 44px"> </VueGoodTable>
+
+        <label style="padding: 8px" for="column4">기타 가슴 정보</label>
+        <VueGoodTable id="column4" :columns="column4" :rows="adminBreastTest.type" :sort-options="false" style="margin-bottom: 44px"> </VueGoodTable>
 
         <label style="padding: 8px" for="column5">취향 정보</label>
         <VueGoodTable id="column5" :columns="column5" :rows="adminBreastTest.want1" :sort-options="false" style="margin-bottom: 44px">
@@ -184,33 +187,35 @@ export default {
       brataImg: '',
       // columns - Test Result
       column1: [
-        { label: '안쪽(왼쪽)', field: 'mINNER_LEN_L', type: 'number' },
-        { label: '바깥쪽(왼쪽)', field: 'mOUTER_LEN_L', type: 'number' },
-        { label: '아래쪽(왼쪽)', field: 'mLOWER_LEN_L', type: 'number' },
-        { label: '안쪽(오른쪽)', field: 'mINNER_LEN_R', type: 'number' },
-        { label: '바깥쪽(오른쪽)', field: 'mOUTER_LEN_R', type: 'number' },
-        { label: '아래쪽(오른쪽)', field: 'mLOWER_LEN_R', type: 'number' },
+        { label: '안쪽', field: 'mINNER_LEN_L', type: 'number' },
+        { label: '바깥쪽', field: 'mOUTER_LEN_L', type: 'number' },
+        { label: '아래쪽', field: 'mLOWER_LEN_L', type: 'number' },
+        { label: '폭', field: 'mWIDTH_LC_L', type: 'number' },
+        { label: '부피', field: 'mVOLUME_L', type: 'number' },
+        { label: '높이', field: 'mHEIGHT_LC_L', type: 'number' },
       ],
       column2: [
-        { label: '밑가슴둘레', field: 'mUNDER_BUST', type: 'number' },
-        { label: '윗가슴둘레', field: 'mUPPER_BUST', type: 'number' },
-        { label: '유장길이', field: 'mSHtoBP', type: 'number' },
-        { label: '어깨너비', field: 'mSHOULDER', type: 'number' },
+        { label: '안쪽', field: 'mINNER_LEN_R', type: 'number' },
+        { label: '바깥쪽', field: 'mOUTER_LEN_R', type: 'number' },
+        { label: '아래쪽', field: 'mLOWER_LEN_R', type: 'number' },
+        { label: '폭', field: 'mWIDTH_LC_R', type: 'number' },
+        { label: '부피', field: 'mVOLUME_R', type: 'number' },
+        { label: '높이', field: 'mHEIGHT_LC_R', type: 'number' },
       ],
       column3: [
-        { label: '가슴 사이 거리', field: 'DIFF_BT_GAP' },
-        { label: '유두 벌어짐', field: 'DIFF_BP_DIR' },
+        { label: '가슴 사이 거리', field: 'DIFF_BT_GAP', width: '280px' },
+        { label: '유두 벌어짐', field: 'DIFF_BP_DIR', width: '280px' },
         { label: '처짐 정도', field: 'DIFF_BT_SAG' },
         { label: '기타', field: 'DIFF_STR' },
       ],
       column4: [
-        { label: '양쪽 가슴 사이즈 차이', field: 'TYPE_BT_SIZEDIFF' },
-        { label: '어깨', field: 'TYPE_SHOULDER' },
+        { label: '양쪽 가슴 사이즈 차이', field: 'TYPE_BT_SIZEDIFF', width: '280px' },
+        // { label: '어깨', field: 'TYPE_SHOULDER' },
         { label: '흉곽', field: 'TYPE_RIB' },
         { label: '부유방', field: 'TYPE_ACCBREAST' },
-        { label: '왼쪽 가슴의 끝', field: 'TYPE_FINISH_BT_L' },
-        { label: '오른쪽 가슴의 끝', field: 'TYPE_FINISH_BT_R' },
-        { label: '가슴의 살결', field: 'TYPE_BT_FLESH' },
+        // { label: '왼쪽 가슴의 끝', field: 'TYPE_FINISH_BT_L' },
+        // { label: '오른쪽 가슴의 끝', field: 'TYPE_FINISH_BT_R' },
+        // { label: '가슴의 살결', field: 'TYPE_BT_FLESH' },
       ],
       column5: [
         { label: '압박감', field: 'wPRESSURE', type: 'number' },
@@ -237,15 +242,26 @@ export default {
         SIZE: '',
         BRA_SIZE: '', //자주 입는 브라 사이즈
 
-        surface_len: [
+        len_left: [
           {
             mINNER_LEN_L: 0, // 왼쪽 안쪽 표면길이
             mOUTER_LEN_L: 0, // 왼쪽 바깥쪽 표면길이
             mLOWER_LEN_L: 0, // 왼쪽 아래쪽 표면길이
-            mINNER_LEN_R: 0, // 오른쪽 안쪽 표면길이
-            mOUTER_LEN_R: 0, // 오른쪽 바깥쪽 표면길이
-            mLOWER_LEN_R: 0, // 오른쪽 아래쪽 표면길이
+            mWIDTH_LC_L: 0, // 오른쪽 안쪽 표면길이
+            mVOLUME_L: 0, // 오른쪽 바깥쪽 표면길이
+            mHEIGHT_LC_L: 0, // 오른쪽 아래쪽 표면길이
           },
+        ],
+
+        len_right: [
+          {
+            mINNER_LEN_R: 0,
+            mOUTER_LEN_R: 0,
+            mLOWER_LEN_R: 0,
+            mWIDTH_LC_R: 0,
+            mVOLUME_R: 0,
+            mHEIGHT_LC_R: 0,
+          }
         ],
 
         NUM_BRATABASE: 1,
