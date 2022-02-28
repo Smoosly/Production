@@ -163,14 +163,24 @@ router.get('/getData/:PK_ID', async (req, res) => {
       SIZE: braRecom.SIZE,
       BRA_SIZE: breastTestValue.BRA_SIZE, //자주 입는 브라 사이즈
 
-      surface_len: [
+      len_left: [
         {
           mINNER_LEN_L: breastTestValue.mINNER_LEN_L !== null ? breastTestValue.mINNER_LEN_L : '결과 없음', // 왼쪽 안쪽 표면길이
           mOUTER_LEN_L: breastTestValue.mOUTER_LEN_L !== null ? breastTestValue.mOUTER_LEN_L : '결과 없음', // 왼쪽 바깥쪽 표면길이
           mLOWER_LEN_L: breastTestValue.mLOWER_LEN_L !== null ? breastTestValue.mLOWER_LEN_L : '결과 없음', // 왼쪽 아래쪽 표면길이
+          mWIDTH_LC_L: breastTestValue.mWIDTH_LC_L !== null ? breastTestValue.mWIDTH_LC_L : '결과 없음',
+          mVOLUME_L: breastTestValue.mVOLUME_L !== null ? breastTestValue.mVOLUME_L : '결과 없음',
+          mHEIGHT_LC_L: breastTestValue.mHEIGHT_LC_L !== null ? breastTestValue.mHEIGHT_LC_L : '결과 없음',
+        },
+      ],
+      len_right: [
+        {
           mINNER_LEN_R: breastTestValue.mINNER_LEN_R !== null ? breastTestValue.mINNER_LEN_R : '결과 없음', // 오른쪽 안쪽 표면길이
           mOUTER_LEN_R: breastTestValue.mOUTER_LEN_R !== null ? breastTestValue.mOUTER_LEN_R : '결과 없음', // 오른쪽 바깥쪽 표면길이
           mLOWER_LEN_R: breastTestValue.mLOWER_LEN_R !== null ? breastTestValue.mLOWER_LEN_R : '결과 없음', // 오른쪽 아래쪽 표면길이
+          mWIDTH_LC_R: breastTestValue.mWIDTH_LC_R !== null ? breastTestValue.mWIDTH_LC_R : '결과 없음',
+          mVOLUME_R: breastTestValue.mVOLUME_R !== null ? breastTestValue.mVOLUME_R : '결과 없음',
+          mHEIGHT_LC_R: breastTestValue.mHEIGHT_LC_R !== null ? breastTestValue.mHEIGHT_LC_R : '결과 없음',
         },
       ],
 
