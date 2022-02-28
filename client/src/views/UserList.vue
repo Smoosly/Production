@@ -101,12 +101,8 @@
         :row-style-class="rowStyleClassFn"
       >
         <template #selected-row-actions>
-          <button type="button" @click="changeState(0)" class="btn-secondary btn-32" style="height: 24px; margin-bottom: 4px; margin-right: 4px">
-            신청취소
-          </button>
-          <button type="button" @click="changeState(1)" class="btn-outlined btn-32" style="height: 24px; margin-bottom: 4px; margin-right: 4px">
-            배송준비중
-          </button>
+          <button type="button" @click="changeState(0)" class="btn-secondary btn-32" style="height: 24px; margin-bottom: 4px; margin-right: 4px">신청취소</button>
+          <button type="button" @click="changeState(1)" class="btn-outlined btn-32" style="height: 24px; margin-bottom: 4px; margin-right: 4px">배송준비중</button>
           <button type="button" @click="changeState(2)" class="btn-outlined btn-32" style="height: 24px; margin-bottom: 4px; margin-right: 4px">배송중</button>
           <button type="button" @click="changeState(3)" class="btn-primary btn-32" style="height: 24px; margin-bottom: 4px; margin-right: 4px">배송완료</button>
         </template>
@@ -124,7 +120,6 @@
       </VueGoodTable>
 
       <!-- 홈피팅 신청 관리 테이블 -->
-      
 
       <!-- 재고 관리 테이블 -->
       <VueGoodTable
@@ -195,10 +190,10 @@
 </template>
 
 <script>
-import "vue-good-table-next/dist/vue-good-table-next.css";
-import { VueGoodTable } from "vue-good-table-next";
-import axios from "axios";
-import { deleteCookie } from "@/utils/cookies";
+import 'vue-good-table-next/dist/vue-good-table-next.css';
+import { VueGoodTable } from 'vue-good-table-next';
+import axios from 'axios';
+import { deleteCookie } from '@/utils/cookies';
 // import { checkAuth } from '@/utils/loginAuth';
 
 export default {
@@ -207,14 +202,14 @@ export default {
       step: 1,
       rowSelection: [], // 체크박스로 선택한 PK_ID를 나열한 배열
       columns: [
-        { label: "사용자 식별번호(PK_ID)", field: "PK_ID" },
-        { label: "기본 사이즈", field: "SIZE" },
-        { label: "추천된 브라 개수", field: "NUM", type: "number" },
-        { label: "보내줄 브라 번호", field: "DECISION" },
+        { label: '사용자 식별번호(PK_ID)', field: 'PK_ID' },
+        { label: '기본 사이즈', field: 'SIZE' },
+        { label: '추천된 브라 개수', field: 'NUM', type: 'number' },
+        { label: '보내줄 브라 번호', field: 'DECISION' },
         // { label: "홈 피팅 신청", field: "H_FITTING_APPLY", type: "boolean", sortable: true },
         // { label: "홈 피팅 그룹", field: "GROUP_NUM", type: "number", sortable: true },
-        { label: "추천 완료 여부", field: "COMPLETE", type: "boolean", sortable: true },
-        { label: "보기", field: "btn", html: true, width: "80px" },
+        { label: '추천 완료 여부', field: 'COMPLETE', type: 'boolean', sortable: true },
+        { label: '보기', field: 'btn', html: true, width: '80px' },
       ],
       adminInfo: {
         list: [
@@ -234,35 +229,35 @@ export default {
       // 배송정보
       rowSelection2: [],
       columns2: [
-        { label: "사용자 아이디", field: "PK_ID" },
-        { label: "받는사람이름", field: "recipient" },
-        { label: "전화번호", field: "phone" },
-        { label: "우편번호", field: "postcode" },
-        { label: "배송지", field: "address" },
-        { label: "상세주소", field: "extraAddress" },
-        { label: "배송상태", field: "state", type: "number", sortable: true, width: "180px" },
+        { label: '사용자 아이디', field: 'PK_ID' },
+        { label: '받는사람이름', field: 'recipient' },
+        { label: '전화번호', field: 'phone' },
+        { label: '우편번호', field: 'postcode' },
+        { label: '배송지', field: 'address' },
+        { label: '상세주소', field: 'extraAddress' },
+        { label: '배송상태', field: 'state', type: 'number', sortable: true, width: '180px' },
       ],
       kitDeliverInfo: [],
 
       // 브라재고
       columns3: [
-        { label: "No", field: "ID", type: "number" },
-        { label: "품번1(PK_ITEM)", field: "PK_ITEM", width: "90px" },
-        { label: "품번2(OLD_KEY)", field: "OLD_KEY" },
-        { label: "품번3(PK_SIZE)", field: "PK_SIZE", width: "80px" },
-        { label: "사용자ID", field: "PK_ID" },
-        { label: "구매색상", field: "COLOR", width: "100px" },
-        { label: "소비자에게 보낸 횟수", field: "SEND_REAL", type: "number" },
-        { label: "하자여부", field: "PROBLEM", type: "boolean", width: "100px", sortable: true },
-        { label: "빨래필요", field: "NEED_WASH", type: "boolean", width: "100px", sortable: true },
-        { label: "빨래횟수", field: "NUM_WASH", type: "number" },
-        { label: "생성일시", field: "createdAt" },
-        { label: "수정일시", field: "updatedAt" },
+        { label: 'No', field: 'ID', type: 'number' },
+        { label: '품번1(PK_ITEM)', field: 'PK_ITEM', width: '90px' },
+        { label: '품번2(OLD_KEY)', field: 'OLD_KEY' },
+        { label: '품번3(PK_SIZE)', field: 'PK_SIZE', width: '80px' },
+        { label: '사용자ID', field: 'PK_ID' },
+        { label: '구매색상', field: 'COLOR', width: '100px' },
+        { label: '소비자에게 보낸 횟수', field: 'SEND_REAL', type: 'number' },
+        { label: '하자여부', field: 'PROBLEM', type: 'boolean', width: '100px', sortable: true },
+        { label: '빨래필요', field: 'NEED_WASH', type: 'boolean', width: '100px', sortable: true },
+        { label: '빨래횟수', field: 'NUM_WASH', type: 'number' },
+        { label: '생성일시', field: 'createdAt' },
+        { label: '수정일시', field: 'updatedAt' },
       ],
       braStockInfo: [],
     };
   },
-    watch: {
+  watch: {
     step(newVal) {
       console.log(newVal);
       if (newVal === 1) {
@@ -300,16 +295,16 @@ export default {
     },
     // 선택한 줄만 최종 완료 처리하는 요청 함수
     totalComplete() {
-      console.log("checkAtOnce");
+      console.log('checkAtOnce');
       axios
-        .post("/admin/braStockManage", { PK_IDs: this.rowSelection })
+        .post('/admin/braStockManage', { PK_IDs: this.rowSelection })
         .then((result) => {
           console.log(result.data);
           if (result.data.success) {
             this.fetchResultData();
-            return this.emitter.emit("showToast", result.data.message);
+            return this.emitter.emit('showToast', result.data.message);
           } else {
-            return this.emitter.emit("showRedToast", result.data.message);
+            return this.emitter.emit('showRedToast', result.data.message);
           }
         })
         .catch(console.log);
@@ -329,12 +324,12 @@ export default {
         .catch(console.log);
     },
     rowStyleClassFn(row) {
-      return row.COMPLETE ? "done" : "not-done";
+      return row.COMPLETE ? 'done' : 'not-done';
     },
     // 정보 띄울 때 관리자인지 정보 확인 후 렌더링으로 넘어가고 아니면 NotFoundPage로 이동시키기
     fetchResultData() {
       axios
-        .get("/admin/getUserList")
+        .get('/admin/getUserList')
         .then((result) => {
           console.log(result.data);
           if (result.data.success) {
@@ -342,15 +337,15 @@ export default {
             this.adminInfo.list = result.data.list;
             return;
           } else {
-            if (Object.keys(result.data).includes("isAuth") && result.data.isAuth === false) {
-              this.$store.commit("clearCode");
-              this.$store.commit("clearToken");
-              deleteCookie("auth");
-              deleteCookie("user");
-              console.log("여기 로직 리팩토링");
-              this.$router.push("/");
-              this.emitter.emit("loginModal", true);
-              this.emitter.emit("showRedToast", "로그인 후 이용해주세요.");
+            if (Object.keys(result.data).includes('isAuth') && result.data.isAuth === false) {
+              this.$store.commit('clearCode');
+              this.$store.commit('clearToken');
+              deleteCookie('auth');
+              deleteCookie('user');
+              console.log('여기 로직 리팩토링');
+              this.$router.push('/');
+              this.emitter.emit('loginModal', true);
+              this.emitter.emit('showRedToast', '로그인 후 이용해주세요.');
               return;
             }
             console.log(result.data.message);
@@ -361,7 +356,7 @@ export default {
     },
     fetchKitData() {
       axios
-        .get("/admin/getKitInfo")
+        .get('/admin/getKitInfo')
         .then((result) => {
           console.log(result.data);
           if (result.data.success) {
@@ -375,28 +370,28 @@ export default {
     fetchStockData() {
       // PK_ID 로 유저 정보 불러오기  this.$route.params.id
       axios
-        .get("/admin/getBraStockData")
+        .get('/admin/getBraStockData')
         .then((result) => {
           console.log(result.data);
           if (result.data.success) {
             console.log(result.data.stock);
             this.braStockInfo = result.data.stock;
           } else {
-            if (Object.keys(result.data).includes("isAuth") && result.data.isAuth === false) {
-              this.$store.commit("clearCode");
-              this.$store.commit("clearToken");
-              deleteCookie("auth");
-              deleteCookie("user");
-              console.log("여기 로직 리팩토링");
-              this.$router.push("/");
-              this.emitter.emit("loginModal", true);
-              this.emitter.emit("showRedToast", "로그인 후 이용해주세요.");
+            if (Object.keys(result.data).includes('isAuth') && result.data.isAuth === false) {
+              this.$store.commit('clearCode');
+              this.$store.commit('clearToken');
+              deleteCookie('auth');
+              deleteCookie('user');
+              console.log('여기 로직 리팩토링');
+              this.$router.push('/');
+              this.emitter.emit('loginModal', true);
+              this.emitter.emit('showRedToast', '로그인 후 이용해주세요.');
               return;
             }
             // checkAuth(result.data)
-            if (Object.keys(result.data).includes("isAdmin") && result.data.isAdmin === false) {
-              console.log("here");
-              return this.$router.push("/unauthorized");
+            if (Object.keys(result.data).includes('isAdmin') && result.data.isAdmin === false) {
+              console.log('here');
+              return this.$router.push('/unauthorized');
             }
             console.log(result.data.message);
           }
