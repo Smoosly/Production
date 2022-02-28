@@ -901,7 +901,7 @@ export default {
           font-weight: bolder;
           position: absolute;
           text-align: center;
-          width: 10%;
+          width: 100%;
           top: 50%;
           left: 50%;
           transform: translate(-50%, -50%);
