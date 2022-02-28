@@ -153,7 +153,7 @@
         :row-style-class="rowStyleClassFn"
       >
         <template #selected-row-actions>
-          <button type="button" class="btn-secondary btn-32" style="height: 24px; margin-bottom: 4px; margin-right: 4px">송장 출력</button>
+          <button @click="invoicePrint" type="button" class="btn-primary btn-32" style="height: 24px; margin-bottom: 4px; margin-right: 4px">송장 출력</button>
         </template>
         <template #table-row="props">
           <span v-if="props.column.field == 'state'">
@@ -512,7 +512,19 @@ export default {
         })
         .catch(console.log);
     },
-
+    invoicePrint() {
+      console.log(this.rowSelection3);
+      axios.post(`/admin/invoice/homeFitting`, {list: this.rowSelection3})
+      .then((result) => {
+        console.log(result.data);
+        if (result.data.success) {
+          return this.emitter.emit('showToast', result.data.message);
+        } else {
+          return this.emitter.emit('showRedToast', result.data.message);
+        }
+      })
+      .catch(console.log);
+    },
     changeState(state) {
       // state 마다 다르게 처리하면 됨 => 해당 state 상태로 모두 일괄 변경
       console.log(state);
