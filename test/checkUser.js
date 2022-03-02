@@ -1,5 +1,5 @@
 const fs = require('fs');
-const { USER, KIT, BREAST_TEST, BREAST_RESULT, HOME_FITTING, BRA_REVIEW, DELETED_USER, BRA_FIX } = require('../server/models/');
+const { USER, KIT, BREAST_TEST, BREAST_RESULT, HOME_FITTING, BRA_REVIEW, DELETED_USER, BRA_FIX } = require('../server/models');
 
 const getNotUploadKit = async () => {
   //모든 유저 가져오기
