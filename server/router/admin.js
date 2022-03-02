@@ -17,8 +17,11 @@ router.use(isAuth);
 router.use(isAdmin);
 
 router.get('/getUserList', async (req, res) => {
-  // const [list] = await sequelize.query("select BRA_RECOM.*, BRA_FIX.CHECK_ADMIN from Smoosly.BRA_RECOM left join Smoosly.BRA_FIX on BRA_RECOM.PK_ID = BRA_FIX.PK_ID;");
-  const list = await BRA_RECOM.findAll();
+  // const list = await BRA_RECOM.findAll();
+  // const [list] = await sequelize.query('select Smoosly_dev.BRA_RECOM.PK_ID, Smoosly_dev.BRA_RECOM.SIZE, Smoosly_dev.BRA_RECOM.NUM, Smoosly_dev.BRA_RECOM.DECISION, Smoosly_dev.BRA_RECOM.COMPLETE, Smoosly_dev.BRA_FIX.PK_ID as "FIXED" from Smoosly_dev.BRA_RECOM left join Smoosly_dev.BRA_FIX on Smoosly_dev.BRA_RECOM.PK_ID = Smoosly_dev.BRA_FIX.PK_ID;');
+  const [list] = await sequelize.query('select Smoosly.BRA_RECOM.PK_ID, Smoosly.BRA_RECOM.SIZE, Smoosly.BRA_RECOM.NUM, Smoosly.BRA_RECOM.DECISION, Smoosly.BRA_RECOM.COMPLETE, Smoosly.BRA_FIX.PK_ID as "FIXED" from Smoosly.BRA_RECOM left join Smoosly.BRA_FIX on Smoosly.BRA_RECOM.PK_ID = Smoosly.BRA_FIX.PK_ID;');
+  // const braFix = await BRA_FIX.findAll();
+
   // winston.debug(util.inspect(list, false, null, true));
   try {
     if (!list) {
@@ -474,14 +477,14 @@ router.get('/getBraStockData', async (req, res) => {
 
 router.get('/getHomeFittingInfo', async (req, res) => {
   try {
-    const homeFitting = await HOME_FITTING.findAll();
+    const homeFitting = await HOME_FITTING.findAll({ attributes: ['PK_ID', 'recipient', 'phone', 'postcode', [sequelize.fn('concat', sequelize.col('address'), ' ', sequelize.col('extraAddress')), 'fullAddress'], 'state', 'invoice', 'return', 'returnDate'] });
     if (homeFitting.length > 0) {
       winston.info({ success: true, message: '홈피팅 신청 데이터 가져오기 성공', homeFitting });
       return res.json({ success: true, message: '홈피팅 신청 데이터 가져오기 성공', homeFitting });
     }
     winston.info({ success: false, message: '데이터 없음' });
     return res.json({ success: false, message: '데이터 없음' });
-  } catch (error) {
+  } catch (err) {
     winston.error(err);
     return res.json({ success: false, message: '홈피팅 신청 데이터 가져오기 실패', err });
   }
@@ -542,17 +545,18 @@ router.post('/invoice/:what', async (req, res) => {
       winston.info({ success: true, message: '키트 송장출력용 엑셀파일 생성 성공' });
       return res.json({ success: true, message: '키트 송장출력용 엑셀파일 생성 성공' });
     } else if (what === 'homeFitting') {
-      winston.debug(util.inspect(req.body.list, false, null, true));
       const homeFitting = await HOME_FITTING.findAll({ attributes: ['PK_ID', 'recipient', 'phone', 'postcode', [sequelize.fn('concat', sequelize.col('address'), ' ', sequelize.col('extraAddress')), 'fulladdress'], 'message'] });
       const hfdata = homeFitting.map((hf) => {
         return hf.dataValues;
       });
-      winston.debug(util.inspect(hfdata, false, null, true));
-      hfdata.map((hf) => {
+      const hfdata_copy = Object.assign(hfdata);
+      const fixhfdata = hfdata_copy.filter((element) => {
+        return req.body.list.includes(element.PK_ID);
+      });
+      fixhfdata.map((hf) => {
         hf.category = '의류';
         hf.money = 2800;
       });
-      winston.debug(util.inspect(hfdata, false, null, true));
       const data = [
         {
           sheet: 'Info',
@@ -564,7 +568,7 @@ router.post('/invoice/:what', async (req, res) => {
             { label: '기본운임', value: 'money' },
             { label: '배송메시지', value: 'message' },
           ],
-          content: hfdata,
+          content: fixhfdata,
         },
       ];
 
@@ -576,21 +580,21 @@ router.post('/invoice/:what', async (req, res) => {
 
       jasx(data, settings);
 
-      // const fileName = path.join(__dirname, '../../HomeFittingInvoices.xlsx');
-      // slack.api(
-      //   'files.upload',
-      //   {
-      //     channels: slackInfo.channelId,
-      //     file: fs.createReadStream(fileName),
-      //     initial_comment: '홈피팅 송장 출력용 엑셀파일입니다. :smile:',
-      //   },
-      //   function (err, response) {
-      //     if (err) {
-      //       winston.error(err);
-      //     }
-      //     winston.debug(util.inspect(response, false, null, true));
-      //   }
-      // );
+      const fileName = path.join(__dirname, '../../HomeFittingInvoices.xlsx');
+      slack.api(
+        'files.upload',
+        {
+          channels: slackInfo.channelId,
+          file: fs.createReadStream(fileName),
+          initial_comment: '홈피팅 송장 출력용 엑셀파일입니다. :smile:',
+        },
+        function (err, response) {
+          if (err) {
+            winston.error(err);
+          }
+          winston.debug(util.inspect(response, false, null, true));
+        }
+      );
 
       winston.info({ success: true, message: '홈피팅 송장출력용 엑셀파일 생성 성공' });
       return res.json({ success: true, message: '홈피팅 송장출력용 엑셀파일 생성 성공' });
