@@ -739,17 +739,17 @@ export default {
         for (let i=0; i<questions.length; i++) {
           if (i !== 4 && questions[i] === null) {
             document.getElementById(`q${i}`).scrollIntoView(false)
-            window.scrollBy(0,180)
+            window.scrollBy(0,120)
             break
           }
           if (i === 4 && questions[i] === "") {
             document.getElementById(`q${i}`).scrollIntoView(false)
-            window.scrollBy(0,180)
+            window.scrollBy(0,120)
             break
           }
           if (i === 5 && questions[i] === "") {
             document.getElementById(`q${i}`).scrollIntoView(false)
-            window.scrollBy(0,180)
+            window.scrollBy(0,120)
             break
           }
         }
@@ -763,7 +763,7 @@ export default {
         (this.braFunc[3] && answer.SATIS_ACCBREAST === null) ||
         (this.braFunc[4] && answer.SATIS_ACCBACK === null)
       ) {
-        document.getElementById(`q10`).scrollIntoView(false)
+        document.getElementById(`q1`).scrollIntoView(false)
         return this.emitter.emit("showRedToast", "7번 문항에 입력하지 않은 항목이 있습니다.");
       }
       axios
