@@ -47,7 +47,8 @@
     "sequelize-auto": "^0.8.5",
     "sequelize-cli": "^6.3.0",
     "slack-node": "^0.1.8",
-    "voucher-code-generator": "^1.1.1"
+    "voucher-code-generator": "^1.1.1",
+    "xlsx": "^0.18.2"
   },
   "devDependencies": {
     "concurrently": "^6.4.0",

@@ -17,7 +17,7 @@
       <VueGoodTable
         v-if="step == 1"
         :columns="columns"
-        :rows="adminInfo.list"
+        :rows="adminInfo"
         v-on:selected-rows-change="selectionChanged"
         :select-options="{
           enabled: true,
@@ -53,6 +53,10 @@
           <span v-if="props.column.field == 'COMPLETE'">
             <p v-if="props.row.COMPLETE === 1" style="color: green">완료&nbsp;<i class="far fa-check-circle"></i></p>
             <!-- <p v-else-if="props.row.COMPLETE === 1" style="color: blue">완료</p> -->
+            <p v-else style="color: red">미완료</p>
+          </span>
+          <span v-else-if="props.column.field == 'FIXED'">
+            <p v-if="props.row.FIXED !== null" style="color: green">완료&nbsp;<i class="far fa-check-circle"></i></p>
             <p v-else style="color: red">미완료</p>
           </span>
           <!-- <span v-else-if="props.column.field == 'H_FITTING_APPLY'">
@@ -165,7 +169,7 @@
             <p style="color: orange" v-if="props.row.state == 1">신청완료</p>
             <p style="color: red" v-if="props.row.state == 2">반송중</p>
             <p style="color: green" v-if="props.row.state == 3">반송 완료</p>
-          </span>    
+          </span>
           <span v-else>
             {{ props.formattedRow[props.column.field] }}
           </span>
@@ -260,22 +264,10 @@ export default {
         // { label: "홈 피팅 신청", field: "H_FITTING_APPLY", type: "boolean", sortable: true },
         // { label: "홈 피팅 그룹", field: "GROUP_NUM", type: "number", sortable: true },
         { label: '추천 완료 여부', field: 'COMPLETE', type: 'boolean', sortable: true },
+        { label: 'BRA_FIX 생성 여부', field: 'FIXED', type: 'boolean', sortable: true },
         { label: '보기', field: 'btn', html: true, width: '80px' },
       ],
-      adminInfo: {
-        list: [
-          // {
-          //   PK_ID: "j535s8whq5",
-          //   TYPE: "3RD_MVP_1", // 3RD_MVP에서 몇차 이용자인지 여부
-          //   COMPLETE: false, // 추천완료면 true, 미완료면 false
-          //   H_FITTING_APPLY: false, // 홈 피팅 서비스 신청 여부
-          //   NUM: 3, //추천된 브라 개수
-          //   DECISION: "1,4,5,6", // 홈 피팅 서비스로 보내줄 브라 번호
-          //   SIZE: "75C", //기본사이즈
-          //   btn: '<button type="button" class="btn-primary btn-32">보기</button>',
-          // },
-        ],
-      },
+      adminInfo: [],
 
       // 배송정보
       rowSelection2: [],
@@ -299,141 +291,11 @@ export default {
         { label: '우편번호', field: 'postcode' },
         { label: '배송지', field: 'fullAddress' },
         { label: '배송상태', field: 'state', type: 'number', sortable: true, width: '90px' },
-        { label: '송장번호', field: 'invoice', type: 'number'},
+        { label: '송장번호', field: 'invoice', type: 'number' },
         { label: '반송여부', field: 'return', type: 'number', width: '90px' },
-        { label: '반송날짜', field: 'returnDate', width: '120px' }
+        { label: '반송날짜', field: 'returnDate', width: '120px' },
       ],
-
-      homeFitting: [
-        {
-            "id": 1,
-            "PK_ID": "kvjv8b2eup",
-            "recipient": "이보경",
-            "phone": "010-5094-2804",
-            "postcode": "02845",
-            "fullAddress": "서울 성북구 동소문로24길 13-13",
-            "message": null, // x
-            "state": 1, // 배송상태 - 1:신청완료, 2:배송중, 3:배송완료
-            "invoice": null, // 송장번호
-            "return": 1, // 반송여부 - 1: 반송신청완료, 2:반송중, 3:반송완료
-            "returnDate": "2022-02-23", // 반송날짜
-            "returnInvoice": null, //x
-            "createdAt": "2022-02-21T10:24:20.000Z", // x
-            "updatedAt": "2022-02-21T10:39:31.000Z" // x
-        },
-        {
-            "id": 2,
-            "PK_ID": "x2gj9j2uwf",
-            "recipient": "백유라",
-            "phone": "010-4512-9080",
-            "postcode": "22000",
-            "fullAddress": "인천 연수구 해송로 70",
-            "message": "문앞에",
-            "state": 2,
-            "invoice": null,
-            "return": 1,
-            "returnDate": "2022-02-23",
-            "returnInvoice": null,
-            "createdAt": "2022-02-21T10:28:41.000Z",
-            "updatedAt": "2022-02-21T16:02:07.000Z"
-        },
-        {
-            "id": 3,
-            "PK_ID": "qiv0dz299e",
-            "recipient": "이보경",
-            "phone": "010-444-5666",
-            "postcode": "13536",
-            "fullAddress": "경기 성남시 분당구 백현동 581-5",
-            "message": null,
-            "state": 1,
-            "invoice": null,
-            "return": 0,
-            "returnDate": null,
-            "returnInvoice": null,
-            "createdAt": "2022-02-21T13:21:33.000Z",
-            "updatedAt": "2022-02-21T16:02:07.000Z"
-        },
-        {
-            "id": 4,
-            "PK_ID": "x5vanyia2p",
-            "recipient": "류뚱혜",
-            "phone": "010-6371-9570",
-            "postcode": "02830",
-            "fullAddress": "서울 성북구 동소문동6가 71-1",
-            "message": null,
-            "state": 1,
-            "invoice": null,
-            "return": 0,
-            "returnDate": null,
-            "returnInvoice": null,
-            "createdAt": "2022-02-21T13:38:51.000Z",
-            "updatedAt": "2022-02-21T16:02:07.000Z"
-        },
-        {
-            "id": 5,
-            "PK_ID": "qsvub0y8p0",
-            "recipient": "강은수",
-            "phone": "010-3408-9775",
-            "postcode": "16357",
-            "fullAddress": "경기 수원시 장안구 서부로2167번길 4",
-            "message": "Jj",
-            "state": 1,
-            "invoice": null,
-            "return": 0,
-            "returnDate": null,
-            "returnInvoice": null,
-            "createdAt": "2022-02-21T13:44:36.000Z",
-            "updatedAt": "2022-02-21T16:02:07.000Z"
-        },
-        {
-            "id": 6,
-            "PK_ID": "6wv6ntaw37",
-            "recipient": "최은서",
-            "phone": "010-6489-5538",
-            "postcode": "02845",
-            "fullAddress": "서울 성북구 동소문로20가길 54",
-            "message": null,
-            "state": 2,
-            "invoice": null,
-            "return": 1,
-            "returnDate": "2022-02-25",
-            "returnInvoice": null,
-            "createdAt": "2022-02-21T16:08:57.000Z",
-            "updatedAt": "2022-02-22T03:27:15.000Z"
-        },
-        {
-            "id": 7,
-            "PK_ID": "5hzz843mr3",
-            "recipient": "라스트팡",
-            "phone": "010-455-5334",
-            "postcode": "03164",
-            "fullAddress": "서울 종로구 삼일대로 401-8",
-            "message": null,
-            "state": 1,
-            "invoice": null,
-            "return": 0,
-            "returnDate": null,
-            "returnInvoice": null,
-            "createdAt": "2022-02-23T07:56:52.000Z",
-            "updatedAt": "2022-02-23T07:56:52.000Z"
-        },
-        {
-            "id": 8,
-            "PK_ID": "n0cwd4q9rd",
-            "recipient": "사랑둥이",
-            "phone": "010-5363-7305",
-            "postcode": "001",
-            "fullAddress": "Dd",
-            "message": null,
-            "state": 1,
-            "invoice": null,
-            "return": 0,
-            "returnDate": null,
-            "returnInvoice": null,
-            "createdAt": "2022-02-25T05:45:50.000Z",
-            "updatedAt": "2022-02-25T05:45:50.000Z"
-        }
-      ],
+      homeFitting: [],
 
       // 브라재고
       column4: [
@@ -463,6 +325,9 @@ export default {
         this.fetchKitData();
       }
       if (newVal === 3) {
+        this.fetchHomeFitting();
+      }
+      if (newVal === 4) {
         this.fetchStockData();
       }
     },
@@ -495,7 +360,7 @@ export default {
         this.rowSelection3.push(row.PK_ID);
       }
       console.log(this.rowSelection3);
-    },    
+    },
     // 선택한 줄만 최종 완료 처리하는 요청 함수
     totalComplete() {
       console.log('checkAtOnce');
@@ -514,16 +379,17 @@ export default {
     },
     invoicePrint() {
       console.log(this.rowSelection3);
-      axios.post(`/admin/invoice/homeFitting`, {list: this.rowSelection3})
-      .then((result) => {
-        console.log(result.data);
-        if (result.data.success) {
-          return this.emitter.emit('showToast', result.data.message);
-        } else {
-          return this.emitter.emit('showRedToast', result.data.message);
-        }
-      })
-      .catch(console.log);
+      axios
+        .post(`/admin/invoice/homeFitting`, { list: this.rowSelection3 })
+        .then((result) => {
+          console.log(result.data);
+          if (result.data.success) {
+            return this.emitter.emit('showToast', result.data.message);
+          } else {
+            return this.emitter.emit('showRedToast', result.data.message);
+          }
+        })
+        .catch(console.log);
     },
     changeState(state) {
       // state 마다 다르게 처리하면 됨 => 해당 state 상태로 모두 일괄 변경
@@ -549,7 +415,7 @@ export default {
           console.log(result.data);
           if (result.data.success) {
             // 로직 분기점 - 관리자 인증 후 yes -> 렌더링
-            this.adminInfo.list = result.data.list;
+            this.adminInfo = result.data.list;
             return;
           } else {
             if (Object.keys(result.data).includes('isAuth') && result.data.isAuth === false) {
@@ -591,6 +457,36 @@ export default {
           if (result.data.success) {
             console.log(result.data.stock);
             this.braStockInfo = result.data.stock;
+          } else {
+            if (Object.keys(result.data).includes('isAuth') && result.data.isAuth === false) {
+              this.$store.commit('clearCode');
+              this.$store.commit('clearToken');
+              deleteCookie('auth');
+              deleteCookie('user');
+              console.log('여기 로직 리팩토링');
+              this.$router.push('/');
+              this.emitter.emit('loginModal', true);
+              this.emitter.emit('showRedToast', '로그인 후 이용해주세요.');
+              return;
+            }
+            // checkAuth(result.data)
+            if (Object.keys(result.data).includes('isAdmin') && result.data.isAdmin === false) {
+              console.log('here');
+              return this.$router.push('/unauthorized');
+            }
+            console.log(result.data.message);
+          }
+        })
+        .catch(console.log);
+    },
+    fetchHomeFitting() {
+      axios
+        .get('/admin/getHomeFittingInfo')
+        .then((result) => {
+          console.log(result.data);
+          if (result.data.success) {
+            console.log(result.data.homeFitting);
+            this.homeFitting = result.data.homeFitting;
           } else {
             if (Object.keys(result.data).includes('isAuth') && result.data.isAuth === false) {
               this.$store.commit('clearCode');
