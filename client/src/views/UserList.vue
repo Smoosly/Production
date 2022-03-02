@@ -56,8 +56,8 @@
             <p v-else style="color: red">미완료</p>
           </span>
           <span v-else-if="props.column.field == 'FIXED'">
-            <p v-if="props.row.FIXED !== null" style="color: green">완료&nbsp;<i class="far fa-check-circle"></i></p>
-            <p v-else style="color: red">미완료</p>
+            <p v-if="props.row.FIXED !== null" style="color: green">생성됨&nbsp;<i class="far fa-check-circle"></i></p>
+            <p v-else style="color: red">미생성</p>
           </span>
           <!-- <span v-else-if="props.column.field == 'H_FITTING_APPLY'">
             <p style="color: green" v-if="props.row.H_FITTING_APPLY">신청</p>
