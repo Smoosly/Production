@@ -1,10 +1,9 @@
-from flask import Blueprint, jsonify
+from flask import request, jsonify, Blueprint
 import pandas as pd
 import pymysql
 import json
 import logging
 import logging.handlers
-from flask import request, jsonify, Blueprint
 
 log = logging.getLogger("braResult")
 log.setLevel(logging.DEBUG)

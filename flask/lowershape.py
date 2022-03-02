@@ -34,7 +34,7 @@ def save_as_graph(arr, filename, dir, ratio, rratio, xDiff, yDiff):
         # cv2.imwrite('aaa.jpg', arr)
         realSize = arr.shape
         arr = np.transpose(np.array(arr))
-        x = np.arange(5, arr.shape[0]-5, int(realSize[1]/15))
+        x = np.arange(5, arr.shape[0]-10, int(realSize[1]/15))
         y = []
         for i in x:
                 black = np.where(arr[i] > 0)[0]
@@ -89,10 +89,11 @@ def measure(filename, type, dir = 0):
         img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
         h, w = img_gray.shape
-        kernelSize = int(min(h,w)/55)
+        kernelSize = int(min(h,w)/65)
 
         canny = cv2.Canny(img_gray, 100, 450)
-        kernel = np.ones((kernelSize, kernelSize), np.uint8)
+        # kernel = np.ones((kernelSize, kernelSize), np.uint8)
+        kernel = np.ones((8, 8), np.uint8)
         morph = cv2.morphologyEx(canny, cv2.MORPH_CLOSE, kernel)
         contours, _ = cv2.findContours(morph, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
@@ -273,6 +274,7 @@ def measure(filename, type, dir = 0):
                                 # kernel = np.ones((kernelSize,kernelSize), np.uint8)
                                 # lsmorph = cv2.morphologyEx(lsImg, cv2.MORPH_CLOSE, kernel)
                                 print("vvv")
+                                cv2.imwrite("test.jpg", lsImg)
                                 save_as_graph(lsImg, filename, dir, ratio, aspectRatio, xMax-xMin, yMax-yMin)
                                 measures.append(dictLowercup)
 
@@ -293,7 +295,7 @@ def kitVision():
                 # leftImgPath = Data["leftImgPath"]
                 # rightImgPath = Data["rightImgPath"]
                 kitType = 0
-                leftImgPath = '3ewcjcc4hr_left_20220225131101.jpg'
+                leftImgPath = 'czewdfvh2p_left_20220301000140.jpg'
                 rightImgPath = ''
                 # log.info(f"---> {kitType}, {leftImgPath}, {rightImgPath}")
                 whereBt = -1

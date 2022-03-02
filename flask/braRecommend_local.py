@@ -491,19 +491,19 @@ def recommend(pkID):
                                                 df = df[(df.PP_SCORE == 0) | (df.PP_SCORE == 1) | (df.PP_SCORE == -1)]
                                                 if len(df.OLD_KEY.unique()) < 6:
                                                         df = dfTemp.copy()
-                                                        df['EFFECT_FIT_SCORE'] = df.apply(lambda x:x.EFFECT_FIT_SCORE+200 if ((row.PP_SCORE == 0) | (row.PP_SCORE == 1) | (row.PP_SCORE == -1)) else x.EFFECT_FIT_SCORE, axis = 1)
+                                                        df.EFFECT_FIT_SCORE = df.apply(lambda x:x.EFFECT_FIT_SCORE+200 if ((x.PP_SCORE == 0) | (x.PP_SCORE == 1) | (x.PP_SCORE == -1)) else x.EFFECT_FIT_SCORE, axis = 1)
                                 elif wPP == 2:
                                         if (10 in brEffect) | (20 in brEffect) | (30 in brEffect):
                                                 df = df[(df.PP_SCORE == 2) | (df.PP_SCORE == 1)]
                                                 if len(df.OLD_KEY.unique()) < 6:
                                                         df = dfTemp.copy()
-                                                        df['EFFECT_FIT_SCORE'] = df.apply(lambda x:x.EFFECT_FIT_SCORE+200 if ((row.PP_SCORE == 2) | (row.PP_SCORE == 1)) else x.EFFECT_FIT_SCORE, axis = 1)
+                                                        df['EFFECT_FIT_SCORE'] = df.apply(lambda x:x.EFFECT_FIT_SCORE+200 if ((x.PP_SCORE == 2) | (x.PP_SCORE == 1)) else x.EFFECT_FIT_SCORE, axis = 1)
                                         
                                         else:
                                                 df = df[(df.PP_SCORE == 0) | (df.PP_SCORE == 1) | (df.PP_SCORE == 2)]
                                                 if len(df.OLD_KEY.unique()) < 6:
                                                         df = dfTemp.copy()
-                                                        df['EFFECT_FIT_SCORE'] = df.apply(lambda x:x.EFFECT_FIT_SCORE+200 if ((row.PP_SCORE == 0) | (row.PP_SCORE == 1) | (row.PP_SCORE == 2)) else x.EFFECT_FIT_SCORE, axis = 1)
+                                                        df['EFFECT_FIT_SCORE'] = df.apply(lambda x:x.EFFECT_FIT_SCORE+200 if ((x.PP_SCORE == 0) | (x.PP_SCORE == 1) | (x.PP_SCORE == 2)) else x.EFFECT_FIT_SCORE, axis = 1)
                                         
 
                                 
@@ -639,4 +639,4 @@ def recommend(pkID):
 
 
 if __name__ == "__main__":
-        recommend("3ewcjcc4hr")
+        recommend("czewdfvh2p")

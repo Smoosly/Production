@@ -276,7 +276,7 @@ def saveBreastResult():
                                 breastAll, breastNow = breastTests
                                 braAll, braNow = braRecommends
                                 breastNow += 1
-                                slackKit.chat_postMessage(channel = "#웹테스트", text = "{}님의 가슴 결과 테스트가 완료되었습니다.\n가슴 결과 진행한 사람 : {}/{}\n {}명 남았습니다".format(pkId, breastNow, breastAll, breastAll-breastNow))
+                                slackKit.chat_postMessage(channel = "#3rd-진행상황", text = "{}님의 가슴 결과 테스트가 완료되었습니다.\n가슴 결과 진행한 사람 : {}/{}\n {}명 남았습니다".format(pkId, breastNow, breastAll, breastAll-breastNow))
                                 
                                 
                                 current.close()
@@ -289,5 +289,5 @@ def saveBreastResult():
                                 return jsonify({"success": "yes", "message": "Save Result Success"})
         except Exception as e:
                 log.exception(f"{str(e)}, {type(e)}")
-                slackKit.chat_postMessage(channel = "#웹테스트", text = "{}님의 가슴 결과 코드에서 오류가 발생하였습니다".format(pkId))
+                slackKit.chat_postMessage(channel = "#3rd-진행상황", text = "{}님의 가슴 결과 코드에서 오류가 발생하였습니다".format(pkId))
                 return jsonify({"success": "no", "error": str(e)})

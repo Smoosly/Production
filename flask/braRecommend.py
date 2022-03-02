@@ -514,19 +514,19 @@ def recommend():
                                                         df = df[(df.PP_SCORE == 0) | (df.PP_SCORE == 1) | (df.PP_SCORE == -1)]
                                                         if len(df.OLD_KEY.unique()) < 6:
                                                                 df = dfTemp.copy()
-                                                                df['EFFECT_FIT_SCORE'] = df.apply(lambda x:x.EFFECT_FIT_SCORE+200 if ((row.PP_SCORE == 0) | (row.PP_SCORE == 1) | (row.PP_SCORE == -1)) else x.EFFECT_FIT_SCORE, axis = 1)
+                                                                df['EFFECT_FIT_SCORE'] = df.apply(lambda x:x.EFFECT_FIT_SCORE+200 if ((x.PP_SCORE == 0) | (x.PP_SCORE == 1) | (x.PP_SCORE == -1)) else x.EFFECT_FIT_SCORE, axis = 1)
                                         elif wPP == 2:
                                                 if (10 in brEffect) | (20 in brEffect) | (30 in brEffect):
                                                         df = df[(df.PP_SCORE == 2) | (df.PP_SCORE == 1)]
                                                         if len(df.OLD_KEY.unique()) < 6:
                                                                 df = dfTemp.copy()
-                                                                df['EFFECT_FIT_SCORE'] = df.apply(lambda x:x.EFFECT_FIT_SCORE+200 if ((row.PP_SCORE == 2) | (row.PP_SCORE == 1)) else x.EFFECT_FIT_SCORE, axis = 1)
+                                                                df['EFFECT_FIT_SCORE'] = df.apply(lambda x:x.EFFECT_FIT_SCORE+200 if ((x.PP_SCORE == 2) | (x.PP_SCORE == 1)) else x.EFFECT_FIT_SCORE, axis = 1)
                                                 
                                                 else:
                                                         df = df[(df.PP_SCORE == 0) | (df.PP_SCORE == 1) | (df.PP_SCORE == 2)]
                                                         if len(df.OLD_KEY.unique()) < 6:
                                                                 df = dfTemp.copy()
-                                                                df['EFFECT_FIT_SCORE'] = df.apply(lambda x:x.EFFECT_FIT_SCORE+200 if ((row.PP_SCORE == 0) | (row.PP_SCORE == 1) | (row.PP_SCORE == 2)) else x.EFFECT_FIT_SCORE, axis = 1)
+                                                                df['EFFECT_FIT_SCORE'] = df.apply(lambda x:x.EFFECT_FIT_SCORE+200 if ((x.PP_SCORE == 0) | (x.PP_SCORE == 1) | (x.PP_SCORE == 2)) else x.EFFECT_FIT_SCORE, axis = 1)
                                                 
 
                                         
@@ -670,7 +670,7 @@ def recommend():
                 breastAll, breastNow = breastTests
                 braAll, braNow = braRecommends
                 braNow += 1
-                slackKit.chat_postMessage(channel = "#웹테스트", text = "{}님의 브라 추천이 완료되었습니다.\n브라 추천된 사람 : {}/{}\n {}명 남았습니다".format(pkId, braNow, braAll, braAll-braNow))
+                slackKit.chat_postMessage(channel = "#3rd-진행상황", text = "{}님의 브라 추천이 완료되었습니다.\n브라 추천된 사람 : {}/{}\n {}명 남았습니다".format(pkId, braNow, braAll, braAll-braNow))
                 
                 
                 current.close()
@@ -683,5 +683,5 @@ def recommend():
         
         except Exception as e:
                 log.exception(f"{str(e)}, {type(e)}")
-                slackKit.chat_postMessage(channel = "#웹테스트", text = "{}님의 브라 추천 코드에서 오류가 발생하였습니다".format(pkId))
+                slackKit.chat_postMessage(channel = "#3rd-진행상황", text = "{}님의 브라 추천 코드에서 오류가 발생하였습니다".format(pkId))
                 return jsonify({"success": "no", "error": str(e)})
