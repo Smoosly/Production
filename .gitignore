@@ -28,3 +28,11 @@ server/public
 
 KitUploads/
 LowerShapes
+
+*.xls
+*.xlsx
+.txt
+
+/test/*.xls
+/test/*.xlsx
+/test/*.txt
