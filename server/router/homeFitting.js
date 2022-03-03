@@ -117,4 +117,29 @@ router.post('/returning', isAuth, async (req, res) => {
   }
 });
 
+router.delete('/cancel', async (req, res) => {
+  try {
+    const result = await HOME_FITTING.findOne({ where: { PK_ID: req.cookies.user } });
+    if (!result) {
+      winston.info({ success: false, message: '홈 피팅 신청 내역이 없습니다.' });
+      return res.json({ success: false, message: '홈 피팅 신청 내역이 없습니다.' });
+    }
+    if (result.state === 2) {
+      winston.info({ success: false, message: '배송중인 홈 피팅 브라가 배송중입니다.' });
+      return res.json({ success: false, message: '배송중인 홈 피팅 브라가 배송중입니다.' });
+    }
+    if (result.state === 3) {
+      winston.info({ success: false, message: '배송 완료되었습니다.' });
+      return res.json({ success: false, message: '배송 완료되었습니다.' });
+    }
+    const destroyed = await HOME_FITTING.destroy({ where: { PK_ID: req.cookies.user } });
+    if (destroyed) {
+      winston.info({ success: true, message: '홈 피팅 신청 취소 성공' });
+      return res.json({ success: true, message: '홈 피팅 신청 취소 성공' });
+    }
+  } catch (err) {
+    winston.error(err);
+    return res.json({ success: false, message: '홈 피팅 신청 취소 실패', err });
+  }
+});
 module.exports = router;
