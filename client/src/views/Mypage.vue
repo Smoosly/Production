@@ -287,7 +287,7 @@ export default {
           }
           if (data.userSelectedType === "R") {
             if (data.bname !== "" && /[동|로|가]$/g.test(data.bname)) {
-              this.extraAddress += data.bname;
+              this.extraAddress = data.bname;
             }
             if (data.buildingName !== "" && data.apartment === "Y") {
               this.extraAddress += this.extraAddress !== "" ? `, ${data.buildingName}` : data.buildingName;
