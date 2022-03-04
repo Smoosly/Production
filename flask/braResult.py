@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify
+from flask import request, jsonify, Blueprint
 import pandas as pd
 import pymysql
 import json
@@ -37,6 +37,9 @@ def result():
                         charset=config["charset"],
                 )
                 cur = db.cursor()
+                requestData = request.data.decode("utf-8")
+                Data = json.loads(requestData)
+                realPkIds = Data["PK_IDs"]
 
                 sql_brAll = "select * from BR_ALL"
                 # Get BR_ALL
@@ -47,7 +50,14 @@ def result():
                 sql_braRecom = "select * from BRA_RECOM"
 
                 df = pd.read_sql(sql_braRecom, db)
+                realArray = []
+                for idx, row in df.iterrows():
+                        if row.PK_ID in realPkIds:
+                                realArray.append(True)
+                        else:
+                                realArray.append(False)
 
+                df = df[realArray]
 
                 df_result = pd.DataFrame(
                         index=range(0, 0), columns=["PK_ID", "PK_ITEM", "OLD_KEY", "SIZE", "COLOR"]
@@ -80,7 +90,8 @@ def result():
                 for idx, row in df.iterrows():
                         decisions = row.DECISION
                         if decisions[-1] == ',':
-                                decisions = decisions[:len(decisions)-1].split(',')
+                                decisions = decisions[:len(decisions)-1]
+                        decisions = decisions.split(',')
                         decisions = list(map(int, decisions))
                         generalSize = row.SIZE.split(',')[0]
 
@@ -92,30 +103,23 @@ def result():
                                 
 
                                 if sizes[-1] == ',' :
-                                        sizes = sizes[:len(sizes)-1].split(',')
-                                        
-                                for size in sizes:
-                                        if "(" not in size:
-                                                if (generalSize[:2] in size) & (generalSize[2:] in size):
-                                                        fixArray.extend([row['PK_ITEM_{}'.format(decision)][:2]+size])
-                                                        break
-                                        else:
-                                                if generalSize in size:
-                                                        fixArray.extend([row['PK_ITEM_{}'.format(decision)][:2]+size])
-                                                        break
+                                        sizes = sizes[:len(sizes)-1]
+                                sizes = sizes.split(',')     
+                                pkSize = row['PK_ITEM_{}'.format(decision)][:2] + sizes[0]
+                                fixArray.extend([pkSize])
                                         
                                 colors = row["SELECTED_COLOR_{}".format(decision)]
                                 if colors[-1] == ',':
                                         colors = colors[:len(colors)-1]
                                 colors = colors.split(',')
                                 for idx, size in enumerate(sizes):
-                                        df_result.loc[len(df_result)-1] = [row.PK_ID, row['PK_ITEM_{}'.format(decision)], row['OLD_KEY_{}'.format(decision)], size, colors[min(idx, len(colors)-1)]]
+                                        df_result.loc[len(df_result)] = [row.PK_ID, row['PK_ITEM_{}'.format(decision)], row['OLD_KEY_{}'.format(decision)], size, colors[min(idx, len(colors)-1)]]
                                         
 
                         if len(decisions) < 4:
                                 for i in range(4):
                                         fixArray.append(None)
-
+                        
                         df_fix.loc[len(df_fix)] = fixArray
 
                 df_result = pd.merge(
