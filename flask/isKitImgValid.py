@@ -256,7 +256,7 @@ def measure(filename, type, dir = 0):
                 if idx == 2:
                         grayImg = morph.copy()[
                                 int(yMin + imgDropOffset[1][idx]) : int(yMax - imgDropOffset[1][idx]),
-                                int(xMin + imgDropOffset[0][idx]) : int(xMax - imgDropOffset[0][idx] * 2),
+                                int(xMin + imgDropOffset[0][idx]) : int(xMax - imgDropOffset[0][idx]),
                         ]
 
                 # cv2.imwrite("{}.jpg".format(idx), grayImg)     
