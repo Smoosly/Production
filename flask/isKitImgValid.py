@@ -222,7 +222,7 @@ def measure(filename, type, dir = 0):
 
                                 rectangleContours.append(dictContour)
 
-                data = sorted(rectangleContours, key=itemgetter("xMin"))
+        data = sorted(rectangleContours, key=itemgetter("xMin"))
     
 
         standarImgForMeasure = math.sqrt(
