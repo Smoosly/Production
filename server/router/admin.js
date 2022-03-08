@@ -561,6 +561,7 @@ router.post('/invoice/:what', async (req, res) => {
         {
           sheet: 'Info',
           columns: [
+            { label: '주문번호', value: 'PK_ID' },
             { label: '받는사람', value: 'recipient' },
             { label: '번호', value: 'phone' },
             { label: '주소', value: 'fulladdress' },

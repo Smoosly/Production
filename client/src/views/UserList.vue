@@ -166,9 +166,10 @@
             <p style="color: green" v-if="props.row.state == 3">배송 완료</p>
           </span>
           <span v-else-if="props.column.field == 'return'">
-            <p style="color: orange" v-if="props.row.state == 1">신청완료</p>
-            <p style="color: red" v-if="props.row.state == 2">반송중</p>
-            <p style="color: green" v-if="props.row.state == 3">반송 완료</p>
+            <p style="color: black" v-if="props.row.return == 0">미신청</p>
+            <p style="color: orange" v-if="props.row.return == 1">신청완료</p>
+            <p style="color: red" v-if="props.row.return == 2">반송중</p>
+            <p style="color: green" v-if="props.row.return == 3">반송 완료</p>
           </span>
           <span v-else>
             {{ props.formattedRow[props.column.field] }}
