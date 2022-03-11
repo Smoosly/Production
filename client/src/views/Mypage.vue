@@ -159,7 +159,7 @@
                 </p>
               </div>
               <!-- 반송 신청 안한 경우 -->
-              <div v-if="canReturn && !isOrderedHometry && !deliverTousreq" class="howto-deliver">
+              <div v-if="canReturn && !deliverTousreq" class="howto-deliver">
                 <p>
                   <span>혹시 반송 신청을 잊으셨나요?&nbsp;<i class="far fa-surprise"></i></span> <br />
                   홈 피팅 후 입어보신 브라는<br />스무슬리에 반송해 주세요!
@@ -169,11 +169,11 @@
                 </div>
               </div>
               <!-- 반송 신청한 경우 -->
-              <div v-if="isOrderedHometry && deliverTousreq" class="delivery-to-us-info">
+              <div v-if="deliverTousreq" class="delivery-to-us-info">
                 <div class="box">
                   <div class="order-date">
                     <p>신청 일자: {{ deliverTousDate }}</p>
-                    <h3>홈 피팅용 브라</h3>
+                    <h3>브라 반송</h3>
                   </div>
                   <ul class="progressbar">
                     <li :class="{ active: deliverTousStep >= 1 }">반송요청</li>
@@ -184,7 +184,7 @@
                 <form action="http://info.sweettracker.co.kr/tracking/4" method="post" target="_blank">
                   <input hidden type="text" class="form-control" id="t_key" name="t_key" placeholder="" :value="deliveryInfo.api_key" />
                   <input hidden type="text" class="form-control" name="t_code" id="t_code" placeholder="" :value="deliveryInfo.code" />
-                  <input hidden type="text" class="form-control" name="t_invoice" id="t_invoice" placeholder="" :value="returnInvoice" />
+                  <input hidden type="text" class="form-control" name="t_invoice" id="t_invoice" placeholder="" :value="hometryInvoice" />
                   <div class="button-box">
                     <button type="submit" class="btn-secondary btn-48 btn-second">반송 현황 조회</button>
                   </div>
@@ -238,7 +238,8 @@ export default {
       hometryOrderDate: "",
       hometryOrderStep: 0,
       hometryInvoice: "",
-      returnInvoice: "",
+      // returnInvoice: "",
+
       deliveryInfo: {
         api_key: "",
         code: "04",
@@ -367,7 +368,7 @@ export default {
     editUserInfo() {
       axios
         .post("/users/editUserInfo", {
-          PK_ID: this.$store.state.PK_ID,
+          // PK_ID: this.$store.state.PK_ID,
           username: this.username,
           phone: this.phone,
           birthday: this.birthday,
@@ -375,7 +376,7 @@ export default {
           postcode: this.postcode,
           address: this.address,
           extraAddress: this.extraAddress,
-          message: this.message,
+          // message: this.message,
         })
         .then((result) => {
           console.log(result.data);
@@ -395,7 +396,7 @@ export default {
           console.log(user.data);
           if (user.data.success) {
             console.log(user.data.userInfo);
-            let userData = user.data.userInfo;
+            const userData = user.data.userInfo;
             this.username = userData.username;
             this.email = userData.email;
             this.phone = userData.phone;
@@ -404,13 +405,13 @@ export default {
             this.postcode = userData.postcode;
             this.address = userData.address;
             this.extraAddress = userData.extraAddress;
-            this.message = userData.message;
+            // this.message = userData.message;
           } else {
             if (Object.keys(user.data).includes("isAuth") && user.data.isAuth === false) {
-              this.$store.commit("clearCode");
+              // this.$store.commit("clearCode");
               this.$store.commit("clearToken");
               deleteCookie("auth");
-              deleteCookie("user");
+              // deleteCookie("user");
               console.log("여기 로직 리팩토링");
               this.$router.push("/");
               this.emitter.emit("loginModal", true);
@@ -435,10 +436,10 @@ export default {
             this.kitOrderDate = kitData.createdAt;
           } else {
             if (Object.keys(kit.data).includes("isAuth") && kit.data.isAuth === false) {
-              this.$store.commit("clearCode");
+              // this.$store.commit("clearCode");
               this.$store.commit("clearToken");
               deleteCookie("auth");
-              deleteCookie("user");
+              // deleteCookie("user");
               console.log("여기 로직 리팩토링");
               this.$router.push("/");
               this.emitter.emit("loginModal", true);
@@ -462,7 +463,7 @@ export default {
             this.hometryOrderDate = data.createdAt;
             this.hometryOrderStep = data.state;
             this.hometryInvoice = data.invoice;
-            this.returnInvoice = data.returnInvoice;
+            // this.returnInvoice = data.returnInvoice;
             this.deliveryInfo = homeFitting.data.deliveryInfo;
             if (data.return !== 0) {
               this.deliverTousreq = true;
@@ -471,10 +472,10 @@ export default {
             }
           } else {
             if (Object.keys(homeFitting.data).includes("isAuth") && homeFitting.data.isAuth === false) {
-              this.$store.commit("clearCode");
+              // this.$store.commit("clearCode");
               this.$store.commit("clearToken");
               deleteCookie("auth");
-              deleteCookie("user");
+              // deleteCookie("user");
               console.log("여기 로직 리팩토링");
               this.$router.push("/");
               this.emitter.emit("loginModal", true);

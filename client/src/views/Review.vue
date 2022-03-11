@@ -500,7 +500,7 @@ export default {
       ],
       answers: [
         {
-          PK_ID: this.$store.state.PK_ID, //PK_ID
+          // PK_ID: this.$store.state.PK_ID,
 
           PK_ITEM: "",
           OLD_KEY: "",
@@ -526,7 +526,7 @@ export default {
           PURCHASE_REASON: null,
         },
         {
-          PK_ID: this.$store.state.PK_ID,
+          // PK_ID: this.$store.state.PK_ID,
           PK_ITEM: "",
           OLD_KEY: "",
           PK_SIZE: "",
@@ -546,7 +546,7 @@ export default {
           PURCHASE_REASON: null,
         },
         {
-          PK_ID: this.$store.state.PK_ID,
+          // PK_ID: this.$store.state.PK_ID,
           PK_ITEM: "",
           OLD_KEY: "",
           PK_SIZE: "",
@@ -566,7 +566,7 @@ export default {
           PURCHASE_REASON: null,
         },
         {
-          PK_ID: this.$store.state.PK_ID,
+          // PK_ID: this.$store.state.PK_ID,
           PK_ITEM: "",
           OLD_KEY: "",
           PK_SIZE: "",

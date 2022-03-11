@@ -56,7 +56,7 @@ export default {
 
     goBack() {
       const answers = {
-        PK_ID: this.$store.state.PK_ID,
+        // PK_ID: this.$store.state.PK_ID,
         [this.page[0].column]: this.answer,
       };
       // console.log(this.answers);
@@ -76,7 +76,7 @@ export default {
       }
       console.log(this.answer);
       const answers = {
-        PK_ID: this.$store.state.PK_ID,
+        // PK_ID: this.$store.state.PK_ID,
         [this.page[0].column]: this.answer,
       };
       // console.log(answers);

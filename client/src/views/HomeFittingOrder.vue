@@ -185,7 +185,7 @@ export default {
     async submitForm() {
       // 서버에서 동일하게 데이터 keys 목록 받는지 체크
       const homeFitting = {
-        PK_ID: this.$store.state.PK_ID,
+        // PK_ID: this.$store.state.PK_ID,
         recipient: this.username,
         phone: this.phone,
         postcode: this.postcode,

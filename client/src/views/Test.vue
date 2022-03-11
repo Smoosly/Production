@@ -5,7 +5,7 @@
     </div>
     <!-- step 1 : kit upload -->
     <div class="spinner-box" v-if="isLoading">
-      <PulseLoader style="padding: 80px;" :loading="isLoading" :color="color" :size="size"></PulseLoader>
+      <PulseLoader style="padding: 80px" :loading="isLoading" :color="color" :size="size"></PulseLoader>
     </div>
 
     <div v-if="!isLoading" class="item kit-upload">
@@ -69,22 +69,22 @@
 </template>
 
 <script>
-import ProgressBar from "@/components/ProgressBar.vue";
-import PulseLoader from "vue-spinner/src/PulseLoader.vue";
-import axios from "axios";
-import path from "path";
+import ProgressBar from '@/components/ProgressBar.vue';
+import PulseLoader from 'vue-spinner/src/PulseLoader.vue';
+import axios from 'axios';
+import path from 'path';
 
 export default {
-  name: "Test",
+  name: 'Test',
   data() {
     return {
       step: 1,
       isLoading: false,
-      color: "#FFD07F",
-      size: "1em",
-      image: "",
-      preImageLeft: "",
-      preImageRight: "",
+      color: '#FFD07F',
+      size: '1em',
+      image: '',
+      preImageLeft: '',
+      preImageRight: '',
       yesLeft: false,
       yesRight: false,
       newLeft: false,
@@ -104,7 +104,7 @@ export default {
   },
   mounted() {
     window.scrollTo(0, 0);
-    this.emitter.emit("KitGuideModal", true);
+    this.emitter.emit('KitGuideModal', true);
   },
   methods: {
     add() {
@@ -151,25 +151,26 @@ export default {
       this.isLoading = true;
       if (!this.newLeft && !this.newRight && !this.yesLeft && !this.yesRight) {
         this.isLoading = false;
-        this.emitter.emit("showRedToast", "사진을 업로드해주세요");
+        this.emitter.emit('showRedToast', '사진을 업로드해주세요');
         return;
       }
       let fd = new FormData();
       let data = {
-        PK_ID: this.$store.state.PK_ID,
+        // PK_ID: this.$store.state.PK_ID,
         yesLeft: this.yesLeft,
         yesRight: this.yesRight,
       };
       let dataString = JSON.stringify(data);
       console.log(dataString);
       if (this.newLeft) {
-        fd.append("left", this.leftObj, `${data.PK_ID}_left${path.extname(this.leftObj.name)}`);
+        fd.append('left', this.leftObj, `_left${path.extname(this.leftObj.name)}`);
       }
       if (this.newRight) {
-        fd.append("right", this.rightObj, `${data.PK_ID}_right${path.extname(this.rightObj.name)}`);
+        fd.append('right', this.rightObj, `_right${path.extname(this.rightObj.name)}`);
       }
-      fd.append("data", dataString);
-      axios.post("/kits/img/upload", fd, { headers: { "Content-Type": "multipart/form-data" } })
+      fd.append('data', dataString);
+      axios
+        .post('/kits/img/upload', fd, { headers: { 'Content-Type': 'multipart/form-data' } })
         .then((result) => {
           console.log(result.data);
           //이미지 업로드 결과 : 정상 -> 다음 단계로 (로딩페이지 거쳐서) , 비정상 -> 재업로드 요청
@@ -180,15 +181,16 @@ export default {
             // 해당 유저가 이전에 마무리한 설문 페이지받아서 이동
             // const lastPage = result.data.lastPage
             // this.$router.push(`/survey/${lastPage}`)
-            this.emitter.emit("showToast", result.data.message);
-            return this.$router.push("/survey/2");
+            this.emitter.emit('showToast', result.data.message);
+            return this.$router.push('/survey/2');
           }
-          return this.emitter.emit("showRedToast", result.data.message);
+          return this.emitter.emit('showRedToast', result.data.message);
         })
         .catch((err) => console.log(err));
     },
     async fetchKitInfo() {
-      await axios.get("/kits/checkImg")
+      await axios
+        .get('/kits/checkImg')
         .then((result) => {
           console.log(result.data);
           // result.data.success여부 체크
@@ -214,8 +216,8 @@ export default {
   watch: {
     $route(to, from) {
       console.log(from);
-      if (to.name !== "Test") {
-        this.emitter.emit("KitGuideModal", false)
+      if (to.name !== 'Test') {
+        this.emitter.emit('KitGuideModal', false);
       }
     },
   },
@@ -226,7 +228,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-*:not(i):not(button):not(input[type="password"]) {
+*:not(i):not(button):not(input[type='password']) {
   font-family: $font-main, sans-serif !important;
 }
 
@@ -404,7 +406,7 @@ export default {
     background-color: $blue-dark;
   }
 
-  .file-left input[type="file"] {
+  .file-left input[type='file'] {
     position: absolute;
     width: 1px;
     height: 1px;

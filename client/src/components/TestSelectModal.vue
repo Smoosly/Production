@@ -28,7 +28,7 @@
 </template>
 
 <script>
-import { deleteCookie, getUserFromCookie } from "@/utils/cookies";
+import { deleteCookie, getAuthFromCookie } from "@/utils/cookies";
 // import { checkAuth } from '@/utils/loginAuth';
 import axios from "axios";
 
@@ -36,12 +36,12 @@ export default {
   name: "TestSelectModal",
   data() {
     return {
-      PK_ID: getUserFromCookie() || "",
+      // PK_ID: getUserFromCookie() || "",
     };
   },
   methods: {
     async testType() {
-      if (this.PK_ID === "") {
+      if (getAuthFromCookie() === "") {
         this.emitter.emit("testModal", false);
         this.emitter.emit("loginModal", true);
         this.emitter.emit("showRedToast", "로그인 후 이용해주세요.");
@@ -82,10 +82,10 @@ export default {
             return;
           } else {
             if (Object.keys(result.data).includes("isAuth") && result.data.isAuth === false) {
-              this.$store.commit("clearCode");
+              // this.$store.commit("clearCode");
               this.$store.commit("clearToken");
               deleteCookie("auth");
-              deleteCookie("user");
+              // deleteCookie("user");
               console.log("여기 로직 리팩토링");
               this.$router.push("/");
               this.emitter.emit("loginModal", true);

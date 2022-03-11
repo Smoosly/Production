@@ -60,11 +60,11 @@ export default {
     },
     braReturn(e) {
       e.preventDefault();
-      if (this.date === null) {
-        this.emitter.emit("showRedToast", "반송 날짜를 선택해주세요.");
-        return;
-      }
-      axios.post("/homeFitting/returning", { PK_ID: this.$store.state.PK_ID, returnDate: this.date })
+      // if (this.date === null) {
+      //   this.emitter.emit("showRedToast", "반송 날짜를 선택해주세요.");
+      //   return;
+      // }
+      axios.post("/homeFitting/returning", { returnDate: this.date })
         .then((result) => {
           console.log(result.data);
           if (result.data.success) {

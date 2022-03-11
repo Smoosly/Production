@@ -1,10 +1,10 @@
 import { deleteCookie } from "@/utils/cookies";
 function checkAuth(data) {
   if (Object.keys(data).includes("isAuth") && data.isAuth === false) {
-    this.$store.commit("clearCode");
+    // this.$store.commit("clearCode");
     this.$store.commit("clearToken");
     deleteCookie("auth");
-    deleteCookie("user");
+    // deleteCookie("user");
     console.log("여기 로직 리팩토링");
     this.$router.push("/");
     this.emitter.emit("loginModal", true);

@@ -6,20 +6,22 @@ const { Op } = require("sequelize");
 const { BRA_RECOM, BRA_REVIEW, BR_DETAIL, BRA_FIX } = require("../models");
 const winston = require("../winston");
 
+const { isAuth } = require('../middleware/isAuth');
+router.use(isAuth);
+
 router.post("/save/:braNum", async (req, res) => {
   winston.debug(util.inspect(req.body, false, null, true));
-  const PK_ID = req.body.PK_ID
   const braNum = req.params.braNum;
   let reviewData = {};
   Object.assign(reviewData, req.body);
-  delete reviewData.PK_ID;
+  // delete reviewData.PK_ID;
   delete reviewData.RANKING;
   reviewData.COMPLETE = 1;
   winston.debug(util.inspect(reviewData, false, null, true));
   try {
     const [review, created] = await BRA_REVIEW.findOrCreate({
       where: {
-        PK_ID: PK_ID,
+        PK_ID: req.cookies.user,
         RANKING: braNum,
       },
       defaults: reviewData,
