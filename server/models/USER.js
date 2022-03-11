@@ -49,10 +49,6 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.STRING(45),
       allowNull: true
     },
-    message: {
-      type: DataTypes.STRING(500),
-      allowNull: true
-    },
     agreePromotion: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
@@ -85,6 +81,7 @@ module.exports = function(sequelize, DataTypes) {
         using: "BTREE",
         fields: [
           { name: "id" },
+          { name: "createdAt" },
         ]
       },
       {

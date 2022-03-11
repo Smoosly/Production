@@ -15,7 +15,7 @@ const { isAuth } = require("../middleware/isAuth");
 router.use(isAuth);
 
 router.post("/save/:pageId", async (req, res) => {
-  const PK_ID = req.body.PK_ID;
+  const PK_ID = req.cookies.user;
   const pageId = Number(req.params.pageId);
   const isBack = req.query.back === "yes" ? true : false;
   try {
@@ -105,11 +105,11 @@ router.get("/getProgress", (req, res) => {
 router.post("/complete", async (req, res) => {
   try {
 
-    const breastResult = await BREAST_RESULT.findAll({ where: { PK_ID: req.body.PK_ID } });
+    const breastResult = await BREAST_RESULT.findAll({ where: { PK_ID: req.cookies.user } });
     if (breastResult.length > 0) {
       winston.info({ success: false, message: "이미 테스트 결과가 있습니다." });
     } else {
-      const result = await axios.post("http://localhost:5000/breastResult", { PK_ID: req.body.PK_ID });
+      const result = await axios.post("http://127.0.0.1:5000/breastResult", { PK_ID: req.cookies.user });
       winston.debug("result: ");
       winston.debug(util.inspect(result.data, false, null, true));
       if (result.data.success === "yes") {
@@ -121,16 +121,16 @@ router.post("/complete", async (req, res) => {
       }
     }
 
-    const braRecom = await BRA_RECOM.findAll({ where: { PK_ID: req.body.PK_ID } });
+    const braRecom = await BRA_RECOM.findAll({ where: { PK_ID: req.cookies.user } });
     if (braRecom.length > 0) {
       winston.info({ success: false, message: "이미 임시 추천 결과가 있습니다." });
       return res.json({ success: false, message: "이미 임시 추천 결과가 있습니다." });
     }
-    const recommend = await axios.post("http://localhost:5000/braRecommend", { PK_ID: req.body.PK_ID });
+    const recommend = await axios.post("http://127.0.0.1:5000/braRecommend", { PK_ID: req.cookies.user });
     winston.debug("recommend: ");
     winston.debug(util.inspect(recommend.data));
     if (recommend.data.success === "yes") {
-      await BREAST_TEST.update({ STEP: 100 }, { where: { PK_ID: req.body.PK_ID } });
+      await BREAST_TEST.update({ STEP: 100 }, { where: { PK_ID: req.cookies.user } });
       winston.info({ success: true, message: "가슴 테스트 결과 처리 성공" });
       return res.json({ success: true, message: "가슴 테스트 결과 처리 성공" });
     } else {

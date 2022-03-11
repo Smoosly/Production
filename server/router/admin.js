@@ -18,8 +18,8 @@ router.use(isAdmin);
 
 router.get('/getUserList', async (req, res) => {
   // const list = await BRA_RECOM.findAll();
-  // const [list] = await sequelize.query('select Smoosly_dev.BRA_RECOM.PK_ID, Smoosly_dev.BRA_RECOM.SIZE, Smoosly_dev.BRA_RECOM.NUM, Smoosly_dev.BRA_RECOM.DECISION, Smoosly_dev.BRA_RECOM.COMPLETE, Smoosly_dev.BRA_FIX.PK_ID as "FIXED" from Smoosly_dev.BRA_RECOM left join Smoosly_dev.BRA_FIX on Smoosly_dev.BRA_RECOM.PK_ID = Smoosly_dev.BRA_FIX.PK_ID;');
-  const [list] = await sequelize.query('select Smoosly.BRA_RECOM.PK_ID, Smoosly.BRA_RECOM.SIZE, Smoosly.BRA_RECOM.NUM, Smoosly.BRA_RECOM.DECISION, Smoosly.BRA_RECOM.COMPLETE, Smoosly.BRA_FIX.PK_ID as "FIXED" from Smoosly.BRA_RECOM left join Smoosly.BRA_FIX on Smoosly.BRA_RECOM.PK_ID = Smoosly.BRA_FIX.PK_ID;');
+  const [list] = await sequelize.query('select Smoosly_dev.BRA_RECOM.PK_ID, Smoosly_dev.BRA_RECOM.SIZE, Smoosly_dev.BRA_RECOM.NUM, Smoosly_dev.BRA_RECOM.DECISION, Smoosly_dev.BRA_RECOM.COMPLETE, Smoosly_dev.BRA_FIX.PK_ID as "FIXED" from Smoosly_dev.BRA_RECOM left join Smoosly_dev.BRA_FIX on Smoosly_dev.BRA_RECOM.PK_ID = Smoosly_dev.BRA_FIX.PK_ID;');
+  // const [list] = await sequelize.query('select Smoosly.BRA_RECOM.PK_ID, Smoosly.BRA_RECOM.SIZE, Smoosly.BRA_RECOM.NUM, Smoosly.BRA_RECOM.DECISION, Smoosly.BRA_RECOM.COMPLETE, Smoosly.BRA_FIX.PK_ID as "FIXED" from Smoosly.BRA_RECOM left join Smoosly.BRA_FIX on Smoosly.BRA_RECOM.PK_ID = Smoosly.BRA_FIX.PK_ID;');
   // const braFix = await BRA_FIX.findAll();
 
   // winston.debug(util.inspect(list, false, null, true));
@@ -371,7 +371,7 @@ router.get('/getData/:PK_ID', async (req, res) => {
         },
       ],
     };
-    winston.debug(util.inspect(breastTestResult, false, null, true));
+    // winston.debug(util.inspect(breastTestResult, false, null, true));
     return res.json({
       success: true,
       message: '설문 데이터 + 추천브라 데이터 + 수정할 데이터',
@@ -400,7 +400,7 @@ router.post('/saveTemp/:PK_ID', async (req, res) => {
 });
 
 router.post('/saveComplete/:PK_ID', async (req, res) => {
-  winston.debug('saveComplete');
+  // winston.debug('saveComplete');
   // winston.debug(util.inspect(req.body, false, null, true));
   try {
     const [updated] = await BRA_RECOM.update(req.body, { where: { PK_ID: req.params.PK_ID } });
@@ -500,7 +500,7 @@ router.post('/invoice/:what', async (req, res) => {
       const kitdata = kits.map((kit) => {
         return kit.dataValues;
       });
-      winston.debug(util.inspect(kitdata, false, null, true));
+      // winston.debug(util.inspect(kitdata, false, null, true));
       const data = [
         {
           sheet: 'Info',
@@ -538,7 +538,7 @@ router.post('/invoice/:what', async (req, res) => {
           if (err) {
             winston.error(err);
           }
-          winston.debug(util.inspect(response, false, null, true));
+          // winston.debug(util.inspect(response, false, null, true));
         }
       );
 
@@ -593,7 +593,7 @@ router.post('/invoice/:what', async (req, res) => {
           if (err) {
             winston.error(err);
           }
-          winston.debug(util.inspect(response, false, null, true));
+          // winston.debug(util.inspect(response, false, null, true));
         }
       );
 

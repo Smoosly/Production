@@ -86,7 +86,7 @@ export default {
     },
     goBack() {
       const answers = {
-        PK_ID: this.$store.state.PK_ID,
+        // PK_ID: this.$store.state.PK_ID,
         [this.page[0].column]: this.answer1,
         [this.page[1].column]: this.birthyear,
       };
@@ -110,7 +110,7 @@ export default {
         return this.emitter.emit("showRedToast", "답변을 입력해주세요");
       }
       const answers = {
-        PK_ID: this.$store.state.PK_ID,
+        // PK_ID: this.$store.state.PK_ID,
         [this.page[0].column]: this.answer1,
         [this.page[1].column]: this.birthyear,
       };

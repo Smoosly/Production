@@ -106,10 +106,10 @@ export default {
           console.log(result.data);
           if (result.data.success) {
             // console.log(result.data.message);
-            this.$store.commit("clearCode");
+            // this.$store.commit("clearCode");
             this.$store.commit("clearToken");
             deleteCookie("auth");
-            deleteCookie("user");
+            // deleteCookie("user");
             this.$router.push("/");
             let message = "로그아웃 되었습니다.";
             this.emitter.emit("showRedToast", message);

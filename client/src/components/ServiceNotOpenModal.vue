@@ -5,9 +5,7 @@
         <span class="header_logo">
           <img src="@/assets/smoosly_eng_main_4x.png" alt="" />
         </span>
-        <p>
-          이미 키트 신청을 완료했습니다.
-        </p>
+        <p>이미 키트 신청을 완료했습니다.</p>
         <div class="button-box">
           <button @click="close" class="btn-primary btn-48">확인</button>
           <!-- <button @click="close" class="btn-secondary btn-48">닫기</button> -->
@@ -19,37 +17,38 @@
 </template>
 
 <script>
-import axios from "axios";
+import axios from 'axios';
 
 export default {
-  name: "ServiceNotOpenModal",
+  name: 'ServiceNotOpenModal',
   data() {
     return {
-      PK_ID: this.$store.state.PK_ID,
+      // PK_ID: this.$store.state.PK_ID,
     };
   },
   methods: {
     close() {
-      this.emitter.emit("ServiceNotOpenModal", false);
+      this.emitter.emit('ServiceNotOpenModal', false);
     },
     submitForm() {
-      axios.post("/users/requestNotify", {PK_ID: this.PK_ID})
+      // axios.post("/users/requestNotify", {PK_ID: this.PK_ID})
+      axios
+        .post('/users/requestNotify')
         .then((result) => {
           console.log(result.data);
           if (result.data.success) {
             console.log(result.data.message);
-            this.emitter.emit("showToast", result.data.message);
-            this.emitter.emit("ServiceNotOpenModal", false);
+            this.emitter.emit('showToast', result.data.message);
+            this.emitter.emit('ServiceNotOpenModal', false);
             // this.$router.push('/mypage');
-          }
-          else {
+          } else {
             console.log(result.data.message);
-            this.emitter.emit("showNoticeToast", result.data.message);
+            this.emitter.emit('showNoticeToast', result.data.message);
             // this.emitter.emit("ServiceNotOpenModal", false);
           }
         })
         .catch(console.log);
-    }
+    },
   },
 };
 </script>
@@ -84,16 +83,16 @@ export default {
   }
 
   .header_logo {
-      margin-top: 18px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    margin-top: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-      img {
-        /* width: 50px; */
-        width: 96px;
-        transition: 0.5s ease all;
-      }
+    img {
+      /* width: 50px; */
+      width: 96px;
+      transition: 0.5s ease all;
+    }
   }
 
   p {

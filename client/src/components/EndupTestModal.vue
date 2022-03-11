@@ -20,9 +20,9 @@
 </template>
 
 <script>
-import axios from "axios";
+import axios from 'axios';
 export default {
-  name: "EndupTestModal",
+  name: 'EndupTestModal',
   data() {
     return {
       email: this.$store.state.email,
@@ -30,23 +30,25 @@ export default {
   },
   methods: {
     close() {
-      this.emitter.emit("EndupTestModal", false);
+      this.emitter.emit('EndupTestModal', false);
     },
     async endTest(e) {
       e.preventDefault();
-      console.log("endTest");
-      axios.post("/breastTest/complete", { PK_ID: this.$store.state.PK_ID })
+      console.log('endTest');
+      // axios.post("/breastTest/complete", { PK_ID: this.$store.state.PK_ID })
+      axios
+        .post('/breastTest/complete')
         .then((result) => {
           console.log(result.data);
           if (result.data.success) {
             console.log(result.data.message);
             // 테스트 완료 처리
-            this.emitter.emit("EndupTestModal", false);
+            this.emitter.emit('EndupTestModal', false);
             // 페이지 이동 처리
-            this.$router.push("/survey/complete");
+            this.$router.push('/survey/complete');
             return;
           }
-          return this.emitter.emit("showRedToast", result.data.message);
+          return this.emitter.emit('showRedToast', result.data.message);
         })
         .catch((error) => {
           //error handling
@@ -54,7 +56,7 @@ export default {
           this.logMessage = error.result.data;
         })
         .finally(() => {
-          this.emitter.emit("EndupTestModal", false);
+          this.emitter.emit('EndupTestModal', false);
         });
     },
   },

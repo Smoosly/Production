@@ -476,10 +476,10 @@ export default {
             return;
           } else {
             if (Object.keys(result.data).includes('isAuth') && result.data.isAuth === false) {
-              this.$store.commit('clearCode');
+              // this.$store.commit('clearCode');
               this.$store.commit('clearToken');
               deleteCookie('auth');
-              deleteCookie('user');
+              // deleteCookie('user');
               console.log('여기 로직 리팩토링');
               this.$router.push('/');
               this.emitter.emit('loginModal', true);

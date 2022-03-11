@@ -319,11 +319,7 @@ router.get('/getImg/:what/:ranking', async (req, res) => {
       }
       return res.end();
     } else if (what === 'braLowerShape') {
-      winston.debug(`braLowerShape --> ranking: ${ranking}, ${braFix[`PK_SIZE_${ranking}`]}_${braFix[`OLD_KEY_${ranking}`]}.png`);
-      winston.debug(path.join(__dirname, `../../BraLowerShapes/${braFix[`PK_SIZE_${ranking}`]}_${braFix[`OLD_KEY_${ranking}`]}.png`));
       if (!fs.existsSync(path.join(__dirname, `../../BraLowerShapes/${braFix[`PK_SIZE_${ranking}`]}_${braFix[`OLD_KEY_${ranking}`]}.png`))) {
-        winston.debug('in if');
-        winston.debug(path.join(__dirname, `../../BraLowerShapes/${braFix[`PK_ITEM_${ranking}`]}_${braFix[`OLD_KEY_${ranking}`]}.png`))
         return res.sendFile(path.join(__dirname, `../../BraLowerShapes/${braFix[`PK_ITEM_${ranking}`]}_${braFix[`OLD_KEY_${ranking}`]}.png`));
       }
       return res.sendFile(path.join(__dirname, `../../BraLowerShapes/${braFix[`PK_SIZE_${ranking}`]}_${braFix[`OLD_KEY_${ranking}`]}.png`));

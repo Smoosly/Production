@@ -159,7 +159,7 @@
                 </p>
               </div>
               <!-- 반송 신청 안한 경우 -->
-              <div v-if="canReturn && !isOrderedHometry && !deliverTousreq" class="howto-deliver">
+              <div v-if="canReturn && !deliverTousreq" class="howto-deliver">
                 <p>
                   <span>혹시 반송 신청을 잊으셨나요?&nbsp;<i class="far fa-surprise"></i></span> <br />
                   홈 피팅 후 입어보신 브라는<br />스무슬리에 반송해 주세요!
@@ -169,11 +169,11 @@
                 </div>
               </div>
               <!-- 반송 신청한 경우 -->
-              <div v-if="isOrderedHometry && deliverTousreq" class="delivery-to-us-info">
+              <div v-if="deliverTousreq" class="delivery-to-us-info">
                 <div class="box">
                   <div class="order-date">
                     <p>신청 일자: {{ deliverTousDate }}</p>
-                    <h3>홈 피팅용 브라</h3>
+                    <h3>브라 반송</h3>
                   </div>
                   <ul class="progressbar">
                     <li :class="{ active: deliverTousStep >= 1 }">반송요청</li>
@@ -367,7 +367,7 @@ export default {
     editUserInfo() {
       axios
         .post("/users/editUserInfo", {
-          PK_ID: this.$store.state.PK_ID,
+          // PK_ID: this.$store.state.PK_ID,
           username: this.username,
           phone: this.phone,
           birthday: this.birthday,
@@ -375,7 +375,7 @@ export default {
           postcode: this.postcode,
           address: this.address,
           extraAddress: this.extraAddress,
-          message: this.message,
+          // message: this.message,
         })
         .then((result) => {
           console.log(result.data);
@@ -395,7 +395,7 @@ export default {
           console.log(user.data);
           if (user.data.success) {
             console.log(user.data.userInfo);
-            let userData = user.data.userInfo;
+            const userData = user.data.userInfo;
             this.username = userData.username;
             this.email = userData.email;
             this.phone = userData.phone;
@@ -404,13 +404,13 @@ export default {
             this.postcode = userData.postcode;
             this.address = userData.address;
             this.extraAddress = userData.extraAddress;
-            this.message = userData.message;
+            // this.message = userData.message;
           } else {
             if (Object.keys(user.data).includes("isAuth") && user.data.isAuth === false) {
-              this.$store.commit("clearCode");
+              // this.$store.commit("clearCode");
               this.$store.commit("clearToken");
               deleteCookie("auth");
-              deleteCookie("user");
+              // deleteCookie("user");
               console.log("여기 로직 리팩토링");
               this.$router.push("/");
               this.emitter.emit("loginModal", true);
@@ -435,10 +435,10 @@ export default {
             this.kitOrderDate = kitData.createdAt;
           } else {
             if (Object.keys(kit.data).includes("isAuth") && kit.data.isAuth === false) {
-              this.$store.commit("clearCode");
+              // this.$store.commit("clearCode");
               this.$store.commit("clearToken");
               deleteCookie("auth");
-              deleteCookie("user");
+              // deleteCookie("user");
               console.log("여기 로직 리팩토링");
               this.$router.push("/");
               this.emitter.emit("loginModal", true);
@@ -471,10 +471,10 @@ export default {
             }
           } else {
             if (Object.keys(homeFitting.data).includes("isAuth") && homeFitting.data.isAuth === false) {
-              this.$store.commit("clearCode");
+              // this.$store.commit("clearCode");
               this.$store.commit("clearToken");
               deleteCookie("auth");
-              deleteCookie("user");
+              // deleteCookie("user");
               console.log("여기 로직 리팩토링");
               this.$router.push("/");
               this.emitter.emit("loginModal", true);

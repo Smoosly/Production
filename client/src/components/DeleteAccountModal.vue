@@ -45,10 +45,10 @@ export default {
           if (result.data.success) {
             console.log(result.data.message);
             // 로그아웃 처리
-            this.$store.commit("clearCode");
+            // this.$store.commit("clearCode");
             this.$store.commit("clearToken");
             deleteCookie("auth");
-            deleteCookie("user");
+            // deleteCookie("user");
             this.$router.push("/");
             //state에서 user 정보 삭제로직 추가
             const msg = "계정이 삭제되었습니다.";
