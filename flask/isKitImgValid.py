@@ -80,7 +80,7 @@ def save_as_graph(arr, filename, dir, ratio, rratio, xDiff, yDiff):
         # cv2.imwrite('aaa.jpg', arr)
         realSize = arr.shape
         arr = np.transpose(np.array(arr))
-        x = np.arange(5, arr.shape[0]-5, int(realSize[1]/15))
+        x = np.arange(5, arr.shape[0]-2, int(realSize[1]/15))
         y = []
         for i in x:
                 black = np.where(arr[i] > 0)[0]

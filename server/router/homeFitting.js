@@ -54,7 +54,7 @@ router.get('/getMyInfo', isAuth, async (req, res) => {
   try {
     const homeFitting = await HOME_FITTING.findOne({
       where: { PK_ID: req.cookies.user },
-      attributes: [[sequelize.fn('date_format', sequelize.col('createdAt'), '%Y-%m-%d'), 'createdAt'], 'invoice', 'state', 'return', 'returnDate', 'returnInvoice'],
+      attributes: [[sequelize.fn('date_format', sequelize.col('createdAt'), '%Y-%m-%d'), 'createdAt'], 'invoice', 'state', 'return', 'returnDate'],
     });
     // const { data } = await axios.get(`https://apis.tracker.delivery/carriers/kr.cjlogistics/tracks/${homeFitting.invoice}`);
     // const tracker = await axios.get(`http://nplus.doortodoor.co.kr/web/detail.jsp?slipno=${homeFitting.invoice}`);

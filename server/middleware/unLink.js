@@ -2,7 +2,7 @@ const winston = require("../winston");
 const axios = require("axios");
 const util = require("util");
 const naver = require("../config/naver");
-const { client_secret } = require("../config/google");
+const google = require("../config/google");
 
 let unLink = (req, res, next) => {
   try {
@@ -26,17 +26,16 @@ let unLink = (req, res, next) => {
         })
         .catch(console.log);
     } else if (req.user.provider === "naver") {
-      console.log(`https://nid.naver.com/oauth2.0/token?grant_type=delete&client_id=${naver.clientID}&client_secret=${client_secret}&access_token=${req.cookies.auth}&service_provider=NAVER`);
       axios
-        .post(`https://nid.naver.com/oauth2.0/token?grant_type=delete&client_id=${naver.clientID}&client_secret=${client_secret}&access_token=${req.cookies.auth}&service_provider=NAVER`)
+        .post(`https://nid.naver.com/oauth2.0/token?grant_type=delete&client_id=${naver.clientID}&client_secret=${naver.clientSecret}&access_token=${req.cookies.auth}&service_provider=NAVER`)
         .then((result) => {
-          console.log(util.inspect(result.data, false, null, true));
           winston.debug(util.inspect(result.data, false, null, true));
           return next();
         })
         .catch(console.log);
 
     } else if (req.user.provider === "google") {
+
       return next();
     }
   } catch (err) {

@@ -34,7 +34,7 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: true
     },
     birthyear: {
-      type: "YEAR",
+      type: DataTypes.DATE,
       allowNull: true
     },
     postcode: {

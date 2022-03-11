@@ -184,7 +184,7 @@
                 <form action="http://info.sweettracker.co.kr/tracking/4" method="post" target="_blank">
                   <input hidden type="text" class="form-control" id="t_key" name="t_key" placeholder="" :value="deliveryInfo.api_key" />
                   <input hidden type="text" class="form-control" name="t_code" id="t_code" placeholder="" :value="deliveryInfo.code" />
-                  <input hidden type="text" class="form-control" name="t_invoice" id="t_invoice" placeholder="" :value="returnInvoice" />
+                  <input hidden type="text" class="form-control" name="t_invoice" id="t_invoice" placeholder="" :value="hometryInvoice" />
                   <div class="button-box">
                     <button type="submit" class="btn-secondary btn-48 btn-second">반송 현황 조회</button>
                   </div>
@@ -238,7 +238,7 @@ export default {
       hometryOrderDate: "",
       hometryOrderStep: 0,
       hometryInvoice: "",
-      returnInvoice: "",
+      // returnInvoice: "",
       deliveryInfo: {
         api_key: "",
         code: "04",
@@ -462,7 +462,7 @@ export default {
             this.hometryOrderDate = data.createdAt;
             this.hometryOrderStep = data.state;
             this.hometryInvoice = data.invoice;
-            this.returnInvoice = data.returnInvoice;
+            // this.returnInvoice = data.returnInvoice;
             this.deliveryInfo = homeFitting.data.deliveryInfo;
             if (data.return !== 0) {
               this.deliverTousreq = true;
