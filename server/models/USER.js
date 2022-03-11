@@ -34,7 +34,7 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: true
     },
     birthyear: {
-      type: "YEAR",
+      type: DataTypes.DATE,
       allowNull: true
     },
     postcode: {
@@ -47,10 +47,6 @@ module.exports = function(sequelize, DataTypes) {
     },
     extraAddress: {
       type: DataTypes.STRING(45),
-      allowNull: true
-    },
-    message: {
-      type: DataTypes.STRING(500),
       allowNull: true
     },
     agreePromotion: {
@@ -85,6 +81,7 @@ module.exports = function(sequelize, DataTypes) {
         using: "BTREE",
         fields: [
           { name: "id" },
+          { name: "createdAt" },
         ]
       },
       {

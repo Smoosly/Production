@@ -116,7 +116,8 @@
 <script>
 import axios from "axios";
 import { validateEmail } from "@/utils/validation";
-import { saveAuthToCookie, saveUserToCookie } from "@/utils/cookies";
+import { saveAuthToCookie } from "@/utils/cookies";
+// import { saveAuthToCookie, saveUserToCookie } from "@/utils/cookies";
 
 export default {
   name: "Login",
@@ -144,33 +145,7 @@ export default {
       this.passwordType = this.passwordType === "password" ? "text" : "password";
     },
     async submitForm() {
-      // try {
-      //   //logic
-      //   const userData = {
-      //     email: this.email,
-      //     password: this.password,
-      //   };
-
-      //   await this.$store.dispatch("LOGIN", userData);
-      //   // 로그인 실패시에는 모달창 안닫히도록!
-      //   if (this.$store.state.PK_ID != "") {
-      //     this.emitter.emit("loginModal", false);
-      //     this.$router.push("/");
-      //     let message = "로그인 되었습니다.";
-      //     this.emitter.emit("showToast", message);
-      //     this.emitter.emit("loginFetch");
-      //   }
-      //   this.initForm();
-      //   this.emitter.emit("showRedToast", "로그인에 실패하였습니다.");
-      // } catch (error) {
-      //   //error handling
-      //   console.log(error);
-      //   this.emitter.emit("showRedToast", "로그인에 실패하였습니다.");
-      // } finally {
-      //   this.initForm();
-      // }
       try {
-        //logic
         const userData = {
           email: this.email,
           password: this.password,
@@ -181,11 +156,11 @@ export default {
         if (data.success) {
           this.$store.state.mailCheck = true;
           this.$store.commit("setToken", data.userData.token);
-          this.$store.commit("setCode", data.userData.PK_ID);
+          // this.$store.commit("setCode", data.userData.PK_ID);
           saveAuthToCookie(data.userData.token);
-          saveUserToCookie(data.userData.PK_ID);
+          // saveUserToCookie(data.userData.PK_ID);
           this.$router.push("/");
-          if (this.$store.state.PK_ID != "") {
+          if (this.$store.state.token != "") {
             this.emitter.emit("showToast", "로그인 되었습니다.");
             this.emitter.emit("loginFetch");
             this.emitter.emit("loginModal", false);

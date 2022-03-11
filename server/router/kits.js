@@ -5,12 +5,12 @@ const axios = require('axios');
 const path = require('path');
 const fs = require('fs');
 const util = require('util');
-const dayjs = require('dayjs');
-const timezone = require('dayjs/plugin/timezone');
-const utc = require('dayjs/plugin/utc');
 const router = express.Router();
 const winston = require('../winston');
 const { sequelize, KIT, USER, BREAST_TEST } = require('../models');
+const dayjs = require('dayjs');
+const timezone = require('dayjs/plugin/timezone');
+const utc = require('dayjs/plugin/utc');
 dayjs.extend(timezone);
 dayjs.extend(utc);
 
@@ -22,7 +22,7 @@ let Storage = multer.diskStorage({
     cb(null, 'KitUploads/');
   },
   filename: (req, file, cb) => {
-    const filename = file.originalname.replace(path.extname(file.originalname), '');
+    const filename = req.cookies.user.concat(file.originalname.replace(path.extname(file.originalname), ''));
     cb(null, `${filename}_${formatDate()}${path.extname(file.originalname)}`);
   },
 });
@@ -42,12 +42,12 @@ const isValidImg = async (leftImg, rightImg) => {
       rightImgPath: rightImg,
     };
     //Flask server에 요청
-    winston.debug(util.inspect(data, false, null, true));
+    // winston.debug(util.inspect(data, false, null, true));
     const result = await axios.post('http://127.0.0.1:5000/isKitImgValid', data);
     if (!result) {
       resolve({ success: false, message: '재업로드해주세요' });
     }
-    winston.debug(util.inspect(result.data, false, null, true));
+    // winston.debug(util.inspect(result.data, false, null, true));
     if (result.data.success === 'yes') {
       resolve({ success: true, message: '이미지 업로드 성공' });
     } else {
@@ -102,17 +102,7 @@ const isValidImg = async (leftImg, rightImg) => {
 };
 
 const formatDate = () => {
-  // let now = new Date();
-  // let month = now.getMonth() + 1 >= 10 ? `${now.getMonth() + 1}` : `0${now.getMonth() + 1}`;
-  // let day = now.getDate() >= 10 ? `${now.getDate()}` : `0${now.getDate()}`;
-  // let hour = now.getHours() >= 10 ? now.getHours() : "0" + now.getHours();
-  // let minute = now.getMinutes() >= 10 ? now.getMinutes() : "0" + now.getMinutes();
-  // let second = now.getSeconds() >= 10 ? now.getSeconds() : "0" + now.getSeconds();
-  // let formatted_date = `${now.getFullYear()}${month}${day}${hour}${minute}${second}`;
-
   const now2 = dayjs(new Date().toLocaleString('en-US', { timeZone: 'Asia/Seoul' })).format('YYYYMMDDHHmmss');
-  console.log(now2);
-
   return now2;
 };
 
@@ -127,8 +117,7 @@ router.post('/img/upload', async (req, res) => {
       winston.info({ success: false, message: '이미지가 없습니다.' });
       return res.json({ success: false, message: '이미지가 없습니다.' });
     }
-
-    const PK_ID = JSON.parse(req.body.data).PK_ID;
+    // const PK_ID = JSON.parse(req.body.data).PK_ID;
     const yesLeft = JSON.parse(req.body.data).yesLeft;
     const yesRight = JSON.parse(req.body.data).yesRight;
     console.log(yesLeft);
@@ -139,9 +128,9 @@ router.post('/img/upload', async (req, res) => {
     try {
       //BREAST_TEST 생성하고 Progress 를 1단계 성공으로 설정하기
       const [test, created] = await BREAST_TEST.findOrCreate({
-        where: { PK_ID: PK_ID },
+        where: { PK_ID: req.cookies.user },
         defaults: {
-          PK_ID: PK_ID,
+          PK_ID: req.cookies.user,
           WHERE_BT: leftImg && rightImg ? 2 : leftImg ? 0 : 1,
           STEP: 0,
         },
@@ -233,7 +222,7 @@ router.post('/img/upload', async (req, res) => {
       }
 
       winston.debug('업로드 성공');
-      const result = await BREAST_TEST.findOne({ where: { PK_ID: PK_ID } });
+      const result = await BREAST_TEST.findOne({ where: { PK_ID: req.cookies.user } });
       if (result) {
         // 원래 있었다면 경로 바꿔주기
         result.update({ STEP: 1 });
@@ -291,20 +280,13 @@ router.get('/checkImg', async (req, res) => {
 
 router.post('/request', async (req, res) => {
   // 체험단 여부 판별하기
-  const user = await USER.findOne({ where: { PK_ID: req.body.PK_ID }, attributes: ['role'] });
-  const kit = await KIT.findOne({ where: { PK_ID: req.body.PK_ID } });
+  const user = await USER.findOne({ where: { PK_ID: req.cookies.user }, attributes: ['role'] });
+  const kit = await KIT.findOne({ where: { PK_ID: req.cookies.user } });
   if (user.role === '3MVP' && kit) {
     winston.info({ success: false, message: '이미 키트 신청 내역이 있는지 확인하세요.' });
     return res.json({ success: false, message: '이미 키트 신청 내역이 있는지 확인하세요.' });
   } else {
-    await USER.update({ phone: req.body.phone, postcode: req.body.postcode, address: req.body.address, extraAddress: req.body.extraAddress }, { where: { PK_ID: req.body.PK_ID } });
-    // const coupon = await COUPON.findOne({ where: { CODE: req.body.couponCode } });
-    // if (!coupon) {
-    //   return res.json({ success: false, message: "존재하지 않는 쿠폰번호입니다." });
-    // }
-    // if (coupon.USED) {
-    //   return res.json({ success: false, message: "이미 등록된 쿠폰번호입니다." });
-    // }
+    await USER.update({ phone: req.body.phone, postcode: req.body.postcode, address: req.body.address, extraAddress: req.body.extraAddress }, { where: { PK_ID: req.cookies.user } });
     let kitReqInfo = {};
     Object.assign(kitReqInfo, req.body);
     delete kitReqInfo.PK_ID;
@@ -312,12 +294,10 @@ router.post('/request', async (req, res) => {
     // delete kitReqInfo.couponCode;
     try {
       const [kit, created] = await KIT.findOrCreate({
-        where: { PK_ID: req.body.PK_ID },
+        where: { PK_ID: req.cookies.user },
         defaults: kitReqInfo,
       });
       if (created) {
-        // await USER.update({ role: coupon.TYPE }, { where: { PK_ID: req.body.PK_ID } });
-        // await coupon.update({ PK_ID: req.body.PK_ID, REGISTER_DATE: new Date(), USED: 1 });
         winston.info({ success: true, message: '키트가 성공적으로 신청되었습니다.', kit });
         return res.json({ success: true, message: '키트가 성공적으로 신청되었습니다.', kit });
       } else {

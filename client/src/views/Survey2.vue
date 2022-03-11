@@ -314,7 +314,7 @@ export default {
   methods: {
     goBack() {
       const answers = {
-        PK_ID: this.$store.state.PK_ID,
+        // PK_ID: this.$store.state.PK_ID,
         [this.page[0].column]: parseFloat(this.answer_1),
         [this.page[1].column]: parseFloat(this.answer_2),
         [this.page[2].column]: parseFloat(this.answer_3),
@@ -343,7 +343,7 @@ export default {
         return this.emitter.emit("showRedToast", "윗가슴 둘레를 밑가슴 둘레보다 작지 않게 입력해주세요.");
       }
       const answers = {
-        PK_ID: this.$store.state.PK_ID,
+        // PK_ID: this.$store.state.PK_ID,
         [this.page[0].column]: parseFloat(this.answer_1),
         [this.page[1].column]: parseFloat(this.answer_2),
         [this.page[2].column]: parseFloat(this.answer_3),

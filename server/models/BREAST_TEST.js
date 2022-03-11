@@ -239,7 +239,7 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: true
     },
     BIRTH_YEAR: {
-      type: "YEAR",
+      type: DataTypes.DATE,
       allowNull: true
     }
   }, {

@@ -149,7 +149,7 @@
 </template>
 
 <script>
-import { getUserFromCookie } from "@/utils/cookies";
+import { getAuthFromCookie } from "@/utils/cookies";
 import { deleteCookie } from "@/utils/cookies";
 // import { checkAuth } from "@/utils/loginAuth";
 import axios from "axios";
@@ -158,7 +158,7 @@ export default {
   name: "Home",
   data() {
     return {
-      PK_ID: getUserFromCookie() || "",
+      // PK_ID: getAuthFromCookie() || "",
       state: null,
       step: 1,
       page: null,
@@ -168,7 +168,7 @@ export default {
   },
   methods: {
     checkLogin() {
-      if (this.PK_ID === "") {
+      if (getAuthFromCookie() === "") {
         this.emitter.emit("loginModal", true);
         this.emitter.emit("showRedToast", "로그인 후 이용해주세요.");
         return;
@@ -179,7 +179,7 @@ export default {
     },
     checkState() {
       this.emitter.emit("closeToggle");
-      if (this.PK_ID === "") {
+      if (getAuthFromCookie() === "") {
         this.emitter.emit("loginModal", true);
         this.emitter.emit("showRedToast", "로그인 후 이용해주세요.");
         return;
@@ -212,7 +212,7 @@ export default {
       else this.step += 1;
     },
     async fetchStep() {
-      this.PK_ID &&
+      getAuthFromCookie() &&
         axios
           .get("/users/getState")
           .then((result) => {
@@ -225,10 +225,10 @@ export default {
               return;
             } else {
               if (Object.keys(result.data).includes("isAuth") && result.data.isAuth === false) {
-                this.$store.commit("clearCode");
+                // this.$store.commit("clearCode");
                 this.$store.commit("clearToken");
                 deleteCookie("auth");
-                deleteCookie("user");
+                // deleteCookie("user");
                 console.log("여기 로직 리팩토링");
                 this.$router.push("/");
                 this.emitter.emit("loginModal", true);
@@ -248,11 +248,11 @@ export default {
     this.fetchStep();
     this.emitter.on("loginFetch", () => {
       console.log("emitter");
-      this.PK_ID = getUserFromCookie() || "";
+      // this.PK_ID = getAuthFromCookie() || "";
       this.fetchStep();
     });
     this.emitter.on("logoutFetch", () => {
-      this.PK_ID = "";
+      // this.PK_ID = "";
       this.state = null;
       this.step = 1;
       this.page = null;

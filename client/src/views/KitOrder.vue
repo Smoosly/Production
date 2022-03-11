@@ -174,7 +174,7 @@ export default {
         return;
       }
       const kitData = {
-        PK_ID: this.$store.state.PK_ID,
+        // PK_ID: this.$store.state.PK_ID,
         recipient: this.recipient,
         postcode: this.postcode,
         address: this.address,
@@ -206,10 +206,10 @@ export default {
         this.extraAddress = result.data.userInfo.extraAddress;
       } else {
         if (Object.keys(result.data).includes('isAuth') && result.data.isAuth === false) {
-          this.$store.commit('clearCode');
+          // this.$store.commit('clearCode');
           this.$store.commit('clearToken');
           deleteCookie('auth');
-          deleteCookie('user');
+          // deleteCookie('user');
           console.log('여기 로직 리팩토링');
           this.$router.push('/');
           this.emitter.emit('loginModal', true);

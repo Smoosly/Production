@@ -52,10 +52,6 @@ module.exports = function(sequelize, DataTypes) {
     returnDate: {
       type: DataTypes.DATEONLY,
       allowNull: true
-    },
-    returnInvoice: {
-      type: DataTypes.STRING(45),
-      allowNull: true
     }
   }, {
     sequelize,

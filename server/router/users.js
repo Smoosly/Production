@@ -62,8 +62,8 @@ router.post("/login", async (req, res) => {
 
     // res.cookie("user", user.PK_ID, { overwrite: true });
     // res.cookie("auth", token, { overwrite: true });
-    winston.info({ success: true, message: "로그인 되었습니다.", userData: { PK_ID: user.PK_ID, token: token } });
-    return res.json({ success: true, message: "로그인 되었습니다.", userData: { PK_ID: user.PK_ID, token: token } });
+    winston.info({ success: true, message: "로그인 되었습니다.", userData: { token: token } });
+    return res.json({ success: true, message: "로그인 되었습니다.", userData: { token: token } });
   } catch (err) {
     winston.error(err);
     return res.json({ success: false, message: "로그인 실패", err });
@@ -123,7 +123,7 @@ router.get("/getUserInfo", isAuth, async (req, res) => {
   try {
     const user = await USER.findOne({
       where: { PK_ID: req.cookies.user },
-      attributes: ["username", "email", "role", "phone", "birthday", "agreePromotion", "postcode", "address", "extraAddress", "message"],
+      attributes: ["username", "email", "role", "phone", "birthday", "agreePromotion", "postcode", "address", "extraAddress"],
     });
     if (user) {
       winston.info({ success: true, message: "회원 정보 불러오기 성공", userInfo: user });
@@ -232,7 +232,7 @@ router.post("/editUserInfo", isAuth, async (req, res) => {
         extraAddress: req.body.extraAddress,
         message: req.body.message,
       },
-      { where: { PK_ID: req.body.PK_ID } }
+      { where: { PK_ID: req.cookies.user } }
     );
     winston.info({ success: true, message: "회원 정보가 수정되었습니다." });
     return res.json({ success: true, message: "회원 정보가 수정되었습니다." });

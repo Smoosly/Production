@@ -1,5 +1,6 @@
 import { createStore } from "vuex";
-import { getAuthFromCookie, getUserFromCookie, saveAuthToCookie, saveUserToCookie } from "@/utils/cookies";
+// import { getAuthFromCookie, getUserFromCookie, saveAuthToCookie, saveUserToCookie } from "@/utils/cookies";
+import { getAuthFromCookie, saveAuthToCookie } from "@/utils/cookies";
 import { loginUser } from "@/api/auth";
 
 export default createStore({
@@ -7,7 +8,7 @@ export default createStore({
     return {
       mailCheck: false,
       // mailCheckMsg:'',
-      PK_ID: getUserFromCookie() || "",
+      // PK_ID: getUserFromCookie() || "",
       token: getAuthFromCookie() || "",
     };
   },
@@ -20,9 +21,9 @@ export default createStore({
         console.log(data.userData);
         this.state.mailCheck = true;
         commit("setToken", data.userData.token);
-        commit("setCode", data.userData.PK_ID); // data.user.email 인지 check 필요
+        // commit("setCode", data.userData.PK_ID); // data.user.email 인지 check 필요
         saveAuthToCookie(data.userData.token);
-        saveUserToCookie(data.userData.PK_ID); // email -> PK_ID
+        // saveUserToCookie(data.userData.PK_ID); // email -> PK_ID
       } else {
         alert("입력된 정보가 올바르지 않습니다.");
       }
@@ -32,19 +33,19 @@ export default createStore({
   },
   getters: {
     isLogin(state) {
-      return state.PK_ID !== "";
+      return state.token !== "";
     },
   },
   mutations: {
     setUser(state, userData) {
       state.user = { ...state.user, ...userData };
     },
-    setCode(state, PK_ID) {
-      state.PK_ID = PK_ID;
-    },
-    clearCode(state) {
-      state.PK_ID = "";
-    },
+    // setCode(state, PK_ID) {
+    //   state.PK_ID = PK_ID;
+    // },
+    // clearCode(state) {
+    //   state.PK_ID = "";
+    // },
     setToken(state, token) {
       state.token = token;
     },
