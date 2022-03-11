@@ -38,6 +38,7 @@ let unLink = (req, res, next) => {
 
       return next();
     }
+    return next();
   } catch (err) {
     winston.error(err);
   }
