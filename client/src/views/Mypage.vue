@@ -159,7 +159,7 @@
                 </p>
               </div>
               <!-- 반송 신청 안한 경우 -->
-              <div v-if="canReturn && !isOrderedHometry && !deliverTousreq" class="howto-deliver">
+              <div v-if="canReturn && !deliverTousreq" class="howto-deliver">
                 <p>
                   <span>혹시 반송 신청을 잊으셨나요?&nbsp;<i class="far fa-surprise"></i></span> <br />
                   홈 피팅 후 입어보신 브라는<br />스무슬리에 반송해 주세요!
