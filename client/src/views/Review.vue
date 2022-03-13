@@ -244,11 +244,11 @@
                 <ul>
                   <li>
                     <input id="under-complain1" type="checkbox" value="9" v-model="answers_save[step].q6" />
-                    <label for="under-complain1">와이어 압박감</label>
+                    <label for="under-complain1">밑둘레 압박감이 느껴짐</label>
                   </li>
                   <li>
                     <input id="under-complain2" type="checkbox" value="10" v-model="answers_save[step].q6" />
-                    <label for="under-complain2">와이어가 살을 찌름</label>
+                    <label for="under-complain2">밑둘레 고정이 잘 안됨</label>
                   </li>
                 </ul>
               </div>
