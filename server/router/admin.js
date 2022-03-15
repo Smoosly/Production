@@ -18,8 +18,8 @@ router.use(isAdmin);
 
 router.get('/getUserList', async (req, res) => {
   // const list = await BRA_RECOM.findAll();
-  const [list] = await sequelize.query('select Smoosly_dev.BRA_RECOM.PK_ID, Smoosly_dev.BRA_RECOM.SIZE, Smoosly_dev.BRA_RECOM.NUM, Smoosly_dev.BRA_RECOM.DECISION, Smoosly_dev.BRA_RECOM.COMPLETE, Smoosly_dev.BRA_FIX.PK_ID as "FIXED" from Smoosly_dev.BRA_RECOM left join Smoosly_dev.BRA_FIX on Smoosly_dev.BRA_RECOM.PK_ID = Smoosly_dev.BRA_FIX.PK_ID;');
-  // const [list] = await sequelize.query('select Smoosly.BRA_RECOM.PK_ID, Smoosly.BRA_RECOM.SIZE, Smoosly.BRA_RECOM.NUM, Smoosly.BRA_RECOM.DECISION, Smoosly.BRA_RECOM.COMPLETE, Smoosly.BRA_FIX.PK_ID as "FIXED" from Smoosly.BRA_RECOM left join Smoosly.BRA_FIX on Smoosly.BRA_RECOM.PK_ID = Smoosly.BRA_FIX.PK_ID;');
+  // const [list] = await sequelize.query('select Smoosly_dev.BRA_RECOM.PK_ID, Smoosly_dev.BRA_RECOM.SIZE, Smoosly_dev.BRA_RECOM.NUM, Smoosly_dev.BRA_RECOM.DECISION, Smoosly_dev.BRA_RECOM.COMPLETE, Smoosly_dev.BRA_FIX.PK_ID as "FIXED" from Smoosly_dev.BRA_RECOM left join Smoosly_dev.BRA_FIX on Smoosly_dev.BRA_RECOM.PK_ID = Smoosly_dev.BRA_FIX.PK_ID;');
+  const [list] = await sequelize.query('select Smoosly.BRA_RECOM.PK_ID, Smoosly.BRA_RECOM.SIZE, Smoosly.BRA_RECOM.NUM, Smoosly.BRA_RECOM.DECISION, Smoosly.BRA_RECOM.COMPLETE, Smoosly.BRA_FIX.PK_ID as "FIXED" from Smoosly.BRA_RECOM left join Smoosly.BRA_FIX on Smoosly.BRA_RECOM.PK_ID = Smoosly.BRA_FIX.PK_ID;');
   // const braFix = await BRA_FIX.findAll();
 
   // winston.debug(util.inspect(list, false, null, true));
