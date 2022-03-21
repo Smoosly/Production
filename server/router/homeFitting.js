@@ -65,15 +65,16 @@ router.get('/getMyInfo', isAuth, async (req, res) => {
       return res.json({ success: false, message: '홈 피팅 서비스 신청 내역이 없습니다.' });
     }
     winston.debug(util.inspect(homeFitting.dataValues, false, null, true));
-    const sweettracker = await axios.get(`https://info.sweettracker.co.kr/api/v1/trackingInfo?t_key=${deliveryInfo.api_key}&t_code=${deliveryInfo.code}&t_invoice=${homeFitting.invoice}`);
-    if (!sweettracker) {
-      winston.info({ success: false, message: '배송 조회할 수 없습니다.' });
-      return res.json({ success: false, message: '배송 조회할 수 없습니다.' });
-    }
-    winston.debug(util.inspect(sweettracker.data, false, null, true));
-    if (sweettracker.status === true) {
-      await HOME_FITTING.update({ state: sweettracker.data.complete ? 3 : 2 }, { where: { PK_ID: req.cookies.user } });
-    }
+    // const sweettracker = await axios.get(`https://info.sweettracker.co.kr/api/v1/trackingInfo?t_key=${deliveryInfo.api_key}&t_code=${deliveryInfo.code}&t_invoice=${homeFitting.invoice}`);
+    // if (!sweettracker) {
+    //   winston.info({ success: false, message: '배송 조회할 수 없습니다.' });
+    //   return res.json({ success: false, message: '배송 조회할 수 없습니다.' });
+    // }
+    // winston.debug(util.inspect(sweettracker.data, false, null, true));
+    // if (sweettracker.status === true) {
+    //   await HOME_FITTING.update({ state: sweettracker.data.complete ? 3 : 2 }, { where: { PK_ID: req.cookies.user } });
+    // }
+    await HOME_FITTING.update({ state: 3 }, { where: { PK_ID: req.cookies.user } });
     winston.info({ success: true, message: '홈 피팅 서비스 배송 정보', homeFitting: homeFitting, deliveryInfo: deliveryInfo });
     return res.json({ success: true, message: '홈 피팅 서비스 배송 정보', homeFitting: homeFitting, deliveryInfo: deliveryInfo });
   } catch (err) {
